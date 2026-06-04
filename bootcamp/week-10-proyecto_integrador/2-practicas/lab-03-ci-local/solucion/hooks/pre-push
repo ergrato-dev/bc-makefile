@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Hook pre-push: ejecuta make check y make test
+# No modifiques este archivo — la lógica vive en el Makefile
+set -e
+make check
