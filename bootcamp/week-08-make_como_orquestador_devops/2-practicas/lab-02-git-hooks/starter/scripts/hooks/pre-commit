@@ -1,0 +1,14 @@
+#!/bin/bash
+# pre-commit: validaciones rápidas antes de cada commit
+
+set -e
+
+echo "→ [pre-commit] Verificando archivos staged..."
+
+# Verifica que no haya archivos .env commiteados
+if git diff --cached --name-only | grep -q '\.env$'; then
+    echo "ERROR: Intentando commitear un archivo .env. Agrega .env a .gitignore."
+    exit 1
+fi
+
+echo "✓ [pre-commit] OK"
