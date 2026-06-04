@@ -1,0 +1,39 @@
+# Build outputs generados por los ejercicios
+build/
+dist/
+bin/
+obj/
+*.o
+*.a
+*.so
+*.out
+a.out
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# Node
+node_modules/
+*.log
+
+# Docker
+.docker/
+
+# Editors
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets (nunca commitear)
+.env.local
+.env.*.local
+secrets/
+*.key
+*.pem
