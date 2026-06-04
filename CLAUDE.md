@@ -38,8 +38,8 @@ Desarrolladores que ya saben usar la terminal y han visto algún Makefile pero n
 week-NN-nombre_del_tema/
 ├── README.md                  # Descripción, objetivos, tabla de contenidos
 ├── rubrica-evaluacion.md      # Criterios de evaluación con puntaje
-├── 0-assets/                  # Diagramas SVG (se crean con Mermaid o a mano)
-│   └── README.md
+├── 0-assets/                  # Diagramas Mermaid en archivos .md (renderizan en GitHub y VS Code)
+│   └── NN-nombre.md
 ├── 1-teoria/                  # Contexto mínimo, NO tutoriales largos
 │   └── 01-contexto.md         # Un solo archivo por semana (max 2 si el tema lo requiere)
 ├── 2-practicas/               # Labs hands-on
@@ -56,11 +56,11 @@ week-NN-nombre_del_tema/
 │   ├── starter/               # Punto de partida
 │   └── solucion/              # Solución de referencia
 ├── 4-recursos/
-│   ├── ebooks-free/README.md
-│   ├── videografia/README.md
-│   └── webgrafia/README.md
+│   ├── ebooks-free/README.md   # Libros gratuitos (PDF, HTML) sobre Make y build systems
+│   ├── videografia/README.md   # Videos en YouTube/cursos recomendados (tabla: título|canal|duración|enlace)
+│   └── webgrafia/README.md     # Documentación oficial y artículos de calidad (tabla: recurso|descripción)
 └── 5-glosario/
-    └── README.md
+    └── README.md               # Tabla: Término | Definición en una línea | Ejemplo en Makefile
 ```
 
 ## Convenciones de naming
@@ -165,6 +165,47 @@ make --debug=v
 # Forzar re-ejecución aunque los targets estén al día
 make -B
 ```
+
+## Contenido esperado por sección
+
+### 0-assets/
+Diagramas en formato **Mermaid** dentro de archivos `.md`. Renderizan nativamente en GitHub y en VS Code con la extensión "Markdown Preview Mermaid Support". Un archivo por diagrama, nombrado `NN-nombre.md`.
+
+Mínimo 3 diagramas por semana. Cada archivo tiene: título H1, bloque ` ```mermaid ``` `, y 2-3 líneas de explicación del concepto ilustrado.
+
+Tipos Mermaid preferidos: `graph TD/LR`, `flowchart TD`, `sequenceDiagram`.
+
+### 4-recursos/ebooks-free/
+Tabla con libros/documentos gratuitos descargables o legibles online:
+```markdown
+| Título | Formato | Descripción | Enlace |
+|--------|---------|-------------|--------|
+| GNU Make Manual | HTML/PDF | Manual oficial completo | https://www.gnu.org/software/make/manual/ |
+```
+
+### 4-recursos/videografia/
+Tabla con videos de YouTube u otras plataformas abiertas:
+```markdown
+| Título | Canal | Duración | Enlace |
+|--------|-------|----------|--------|
+```
+Mínimo 3 videos relevantes al tema de la semana. Preferir videos en español si existen de calidad; complementar con inglés.
+
+### 4-recursos/webgrafia/
+Tabla con documentación oficial y artículos técnicos de calidad:
+```markdown
+| Recurso | Descripción |
+|---------|-------------|
+```
+3–5 enlaces, priorizando documentación oficial de GNU Make.
+
+### 5-glosario/
+Tabla con términos introducidos en la semana:
+```markdown
+| Término | Definición en una línea | Ejemplo en Makefile |
+|---------|------------------------|---------------------|
+```
+Entre 8 y 15 términos por semana. Solo términos nuevos de esa semana.
 
 ## Notas para Claude al generar contenido
 
