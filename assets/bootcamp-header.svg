@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280" role="img" aria-label="Bootcamp GNU Make — Domina el Build System">
+
+  <!-- ── BACKGROUND ── -->
+  <rect width="1200" height="280" fill="#0d1117"/>
+  <rect x="0" y="0" width="5" height="280" fill="#A42E2B"/>
+  <rect x="5" y="0" width="1195" height="1" fill="#21262d"/>
+  <rect x="5" y="279" width="1195" height="1" fill="#21262d"/>
+
+  <!-- ── CODE PANEL ── -->
+  <rect x="44" y="36" width="466" height="210" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+  <!-- dots + filename -->
+  <circle cx="70" cy="57" r="5" fill="#ff5f57"/>
+  <circle cx="88" cy="57" r="5" fill="#febc2e"/>
+  <circle cx="106" cy="57" r="5" fill="#28c840"/>
+  <text x="136" y="62" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e">Makefile</text>
+  <rect x="44" y="70" width="466" height="1" fill="#21262d"/>
+
+  <!-- ── MAKEFILE SYNTAX (absolute x positions, 7.5px/char @ 12.5px mono) ── -->
+  <!-- Char width = 12.5 * 0.6 = 7.5 px -->
+
+  <!-- .PHONY: all build test clean deploy (y=93) -->
+  <text x="64" y="93" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#6e7681">.PHONY:</text>
+  <text x="117" y="93" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#79c0ff"> all build test clean deploy</text>
+
+  <!-- .DEFAULT_GOAL := help (y=111) -->
+  <text x="64" y="111" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#6e7681">.DEFAULT_GOAL</text>
+  <text x="162" y="111" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#e6edf3"> := </text>
+  <text x="192" y="111" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#a5d6ff">help</text>
+
+  <!-- CC := gcc (y=133) -->
+  <text x="64" y="133" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#79c0ff">CC</text>
+  <text x="79" y="133" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#e6edf3">      := </text>
+  <text x="146" y="133" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#a5d6ff">gcc</text>
+
+  <!-- BUILD := build/ (y=150) -->
+  <text x="64" y="150" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#79c0ff">BUILD</text>
+  <text x="102" y="150" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#e6edf3">    := </text>
+  <text x="155" y="150" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#a5d6ff">build/</text>
+
+  <!-- build: src/main.c (y=172) -->
+  <text x="64" y="172" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#f78166">build</text>
+  <text x="102" y="172" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#e6edf3">: src/main.c</text>
+
+  <!-- TAB indicator + recipe $(CC) -o $@ $< (y=194) -->
+  <rect x="64" y="182" width="3" height="14" fill="#A42E2B" opacity="0.75"/>
+  <text x="71" y="194" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#e6edf3">$(CC)</text>
+  <text x="109" y="194" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#8b949e"> -o </text>
+  <text x="139" y="194" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#79c0ff">$@</text>
+  <text x="154" y="194" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#8b949e"> $&lt;</text>
+
+  <!-- help: ## Muestra esta ayuda (y=214) -->
+  <text x="64" y="214" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#f78166">help</text>
+  <text x="94" y="214" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#8b949e">: ## Muestra esta ayuda</text>
+
+  <!-- TAB indicator + @grep ... (y=233) -->
+  <rect x="64" y="222" width="3" height="14" fill="#A42E2B" opacity="0.75"/>
+  <text x="71" y="233" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#8b949e">@grep -E </text>
+  <text x="139" y="233" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#a5d6ff">&#39;^[a-z].*:.*##&#39;</text>
+  <text x="259" y="233" font-family="'Courier New',Courier,monospace" font-size="12.5" fill="#8b949e"> Makefile</text>
+
+  <!-- blinking cursor -->
+  <rect x="64" y="244" width="7" height="12" fill="#A42E2B" opacity="0.9"/>
+
+  <!-- ── RIGHT PANEL ── -->
+
+  <!-- BOOTCAMP eyebrow -->
+  <text x="558" y="88" font-family="'Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" letter-spacing="5" fill="#A42E2B">BOOTCAMP</text>
+
+  <!-- Main title -->
+  <text x="556" y="150" font-family="'Segoe UI',system-ui,sans-serif" font-size="54" font-weight="800" letter-spacing="1" fill="#e6edf3">GNU Make</text>
+
+  <!-- Red underline rule -->
+  <rect x="556" y="163" width="594" height="2" fill="#A42E2B"/>
+
+  <!-- Subtitle -->
+  <text x="558" y="193" font-family="'Segoe UI',system-ui,sans-serif" font-size="19" font-weight="400" fill="#8b949e">Domina el Build System</text>
+
+  <!-- ── STAT CARDS ── -->
+
+  <rect x="558" y="218" width="108" height="40" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="612" y="233" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" fill="#8b949e" text-anchor="middle">SEMANAS</text>
+  <text x="612" y="251" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#e6edf3" text-anchor="middle">10</text>
+
+  <rect x="678" y="218" width="108" height="40" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="732" y="233" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" fill="#8b949e" text-anchor="middle">HORAS</text>
+  <text x="732" y="251" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#e6edf3" text-anchor="middle">80</text>
+
+  <rect x="798" y="218" width="108" height="40" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="852" y="233" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" fill="#8b949e" text-anchor="middle">LABS</text>
+  <text x="852" y="251" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#e6edf3" text-anchor="middle">50+</text>
+
+  <rect x="918" y="218" width="108" height="40" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="972" y="233" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" fill="#8b949e" text-anchor="middle">NIVEL</text>
+  <text x="972" y="251" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#A42E2B" text-anchor="middle">PRO</text>
+
+  <!-- CTA: $ make all -->
+  <rect x="1038" y="218" width="112" height="40" rx="4" fill="#A42E2B"/>
+  <text x="1094" y="234" font-family="'Courier New',Courier,monospace" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">$ make</text>
+  <text x="1094" y="251" font-family="'Courier New',Courier,monospace" font-size="11" fill="#ffcdd2" text-anchor="middle">all</text>
+
+</svg>
