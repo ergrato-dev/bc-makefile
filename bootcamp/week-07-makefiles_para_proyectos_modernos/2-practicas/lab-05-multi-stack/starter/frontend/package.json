@@ -1,0 +1,8 @@
+{
+  "name": "mi-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node tests/test.js",
+    "lint": "echo 'Lint OK'"
+  }
+}

@@ -1,0 +1,8 @@
+services:
+  notificador:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - ENV=dev
+    restart: unless-stopped

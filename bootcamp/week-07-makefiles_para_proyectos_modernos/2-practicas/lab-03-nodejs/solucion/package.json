@@ -1,0 +1,11 @@
+{
+  "name": "mi-app-node",
+  "version": "1.0.0",
+  "description": "Proyecto Node.js de práctica para bc-makefile",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "echo 'Compilando...' && mkdir -p dist && cp src/index.js dist/",
+    "test": "node tests/test.js",
+    "lint": "echo 'Verificando código... OK'"
+  }
+}
