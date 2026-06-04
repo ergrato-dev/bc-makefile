@@ -1,0 +1,24 @@
+.PHONY: all help
+.DEFAULT_GOAL := help
+
+# Variables específicas de este módulo
+APP_NAME := api
+VERSION  := 1.0.0
+PORT     := 8080
+ENV      ?= development
+
+# --------------------------------------------------------------------------
+# TODO: Importa los 4 módulos compartidos desde shared-mk/
+#       Recuerda que la ruta es relativa al directorio del Makefile (api/)
+#       Tip: la ruta correcta es ../shared-mk/build.mk
+# --------------------------------------------------------------------------
+# TODO: include ../shared-mk/build.mk
+# TODO: include ../shared-mk/test.mk
+# TODO: include ../shared-mk/deploy.mk
+# TODO: include ../shared-mk/debug.mk
+
+all: build ## Construir este módulo
+
+help: ## Mostrar ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
