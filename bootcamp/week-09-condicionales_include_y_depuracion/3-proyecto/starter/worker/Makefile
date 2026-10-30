@@ -1,3 +1,8 @@
+# TODO: preámbulo estricto de la semana 03 (va antes que todo lo demás):
+#   SHELL       := bash
+#   .SHELLFLAGS := -eu -o pipefail -c
+#   .DELETE_ON_ERROR:
+
 .PHONY: all help
 .DEFAULT_GOAL := help
 

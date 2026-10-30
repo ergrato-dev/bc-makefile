@@ -1,3 +1,8 @@
+# TODO: preámbulo estricto de la semana 03 (va antes que todo lo demás):
+#   SHELL       := bash
+#   .SHELLFLAGS := -eu -o pipefail -c
+#   .DELETE_ON_ERROR:
+
 .PHONY: all info generate clean help
 .DEFAULT_GOAL := help
 
@@ -50,9 +55,10 @@ generate: all ## Compilar y generar build/manifest.mk
 	# Pista: printf "VARIABLE := valor\n" > build/manifest.mk
 	@echo "Manifest generado: $(BUILD)/manifest.mk"
 
+# TODO 7: en 'clean', guarda + borrado seguro (semana 03). Receta:
+#   $(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+#   @rm -rf -- '$(BUILD)'
 clean: ## Limpiar todo lo generado
-	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
-	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

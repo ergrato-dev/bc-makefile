@@ -68,14 +68,27 @@ make -C frontend validate
 # Esperado: Validación OK (todas las variables requeridas definidas)
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make all` desde raíz construye los 3 módulos correctamente | 10 |
-| Los módulos `.mk` son reutilizables: cualquier proyecto puede importarlos con `include` sin modificarlos | 8 |
-| `make ENV=staging deploy` adapta comportamiento con condicionales en `deploy.mk` | 7 |
-| `make -C <modulo> debug-vars` muestra diagnóstico útil con `$(info)` | 5 |
+Los comprueba `./scripts/verificar-semana.sh 09` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make all desde la raíz construye api, worker y frontend
+- [ ] make test desde la raíz ejecuta los tests de los tres módulos
+- [ ] Si un módulo falla, make all desde la raíz sale con error
+- [ ] make ENV=staging deploy despliega los tres módulos en staging
+- [ ] deploy en production toma la rama ifeq que marca CONFIRMADO
+- [ ] deploy sin ENV usa development y no marca CONFIRMADO
+- [ ] Los tres módulos importan deploy.mk y ofrecen rollback
+- [ ] make -C worker debug-vars muestra APP_NAME del módulo con $(info)
+- [ ] debug-vars muestra en MAKEFILE_LIST los cuatro módulos incluidos
+- [ ] make -C frontend validate pasa con las variables definidas
+- [ ] validate falla con mensaje claro si VERSION está vacía
+- [ ] make all no usa ninguna variable indefinida (--warn-undefined-variables)
+- [ ] El Makefile raíz ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile raíz declara .DELETE_ON_ERROR
+- [ ] Los Makefiles de api, worker y frontend también usan bash -eu -o pipefail
 
 ## Instrucciones de entrega
 

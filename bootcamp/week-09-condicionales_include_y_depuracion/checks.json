@@ -1,0 +1,111 @@
+{
+  "semana": "09",
+  "titulo": "Condicionales, include y depuración",
+  "checks": [
+    {
+      "id": "all-construye-tres",
+      "descripcion": "make all desde la raíz construye api, worker y frontend",
+      "cmd": "{make} -C {proyecto} all 2>&1 | grep -cE '^.(api|worker|frontend). Compilando (api|worker|frontend) 1.0.0$'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregables 1, 5 a 8; TODOs del Makefile raíz"
+    },
+    {
+      "id": "test-tres",
+      "descripcion": "make test desde la raíz ejecuta los tests de los tres módulos",
+      "cmd": "{make} -C {proyecto} test 2>&1 | grep -cE '^.(api|worker|frontend). Tests OK$'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregable 2"
+    },
+    {
+      "id": "fallo-propaga",
+      "descripcion": "Si un módulo falla, make all desde la raíz sale con error",
+      "cmd": "{make} -C {proyecto} all 'MODULES=no-existe api'",
+      "assert": "exit!=0",
+      "pista": "1-teoria/01-contexto.md, sección Recursión"
+    },
+    {
+      "id": "env-llega-a-modulos",
+      "descripcion": "make ENV=staging deploy despliega los tres módulos en staging",
+      "cmd": "{make} -C {proyecto} ENV=staging deploy 2>&1 | grep -cE '^.(api|worker|frontend). Desplegando en staging$'",
+      "assert": "stdout~^3$",
+      "pista": "2-practicas/lab-04-scope-variables/README.md; TODO 2 del Makefile raíz"
+    },
+    {
+      "id": "deploy-production-confirmado",
+      "descripcion": "deploy en production toma la rama ifeq que marca CONFIRMADO",
+      "cmd": "{make} -C {proyecto}/api ENV=production deploy",
+      "assert": "stdout~^.api. Desplegando en production .CONFIRMADO.$",
+      "pista": "2-practicas/lab-01-condicionales/README.md; entregable 3"
+    },
+    {
+      "id": "deploy-development-sin-confirmar",
+      "descripcion": "deploy sin ENV usa development y no marca CONFIRMADO",
+      "cmd": "{make} -C {proyecto}/api deploy",
+      "assert": "stdout~^.api. Desplegando en development$",
+      "pista": "2-practicas/lab-01-condicionales/README.md; entregable 3"
+    },
+    {
+      "id": "rollback-en-tres",
+      "descripcion": "Los tres módulos importan deploy.mk y ofrecen rollback",
+      "cmd": "for m in api worker frontend; do {make} -s -C {proyecto}/$m rollback; done 2>&1 | grep -cE '^.(api|worker|frontend). Rollback a versión anterior$'",
+      "assert": "stdout~^3$",
+      "pista": "2-practicas/lab-02-include-modular/README.md; TODO de include en cada módulo"
+    },
+    {
+      "id": "debug-vars-app",
+      "descripcion": "make -C worker debug-vars muestra APP_NAME del módulo con $(info)",
+      "cmd": "{make} -C {proyecto}/worker debug-vars",
+      "assert": "stdout~^APP_NAME *= worker$",
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+    },
+    {
+      "id": "debug-vars-makefile-list",
+      "descripcion": "debug-vars muestra en MAKEFILE_LIST los cuatro módulos incluidos",
+      "cmd": "{make} -C {proyecto}/worker debug-vars 2>&1 | grep -E '^MAKEFILE_LIST' | grep -oE 'shared-mk/(build|test|deploy|debug)[.]mk' | sort -u | wc -l",
+      "assert": "stdout~^ *4$",
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+    },
+    {
+      "id": "validate-ok",
+      "descripcion": "make -C frontend validate pasa con las variables definidas",
+      "cmd": "{make} -C {proyecto}/frontend validate",
+      "assert": "stdout~Validación OK",
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+    },
+    {
+      "id": "validate-version-vacia",
+      "descripcion": "validate falla con mensaje claro si VERSION está vacía",
+      "cmd": "{make} -C {proyecto}/frontend validate VERSION= >/dev/null 2>&1 && exit 1; {make} -C {proyecto}/frontend validate VERSION= 2>&1 | grep -q 'VERSION no puede estar vac'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+    },
+    {
+      "id": "sin-variables-indefinidas",
+      "descripcion": "make all no usa ninguna variable indefinida (--warn-undefined-variables)",
+      "cmd": "out=$({make} -C {proyecto} --warn-undefined-variables all 2>&1); grep -q Compilando <<<$out && ! grep -q 'undefined variable' <<<$out",
+      "assert": "exit0",
+      "pista": "1-teoria/01-contexto.md, sección Depuración"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile raíz ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile raíz declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "modulos-estrictos",
+      "descripcion": "Los Makefiles de api, worker y frontend también usan bash -eu -o pipefail",
+      "cmd": "for m in api worker frontend; do {make} -C {proyecto}/$m -p __nada__ 2>/dev/null | grep -qE '^[.]SHELLFLAGS :?= -eu -o pipefail' || exit 1; done",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio de cada Makefile de módulo"
+    }
+  ]
+}

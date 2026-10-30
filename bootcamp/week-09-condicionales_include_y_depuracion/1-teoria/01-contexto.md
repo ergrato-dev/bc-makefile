@@ -15,7 +15,7 @@ else
   FLAGS := -g --source-maps
 endif
 
-# ifdef comprueba si la variable está definida (no si es vacía)
+# ifdef es verdadero si la variable tiene valor no vacío (con CI= es falso)
 ifdef CI
   PARALLEL := -j4
 endif

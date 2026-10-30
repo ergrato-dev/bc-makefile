@@ -1,5 +1,7 @@
 # Semana 09 — Condicionales, include y depuración
 
+## Descripción
+
 Los Makefiles reales no son monolíticos: usan condicionales para adaptarse al entorno, `include` para reutilizar lógica entre proyectos y herramientas de depuración para diagnosticar por qué Make no hace lo que esperas. Esta semana dominas las técnicas que separan un Makefile profesional de uno básico.
 
 Al terminar tendrás un sistema de Makefiles modulares que cualquier proyecto de tu organización puede importar y reutilizar sin copiar y pegar.
@@ -44,6 +46,13 @@ Al terminar esta semana serás capaz de:
 ```
 
 ## Verificación de completitud
+
+Desde la raíz del repositorio, el autograding del proyecto
+(ver [rúbrica](./rubrica-evaluacion.md)):
+
+```bash
+./scripts/verificar-semana.sh 09
+```
 
 Al terminar la semana, estos comandos deben funcionar sin errores:
 

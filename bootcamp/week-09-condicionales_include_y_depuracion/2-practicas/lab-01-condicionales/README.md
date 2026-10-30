@@ -11,7 +11,7 @@ Implementar condicionales `ifeq`, `ifneq`, `ifdef` y `ifndef` para que un único
 Un Makefile que hardcodea valores para un entorno obliga al equipo a mantener múltiples archivos paralelos. Los condicionales de Make resuelven esto en el mismo archivo:
 
 - `ifeq` / `ifneq` comparan el **valor** de una variable
-- `ifdef` / `ifndef` comprueban si una variable está **definida** (aunque esté vacía)
+- `ifdef` / `ifndef` comprueban si una variable tiene **valor no vacío**: `make CI=` cuenta como no definida
 - Los condicionales se evalúan al **parsear** — antes de ejecutar cualquier target
 
 El patrón típico es definir variables con `?=` como default y luego sobreescribir bloques con condicionales según el entorno.

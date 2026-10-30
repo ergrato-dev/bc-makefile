@@ -91,13 +91,25 @@ gcc ... build/src/app.o ... -o build/sistema
 Sistema compilado: build/sistema
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Puntos |
-|----------|--------|
-| `make all` compila sin errores, binario ejecuta correctamente | 10 |
-| `make report` muestra estadísticas correctas usando funciones de texto | 10 |
-| Agregar un nuevo `.c` en `modules/logger/` compila automáticamente sin editar Makefile | 10 |
+Los comprueba `./scripts/verificar-semana.sh 07` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make all desde cero produce build/sistema y el binario inicia los tres módulos
+- [ ] Los objetos conservan la estructura de directorios de las fuentes dentro de build/
+- [ ] Cada directorio de módulo llega al compilador como flag -I
+- [ ] Un .c nuevo en modules/logger/ se compila sin editar el Makefile
+- [ ] Una segunda ejecución de make all no rehace nada
+- [ ] make report cuenta las fuentes core y las lista sin directorio
+- [ ] make report muestra los directorios de módulo ordenados y sin repetir
+- [ ] make report cuenta 5 objetos con $(words)
+- [ ] make manifest escribe build/manifest.txt con las 5 fuentes, una por línea
+- [ ] make clean elimina build/ por completo
+- [ ] make clean se niega a borrar si BUILD está vacío
+- [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile declara .DELETE_ON_ERROR
 
 ## Instrucciones de entrega
 

@@ -1,3 +1,8 @@
+# TODO: preámbulo estricto de la semana 03 (va antes que todo lo demás):
+#   SHELL       := bash
+#   .SHELLFLAGS := -eu -o pipefail -c
+#   .DELETE_ON_ERROR:
+
 .PHONY: all build clean manifest report help
 .DEFAULT_GOAL := help
 
@@ -59,9 +64,11 @@ report: ## Muestra estadísticas del proyecto usando funciones de texto
 	# TODO: Muestra total de objetos
 	@echo "(implementa los TODOs de report)"
 
+# TODO: en 'clean', guarda + borrado seguro (semana 03). Receta:
+#   $(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+#   rm -rf -- '$(BUILD)'
 clean: ## Elimina archivos generados
-	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
-	rm -rf -- '$(BUILD)'
+	@echo "clean no implementado"
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

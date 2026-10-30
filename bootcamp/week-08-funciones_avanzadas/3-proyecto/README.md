@@ -123,13 +123,26 @@ OS_NAME := Linux
 # Generado automáticamente — no editar
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Puntos |
-|----------|--------|
-| `make info` muestra servicios auto-descubiertos correctamente | 8 |
-| `make all` compila todos los servicios sin errores | 12 |
-| Agregar un nuevo directorio en `services/` compila sin editar el Makefile | 10 |
+Los comprueba `./scripts/verificar-semana.sh 08` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make info lista los servicios descubiertos en services/, ordenados
+- [ ] make info muestra un binario en build/ por servicio
+- [ ] make info muestra el sistema operativo obtenido con $(shell)
+- [ ] make info muestra el hash corto de git o sin-git
+- [ ] make all desde cero compila los tres servicios y cada binario arranca
+- [ ] make api compila solo build/api, con un target generado por $(eval)
+- [ ] Un directorio nuevo en services/ se compila sin editar el Makefile
+- [ ] Una segunda ejecución de make all no recompila ningún servicio
+- [ ] make generate escribe BUILT_SERVICES := api monitor worker en build/manifest.mk
+- [ ] build/manifest.mk es un Makefile válido que define OS_NAME
+- [ ] make clean elimina build/ por completo
+- [ ] make clean se niega a borrar si BUILD está vacío
+- [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile declara .DELETE_ON_ERROR
 
 ## Instrucciones de entrega
 

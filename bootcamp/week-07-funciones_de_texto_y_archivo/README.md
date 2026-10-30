@@ -1,5 +1,7 @@
 # Semana 07 — Funciones de Texto y Archivo
 
+## Descripción
+
 Un Makefile con fuentes hardcodeadas es deuda técnica inmediata: cada archivo nuevo exige editar el Makefile a mano. Las funciones de texto de Make resuelven esto — descubren, transforman y filtran listas de archivos dinámicamente. Con tres líneas reemplazas un bloque de 30.
 
 Esta semana dominas `$(wildcard)`, `$(patsubst)`, `$(filter)`, `$(dir)`, `$(notdir)` y las funciones que convierten un Makefile frágil en un sistema robusto que se adapta solo.
@@ -46,6 +48,13 @@ Al terminar esta semana serás capaz de:
 ```
 
 ## Verificación de completitud
+
+Desde la raíz del repositorio, el autograding del proyecto
+(ver [rúbrica](./rubrica-evaluacion.md)):
+
+```bash
+./scripts/verificar-semana.sh 07
+```
 
 Al terminar la semana, estos comandos deben funcionar sin errores:
 

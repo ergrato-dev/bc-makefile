@@ -1,5 +1,7 @@
 # Semana 08 — Funciones Avanzadas de Make
 
+## Descripción
+
 Con las funciones de la semana anterior descubres y transformas archivos. Con las funciones de esta semana *programas* Make: iteras sobre listas, defines funciones reutilizables, generas reglas en tiempo de ejecución y consultas el sistema operativo. Cuatro herramientas que convierten un Makefile en un meta-programa.
 
 Esta semana dominas `$(foreach)`, `$(call)`, `$(eval)` y `$(shell)` — las funciones que separan un Makefile avanzado de uno profesional.
@@ -46,6 +48,13 @@ Al terminar esta semana serás capaz de:
 ```
 
 ## Verificación de completitud
+
+Desde la raíz del repositorio, el autograding del proyecto
+(ver [rúbrica](./rubrica-evaluacion.md)):
+
+```bash
+./scripts/verificar-semana.sh 08
+```
 
 Al terminar la semana, estos comandos deben funcionar sin errores:
 

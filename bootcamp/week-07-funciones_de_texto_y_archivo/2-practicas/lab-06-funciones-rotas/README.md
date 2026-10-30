@@ -39,7 +39,7 @@ El `starter/Makefile` tiene exactamente 4 bugs. Ejecuta `make demo` en el starte
 
 | # | Variable afectada | Síntoma | Pista |
 |---|------------------|---------|-------|
-| 1 | `OBJS` | Tiene extensión `.c` en vez de `.o`, o rutas wrongas | El stem del `patsubst` no captura el directorio |
+| 1 | `OBJS` | Tiene extensión `.c` en vez de `.o`, o rutas incorrectas | El stem del `patsubst` no captura el directorio |
 | 2 | `C_SRCS` | Vacío | `filter` necesita `%` antes de `.c` |
 | 3 | `NO_UTILS` | Igual a la lista original (no filtra nada) | `filter-out` necesita `%` para coincidir con parte de la ruta |
 | 4 | `INC_FLAGS` | Contiene las fuentes en vez de los directorios de include | `addprefix` se aplicó a la variable equivocada |

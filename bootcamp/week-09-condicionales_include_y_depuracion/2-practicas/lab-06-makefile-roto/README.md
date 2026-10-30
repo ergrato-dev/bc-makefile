@@ -13,12 +13,12 @@ Este lab invierte el flujo: en vez de implementar, diagnosticas. El `starter/Mak
 1. Ejecutar Make y leer el error
 2. Localizar la causa usando herramientas de depuración
 3. Corregir el error
-4. Repetir hasta que `make ci` funcione
+4. Repetir hasta que `make ci` y `make lint` funcionen
 
 Los errores cubren los problemas más comunes en Makefiles reales:
 - Uso de espacios en vez de TAB
 - Variable recursiva que causa bucle
-- Target no declarado en `.PHONY` que bloquea la reconstrucción
+- Prerrequisito que no tiene ninguna regla (`No rule to make target`)
 - `include` de archivo que no existe (sin `-include`)
 - Condicional mal formado
 - Dependencia circular
@@ -48,9 +48,11 @@ Los errores cubren los problemas más comunes en Makefiles reales:
    make -p 2>/dev/null | grep "^ci"  # busca la regla en la base de datos
    ```
 
-5. Cuando hayas corregido los 6 errores:
+5. `make ci` no pasa por `lint`: ese error solo aparece al pedirlo. Cuando
+   hayas corregido los 6 errores:
    ```bash
    make ci
+   make lint
    make help
    ```
 
@@ -62,7 +64,7 @@ Los errores cubren los problemas más comunes en Makefiles reales:
 Los 6 errores son de estas categorías:
 1. Indentación con espacios en una receta
 2. Variable recursiva infinita (`= $(VAR)` referenciando a sí misma)
-3. Target faltante en `.PHONY` que hace que Make lo trate como archivo
+3. Prerrequisito sin regla: un target depende de otro que no existe
 4. `include` sin guion de un archivo inexistente
 5. `ifeq` sin `endif`
 6. Dependencia circular: `a: b` y `b: a`
@@ -75,6 +77,8 @@ Los 6 errores son de estas categorías:
 - [ ] `make help` lista todos los targets
 - [ ] `make build` → `Compilando mi-app`
 - [ ] `make test` → `Tests OK`
+- [ ] `make lint` → `Lint OK`
+- [ ] `make ci` ya no muestra `Circular ... dependency dropped`
 - [ ] Puedes explicar cada uno de los 6 errores que corregiste
 
 ## Reto extra

@@ -1,0 +1,104 @@
+{
+  "semana": "08",
+  "titulo": "Funciones avanzadas",
+  "checks": [
+    {
+      "id": "servicios-descubiertos",
+      "descripcion": "make info lista los servicios descubiertos en services/, ordenados",
+      "cmd": "{make} -C {proyecto} info",
+      "assert": "stdout~Servicios: +api monitor worker *$",
+      "pista": "2-practicas/lab-04-shell/README.md; TODO 1 del starter"
+    },
+    {
+      "id": "binarios-foreach",
+      "descripcion": "make info muestra un binario en build/ por servicio",
+      "cmd": "{make} -C {proyecto} info",
+      "assert": "stdout~Binarios: +build/api build/monitor build/worker *$",
+      "pista": "2-practicas/lab-01-foreach/README.md; TODO 2 del starter"
+    },
+    {
+      "id": "metadato-os",
+      "descripcion": "make info muestra el sistema operativo obtenido con $(shell)",
+      "cmd": "{make} -C {proyecto} info",
+      "assert": "stdout~OS: +[[:alnum:]]+",
+      "pista": "2-practicas/lab-04-shell/README.md; TODO 3 del starter"
+    },
+    {
+      "id": "metadato-git",
+      "descripcion": "make info muestra el hash corto de git o sin-git",
+      "cmd": "{make} -C {proyecto} info",
+      "assert": "stdout~Git: +([0-9a-f]{7,}|sin-git) *$",
+      "pista": "2-practicas/lab-04-shell/README.md; TODO 3 del starter"
+    },
+    {
+      "id": "all-compila-todos",
+      "descripcion": "make all desde cero compila los tres servicios y cada binario arranca",
+      "cmd": "rm -rf -- {proyecto}/build; {make} -C {proyecto} all >/dev/null 2>&1 && for s in api monitor worker; do {proyecto}/build/$s; done | grep -c 'servicio iniciado'",
+      "assert": "stdout~^3$",
+      "pista": "2-practicas/lab-03-eval/README.md; TODOs 4 y 5 del starter"
+    },
+    {
+      "id": "target-por-servicio",
+      "descripcion": "make api compila solo build/api, con un target generado por $(eval)",
+      "cmd": "rm -rf -- {proyecto}/build; {make} -C {proyecto} api >/dev/null 2>&1 && test -x {proyecto}/build/api && test ! -e {proyecto}/build/worker",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, plantilla requerida"
+    },
+    {
+      "id": "servicio-nuevo-sin-editar",
+      "descripcion": "Un directorio nuevo en services/ se compila sin editar el Makefile",
+      "cmd": "d={proyecto}/services/cache; trap 'rm -rf -- $d {proyecto}/build/cache' EXIT; mkdir -p $d && echo 'int main(void) { return 0; }' > $d/main.c && {make} -C {proyecto} all >/dev/null 2>&1 && test -x {proyecto}/build/cache",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-combinadas/README.md"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make all no recompila ningún servicio",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/api && {make} -C {proyecto} all 2>&1 | grep -c 'Compilado'",
+      "assert": "stdout~^0$",
+      "pista": "2-practicas/lab-03-eval/README.md; los prerrequisitos de la plantilla"
+    },
+    {
+      "id": "manifest-servicios",
+      "descripcion": "make generate escribe BUILT_SERVICES := api monitor worker en build/manifest.mk",
+      "cmd": "{make} -C {proyecto} generate >/dev/null 2>&1; grep -E '^BUILT_SERVICES := api monitor worker *$' {proyecto}/build/manifest.mk",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, contenido esperado de build/manifest.mk; TODO 6"
+    },
+    {
+      "id": "manifest-incluible",
+      "descripcion": "build/manifest.mk es un Makefile válido que define OS_NAME",
+      "cmd": "{make} -C {proyecto} generate >/dev/null 2>&1; {make} -s -f {proyecto}/build/manifest.mk --eval 'x: ; @echo os=$(OS_NAME)' x",
+      "assert": "stdout~^os=[[:alnum:]]+$",
+      "pista": "3-proyecto/README.md, contenido esperado de build/manifest.mk; TODO 6"
+    },
+    {
+      "id": "clean-borra-build",
+      "descripcion": "make clean elimina build/ por completo",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "Semana 03: guardas de rm -rf; TODO 7 del starter"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD está vacío",
+      "cmd": "{make} -C {proyecto} clean BUILD=",
+      "assert": "stdout~BUILD vac",
+      "pista": "Semana 03: guardas de rm -rf; TODO 7 del starter"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    }
+  ]
+}
