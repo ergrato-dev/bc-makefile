@@ -6,7 +6,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all clean help
+.PHONY: all dist clean help
 
 .DEFAULT_GOAL := help
 
@@ -20,6 +20,11 @@ SRC_DIR   := src
 BUILD_DIR := build
 INC_DIR   := include
 APP       := $(BUILD_DIR)/app
+DIST_DIR  := dist
+
+# ── Empaquetado ───────────────────────────────────────────────
+VERSION ?= 1.0.0
+TARBALL := $(DIST_DIR)/app-$(VERSION).tar.gz
 
 # ── Fuentes y objetos ─────────────────────────────────────────
 SRCS := $(wildcard $(SRC_DIR)/*.c)
@@ -48,15 +53,26 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 # Con guion: la primera vez los .d aún no existen
 -include $(DEPS)
 
+## dist: empaqueta el binario en dist/app-$(VERSION).tar.gz
+dist: $(TARBALL)
+
+# $(@D) = dist (se crea si falta); $(<D) = build y $(<F) = app:
+# tar entra en el directorio del binario y guarda solo su nombre
+$(TARBALL): $(APP)
+	@mkdir -p $(@D)
+	tar -czf $@ -C $(<D) $(<F)
+	@echo "[dist] $@ listo."
+
 ## clean: elimina todos los artefactos de build
 clean:
 	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
-	@rm -rf -- '$(BUILD_DIR)'
+	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD_DIR)' '$(DIST_DIR)'
 	@echo "[clean] Listo."
 
 ## help: muestra esta ayuda
 help:
-	@echo "Uso: make [target] [CC=compilador] [CFLAGS=flags]"
+	@echo "Uso: make [target] [CC=compilador] [CFLAGS=flags] [VERSION=x.y.z]"
 	@grep -E '^## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
 		| sed 's/## //'

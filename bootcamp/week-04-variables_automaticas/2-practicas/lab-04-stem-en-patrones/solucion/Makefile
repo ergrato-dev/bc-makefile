@@ -23,19 +23,24 @@ all: $(SALIDAS)
 	@echo "[proceso] Stem:    $*"
 	@echo "[proceso] Entrada: $<"
 	@echo "[proceso] Salida:  $@"
-	@echo "[proceso] Log:     logs/$*.log"
 	@cp $< $@
+	@mkdir -p logs
+	@echo "$* procesado desde $<" > logs/$(*F).log
+	@echo "[proceso] Log:     logs/$(*F).log"
 
 ## setup: crea archivos .entrada de prueba
 setup:
 	@echo "datos de alfa"  > alfa.entrada
 	@echo "datos de beta"  > beta.entrada
 	@echo "datos de gamma" > gamma.entrada
+	@mkdir -p sub
+	@echo "datos de delta" > sub/delta.entrada
 	@echo "[setup] Archivos creados: $(ENTRADAS)"
 
 ## limpiar: elimina los archivos generados
 limpiar:
 	@rm -f $(SALIDAS) $(ENTRADAS)
+	@rm -rf -- logs sub
 	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda

@@ -7,7 +7,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: info-etiqueta enlazar construir help
+.PHONY: setup limpiar info-etiqueta enlazar construir help
 
 .DEFAULT_GOAL := help
 
@@ -60,6 +60,18 @@ build/main.o: main.c
 	@mkdir -p $(@D)
 	@echo "[cc] Compilando $< → $@"
 	@touch $@
+
+## setup: crea los archivos de prueba que usan los targets
+setup:
+	@touch main.c utils.c alfa.md
+	@touch main.o utils.o math.o
+	@echo "[setup] Listo: main.c utils.c alfa.md main.o utils.o math.o"
+
+## limpiar: borra los archivos de prueba y build/
+limpiar:
+	@rm -f main.c utils.c alfa.md alfa.html main.o utils.o math.o
+	@rm -rf -- build
+	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda
 help:

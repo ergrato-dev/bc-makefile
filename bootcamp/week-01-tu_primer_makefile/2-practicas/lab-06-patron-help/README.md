@@ -1,6 +1,6 @@
 # Lab 06 — El patrón help estándar
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -42,18 +42,49 @@ El truco: `grep -E '^## '` extrae esas líneas, `awk` las formatea.
 
 6. Prueba `make help` con una descripción larga (más de 40 caracteres). ¿Se rompe el alineado? Ajusta el `%-20s` a `%-30s` si necesitas más espacio.
 
+7. **Por qué `$(MAKEFILE_LIST)` y no `Makefile`.** Copia el Makefile y añade un
+   target que solo exista en la copia:
+   ```bash
+   cp Makefile otro.mk
+   printf '\n## deploy: despliega (solo en otro.mk)\ndeploy:\n\t@echo deploy\n' >> otro.mk
+   make -f otro.mk help
+   ```
+   La última línea debe ser `deploy            despliega (solo en otro.mk)`:
+   `$(MAKEFILE_LIST)` contiene el archivo que Make leyó de verdad. Ahora, solo
+   en `otro.mk`, cambia `$(MAKEFILE_LIST)` por `Makefile` en la receta de
+   `help` y repite `make -f otro.mk help`: `deploy` desaparece, porque `grep`
+   está leyendo el archivo equivocado. Borra la copia con `rm otro.mk`.
+
+8. Comprueba que la ayuda es lo que sale por defecto:
+   ```bash
+   make
+   ```
+   Debe imprimir la misma tabla que `make help`, gracias a
+   `.DEFAULT_GOAL := help`.
+
 ## Criterios de éxito
 
 - [ ] `make help` lista todos los targets con descripción en dos columnas alineadas
 - [ ] Agregar un nuevo target con `##` lo incluye automáticamente en `make help`
 - [ ] El patrón usa `$(MAKEFILE_LIST)` (no el nombre literal del Makefile)
+- [ ] `make -f otro.mk help` muestra `deploy`; con `Makefile` literal, no
 - [ ] `make help` es el target por defecto (`make` sin args lo ejecuta)
 
 ## Reto extra
 
-Agrega colores al output de `help` usando códigos ANSI:
+Hay una segunda convención muy extendida, la que usa este bootcamp
+desde la semana 07: la descripción va **en la misma línea** que el target.
+
 ```makefile
-BOLD  := \033[1m
-RESET := \033[0m
+build: ## construye el proyecto en output/
+	@echo "Construyendo..."
+
+help: ## muestra esta ayuda
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
-Imprime el nombre del target en negrita y la descripción en color normal.
+
+Reescribe tu Makefile con esta convención en un archivo `inline.mk` y
+compruébalo con `make -f inline.mk help`. ¿Qué ventaja tiene que la descripción
+viva en la línea del target? ¿Qué pasa con un target como `build: test lint ## ...`?

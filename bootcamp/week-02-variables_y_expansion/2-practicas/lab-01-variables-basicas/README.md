@@ -1,6 +1,6 @@
 # Lab 01 — Variables básicas
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -39,6 +39,29 @@ En la práctica, `+=` hereda el tipo del operador anterior: si `LIBS` fue defini
    make info-entorno ENV=prod
    ```
 
+8. **Comprueba el tipo real de cada variable.** La función `$(flavor VAR)`
+   devuelve `simple` (`:=`), `recursive` (`=` y `?=`) o `undefined`. Completa
+   el target `tipos` y ejecútalo:
+   ```bash
+   make tipos
+   ```
+   Debes ver:
+   ```
+   CC:     simple
+   CFLAGS: recursive
+   ENV:    recursive
+   LIBS:   simple
+   NADA:   undefined
+   ```
+   `ENV` es `recursive` porque `?=` crea una variable `=`. `LIBS` sigue siendo
+   `simple` después del `+=`: el append conserva el tipo de la primera
+   asignación.
+
+9. Demuéstralo cambiando el tipo de origen: sustituye `LIBS := -lm` por
+   `LIBS = -lm` y repite `make tipos` y `make info-libs`. Ahora `LIBS` es
+   `recursive` y su valor sigue siendo `-lm -lpthread`: el `+=` se adaptó al
+   nuevo tipo sin que lo tocaras. Deja `LIBS := -lm` como estaba.
+
 ## Criterios de éxito
 
 - [ ] `make info-compilador` imprime:
@@ -58,7 +81,9 @@ En la práctica, `+=` hereda el tipo del operador anterior: si `LIBS` fue defini
   ```
   LIBS: -lm -lpthread
   ```
-- [ ] `make help` lista los cuatro targets con descripción
+- [ ] `make tipos` imprime `simple`, `recursive`, `recursive`, `simple`, `undefined` en ese orden
+- [ ] Con `LIBS = -lm`, `make tipos` muestra `LIBS:   recursive` y `make info-libs` sigue mostrando `-lm -lpthread`
+- [ ] `make help` lista los cinco targets con descripción
 
 ## Reto extra
 

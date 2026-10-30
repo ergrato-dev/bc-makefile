@@ -1,6 +1,6 @@
 # Lab 03 — Expansión inmediata con $(shell ...)
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -41,14 +41,28 @@ En la práctica, capturar el hash de git, la fecha de build, o la versión del c
    make git-info
    ```
 
-7. Observa que en `comparar`, ambas lecturas de `TIMESTAMP_EAGER` son iguales, mientras que `TIMESTAMP_LAZY` puede diferir (el shell se invoca dos veces).
+7. Observa que en `comparar`, ambas lecturas de `TIMESTAMP_EAGER` son iguales. Las de `TIMESTAMP_LAZY` casi siempre también, porque las dos llamadas a `date` ocurren en el mismo segundo. Hazlo visible: cambia **solo** `TIMESTAMP_LAZY` a `$(shell sleep 1; date +%T)` y repite `make comparar`. Ahora las dos lecturas lazy se separan un segundo y `make comparar` tarda varios segundos: cada uso relanza la shell. Las lecturas eager siguen idénticas. Deja la variable como estaba.
+
+8. **`!=`: la shell al asignar.** `VAR != comando` ejecuta el comando una sola vez, al leer la línea, como `:= $(shell ...)`. Completa los TODO del paso 8 y ejecuta:
+   ```bash
+   make asignar-shell
+   ```
+   Debes ver (con tu sistema operativo en `KERNEL`):
+   ```
+   KERNEL:       Linux [recursive]
+   PRECIO_BANG:  cuesta  [recursive]
+   PRECIO_SHELL: cuesta $5 [simple]
+   ```
+   Las dos variables de precio ejecutan el mismo comando y reciben la misma salida, `cuesta $5`. Pero `!=` guarda el resultado en una variable **recursiva**: al usarla, Make expande `$5` (una variable que no existe) y queda vacío. `:=` guarda el texto final y no lo vuelve a tocar. Regla práctica: si la salida del comando puede contener `$`, usa `:= $(shell ...)`.
 
 ## Criterios de éxito
 
 - [ ] `make comparar` imprime cuatro líneas: dos de `TIMESTAMP_LAZY` y dos de `TIMESTAMP_EAGER`
 - [ ] Las dos líneas de `TIMESTAMP_EAGER` son **siempre idénticas** (capturado una vez)
+- [ ] Con `sleep 1` en `TIMESTAMP_LAZY`, sus dos lecturas difieren en un segundo
 - [ ] `make git-info` imprime el hash corto y la versión construida a partir de él
 - [ ] `make git-info` sin git inicializado imprime `"no-git"` en lugar de error
+- [ ] `make asignar-shell` muestra `PRECIO_BANG` sin el `$5` y `PRECIO_SHELL` con él
 - [ ] `make help` funciona
 
 ## Reto extra

@@ -2,7 +2,7 @@
 # Lab 04 — Variables condicionales con ?= (SOLUCIÓN)
 # ============================================================
 
-.PHONY: config servidor help
+.PHONY: config servidor origen help
 
 .DEFAULT_GOAL := help
 
@@ -30,6 +30,13 @@ servidor:
 	@echo "  Escuchando en $(SERVER_HOST):$(SERVER_PORT)"
 	@echo "  Log level: $(LOG_LEVEL)"
 	@echo "Servidor listo."
+
+## origen: muestra de dónde sale el valor de cada variable
+origen:
+	@echo "SERVER_HOST: $(origin SERVER_HOST)"
+	@echo "SERVER_PORT: $(origin SERVER_PORT)"
+	@echo "HOME:        $(origin HOME)"
+	@echo "NO_EXISTE:   $(origin NO_EXISTE)"
 
 ## help: muestra esta ayuda
 help:

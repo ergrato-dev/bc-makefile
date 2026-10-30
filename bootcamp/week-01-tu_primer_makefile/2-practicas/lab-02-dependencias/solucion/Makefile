@@ -2,7 +2,7 @@
 # Lab 02 — Cadenas de dependencias (SOLUCIÓN)
 # ============================================================
 
-.PHONY: all prepare compile link run clean help
+.PHONY: prepare compile link run test lint check clean help
 
 .DEFAULT_GOAL := help
 
@@ -22,6 +22,18 @@ compile: prepare
 ## prepare: prepara el entorno de build
 prepare:
 	@echo "[1/4] Preparando entorno..."
+
+## test: ejecuta las pruebas (necesita el código compilado)
+test: compile
+	@echo "[test] Pruebas OK."
+
+## lint: revisa el estilo (necesita el código compilado)
+lint: compile
+	@echo "[lint] Estilo OK."
+
+## check: pruebas y estilo; compile se ejecuta una sola vez
+check: test lint
+	@echo "[check] Todo verificado."
 
 ## clean: limpia el estado
 clean:

@@ -8,7 +8,7 @@
 #   SERVER_HOST=10.0.0.1 make config     → override desde entorno
 # ============================================================
 
-.PHONY: config servidor help
+.PHONY: config servidor origen help
 
 .DEFAULT_GOAL := help
 
@@ -41,6 +41,13 @@ servidor:
 	# TODO: @echo "  Escuchando en $(SERVER_HOST):$(SERVER_PORT)"
 	# TODO: @echo "  Log level: $(LOG_LEVEL)"
 	@echo "Servidor listo."
+
+# TODO (paso 6): imprime el resultado de la función origin para
+#   SERVER_HOST, SERVER_PORT, HOME y NO_EXISTE, una por línea, con el formato
+#   SERVER_HOST: <origin de SERVER_HOST>
+## origen: muestra de dónde sale el valor de cada variable
+origen:
+	@echo "TODO: implementa origen"
 
 ## help: muestra esta ayuda
 help:

@@ -12,7 +12,7 @@
 #   .SHELLFLAGS := -eu -o pipefail -c
 #   .DELETE_ON_ERROR:
 
-.PHONY: all clean help
+.PHONY: all dist clean help
 
 .DEFAULT_GOAL := help
 
@@ -26,6 +26,11 @@
 # TODO: define BUILD_DIR con := y valor "build"
 # TODO: define INC_DIR con := y valor "include"
 # TODO: define APP con := como $(BUILD_DIR)/app
+# TODO: define DIST_DIR con := y valor "dist"
+
+# ── Empaquetado ───────────────────────────────────────────────
+# TODO: define VERSION con ?= y valor "1.0.0"
+# TODO: define TARBALL con := como $(DIST_DIR)/app-$(VERSION).tar.gz
 
 # ── Fuentes y objetos ─────────────────────────────────────────
 # TODO: define SRCS con := usando $(wildcard $(SRC_DIR)/*.c)
@@ -50,16 +55,27 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 # TODO: carga los .d con -include $(DEPS)  (el guion evita el error la primera vez)
 
-# TODO: en 'clean', guarda + borrado seguro (semana 03). Receta:
+# TODO (sección 6): target 'dist' (.PHONY) que dependa de $(TARBALL), y la
+# regla del archivo $(TARBALL) que dependa de $(APP). Receta, sin escribir
+# ninguna ruta:
+#   - crea el directorio del tarball con mkdir -p y $(@D)
+#   - tar -czf $@ -C $(<D) $(<F)     (entra en build/ y guarda solo "app")
+#   - imprime "[dist] $@ listo."
+## dist: empaqueta el binario en dist/app-$(VERSION).tar.gz
+dist:
+	@echo "TODO: implementa dist"
+
+# TODO: en 'clean', guarda + borrado seguro (semana 03), también para dist/. Receta:
 #   $(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
-#   @rm -rf -- '$(BUILD_DIR)'
+#   $(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+#   @rm -rf -- '$(BUILD_DIR)' '$(DIST_DIR)'
 ## clean: elimina todos los artefactos de build
 clean:
 	@echo "[clean] Listo."
 
 ## help: muestra esta ayuda
 help:
-	@echo "Uso: make [target] [CC=compilador] [CFLAGS=flags]"
+	@echo "Uso: make [target] [CC=compilador] [CFLAGS=flags] [VERSION=x.y.z]"
 	@grep -E '^## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
 		| sed 's/## //'

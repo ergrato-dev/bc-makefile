@@ -28,6 +28,12 @@ DB_HOST    ?= localhost
 DB_NAME     = $(APP_NAME)_$(ENV)
 DB_URL      = postgres://$(DB_HOST):5432/$(DB_NAME)
 
+# ── Flags de build ────────────────────────────────────────────
+# BUILD_ARGS es configurable, pero --pull es obligatorio: override hace que
+# el += se aplique aunque BUILD_ARGS llegue por la línea de comandos
+BUILD_ARGS ?=
+override BUILD_ARGS += --pull
+
 ## config: muestra la configuración completa del entorno actual
 config:
 	@echo "Entorno:    $(ENV)"
@@ -36,10 +42,12 @@ config:
 	@echo "Imagen:     $(IMAGE_TAG)"
 	@echo "DB URL:     $(DB_URL)"
 	@echo "Log level:  $(LOG_LEVEL)"
+	@echo "Origen ENV: $(origin ENV)"
 
 ## build: construye la imagen de la aplicación
 build:
 	@echo "[build] Construyendo $(APP_NAME):$(VERSION)-$(ENV)..."
+	@echo "[build] Flags: $(BUILD_ARGS)"
 	@echo "[build] Compilación OK."
 	@echo "[build] Imagen lista: $(IMAGE_TAG)"
 

@@ -1,6 +1,6 @@
 # Proyecto Semana 01 — Makefile para sitio estático
 
-⏱ Duración estimada: ~2h 30min
+⏱ Duración estimada: ~3 h
 
 ## Contexto
 
@@ -26,6 +26,7 @@ Al ejecutar `make build`, debes producir:
 dist/
 ├── index.html
 ├── about.html
+├── sitemap.txt       ← generado, no copiado
 └── css/
     └── styles.css
 ```
@@ -38,8 +39,9 @@ dist/
 4. **`check`** — verifica que `dist/index.html` y `dist/about.html` existen y no están vacíos; falla con mensaje claro si algo falta
 5. **`deploy`** — simula un deploy: imprime los archivos que se enviarían (usa `find dist/ -type f`) y termina con "Deploy simulado OK"
 6. **`help`** — lista todos los targets con descripción usando el patrón `##`
+7. **`dist/sitemap.txt`** — un **target de archivo** (no `.PHONY`) que depende de `src/index.html` y `src/about.html` y escribe una línea por página (`/about.html`, `/index.html`). `build` depende de él y `sitemap` es un alias `.PHONY` que también depende de él. Si ningún HTML cambió, Make no lo regenera; si tocas uno, sí. Es la lógica de timestamps del lab 04 aplicada al proyecto
 
-Todos los targets deben declararse en `.PHONY` (excepto los que producen archivos reales, si los hay).
+Todos los targets que no producen archivos deben declararse en `.PHONY`; `dist/sitemap.txt` no, porque es un archivo real.
 
 ## Verificación
 
@@ -53,6 +55,17 @@ make check
 make deploy
 make clean
 make build && make serve   # abre http://localhost:8080 en el navegador
+
+# Timestamps del sitemap
+make dist/sitemap.txt      # make: 'dist/sitemap.txt' is up to date.
+touch src/about.html
+make dist/sitemap.txt      # Generando dist/sitemap.txt
+```
+
+Contenido esperado de `dist/sitemap.txt`:
+```
+/about.html
+/index.html
 ```
 
 Output esperado de `make check` cuando todo está bien:
@@ -75,9 +88,12 @@ Los comprueba `./scripts/verificar-semana.sh 01` desde la raíz del repositorio
 (60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
 [rúbrica](../rubrica-evaluacion.md#-producto-30).
 
-- [ ] make sin argumentos lista los seis targets con su descripción
+- [ ] make sin argumentos lista los siete targets con su descripción
 - [ ] make build copia index.html, about.html y css/styles.css a dist/
 - [ ] Ejecutar make build dos veces no anida src/ dentro de dist/
+- [ ] make build genera dist/sitemap.txt con una línea por página HTML
+- [ ] Sin cambios en src/, make dist/sitemap.txt no lo regenera
+- [ ] Tocar src/about.html regenera dist/sitemap.txt
 - [ ] Tras make build, make check termina con Check OK.
 - [ ] make check sale con error si dist/ no existe
 - [ ] make deploy lista los archivos de dist/, incluido dist/css/styles.css

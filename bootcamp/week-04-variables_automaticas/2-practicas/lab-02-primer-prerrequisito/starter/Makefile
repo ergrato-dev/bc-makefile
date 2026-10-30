@@ -2,39 +2,77 @@
 # Lab 02 — Variable automática $<
 # Semana 04: Variables automáticas
 # ============================================================
-# Los prerrequisitos no necesitan existir para este lab:
-# Make evalúa $< y $^ con los nombres de la lista, no los archivos.
-# ============================================================
 
-.PHONY: compilar-main compilar-utils enlazar help
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
+.PHONY: setup compilar-main compilar-utils enlazar limpiar help
 
 .DEFAULT_GOAL := help
 
-# ── Targets de compilación (simulados con echo) ───────────────
+CC := gcc
 
-## compilar-main: simula compilar main.c con sus headers como dependencias
+## setup: crea los fuentes y headers del lab (src/ e include/)
+setup:
+	@mkdir -p src include
+	@echo 'int saludo(void);' > include/utils.h
+	@echo 'int suma(int a, int b);' > include/math.h
+	@echo '#include <stdio.h>' > src/utils.c
+	@echo '#include "utils.h"' >> src/utils.c
+	@echo 'int saludo(void) { puts("Hola desde utils"); return 0; }' >> src/utils.c
+	@echo '#include "math.h"' > src/math.c
+	@echo 'int suma(int a, int b) { return a + b; }' >> src/math.c
+	@echo '#include "utils.h"' > src/main.c
+	@echo '#include "math.h"' >> src/main.c
+	@echo 'int main(void) { return suma(2, 3) == 5 ? saludo() : 1; }' >> src/main.c
+	@echo "[setup] Fuentes creados en src/ e include/"
+
+# ── Simulación con echo ───────────────────────────────────────
+
+## compilar-main: muestra $< y $^ para main.c y sus headers
 compilar-main: src/main.c include/utils.h include/math.h
 	# TODO: imprime "[cc] Compilando (solo fuente): $<"
-	# Observa: $< es src/main.c, aunque hay tres prerrequisitos
 	# TODO: imprime "[cc] Todos los prereqs:        $^"
-	# Observa: $^ incluye los tres: fuente + headers
 
-## compilar-utils: simula compilar utils.c
+## compilar-utils: muestra $< y $^ para utils.c
 compilar-utils: src/utils.c include/utils.h
-	# TODO: imprime "[cc] Compilando (solo fuente): $<"
-	# TODO: imprime "[cc] Todos los prereqs:        $^"
+	# TODO: mismo patrón que compilar-main
 
-## enlazar: simula enlazar objetos — aquí $< es incorrecto
-enlazar: main.o utils.o math.o
+## enlazar: muestra $< y $^ para la lista de objetos
+# TODO (paso 5): comenta aquí por qué $< sería incorrecto para un linker
+enlazar: build/main.o build/utils.o build/math.o
 	# TODO: imprime "[ld] Primer objeto (incorrecto para linker): $<"
-	# Nota: $< = main.o solamente. Un linker necesita TODOS los objetos.
 	# TODO: imprime "[ld] TODOS los objetos (correcto):           $^"
-	# Reflexiona: ¿qué error daría gcc si usara $< aquí en producción?
-	# TODO: agrega un comentario con la respuesta
+
+# ── Compilación real ──────────────────────────────────────────
+# gcc -c compila UN fuente: $<. Los headers son prerrequisitos para que
+# Make recompile si cambian, pero no se pasan al compilador.
+
+build/main.o: src/main.c include/utils.h include/math.h
+	@mkdir -p build
+	# TODO (paso 6): compila con $(CC) -Iinclude -c, el fuente con $< y la salida con $@
+
+build/utils.o: src/utils.c include/utils.h
+	@mkdir -p build
+	# TODO (paso 6): compila con $(CC) -Iinclude -c, el fuente con $< y la salida con $@
+
+build/math.o: src/math.c include/math.h
+	@mkdir -p build
+	# TODO (paso 6): compila con $(CC) -Iinclude -c, el fuente con $< y la salida con $@
+
+# El linker necesita TODOS los objetos: $^
+build/app: build/main.o build/utils.o build/math.o
+	# TODO (paso 7): enlaza con $(CC), todos los objetos con $^ y la salida con $@
+
+## limpiar: borra build/, src/ e include/ generados por setup
+limpiar:
+	@rm -rf -- build src include
+	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda
 help:
-	@echo "Uso: make [target]"
+	@echo "Uso: make setup, luego make [target]"
 	@grep -E '^## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
 		| sed 's/## //'

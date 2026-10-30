@@ -2,7 +2,7 @@
 # Proyecto Semana 01 — Makefile para sitio estático (SOLUCIÓN)
 # ============================================================
 
-.PHONY: build serve clean check deploy help
+.PHONY: build sitemap serve clean check deploy help
 
 # -- Variables ------------------------------------------------
 SRC_DIR  := src
@@ -13,11 +13,20 @@ PORT     := 8080
 
 # -- Targets --------------------------------------------------
 
-## build: copia src/ a dist/
-build:
+## build: copia src/ a dist/ y genera el sitemap
+build: $(DIST_DIR)/sitemap.txt
 	@mkdir -p $(DIST_DIR)
 	@cp -r $(SRC_DIR)/. $(DIST_DIR)/
 	@echo "Build OK: $(DIST_DIR)/ listo"
+
+## sitemap: genera dist/sitemap.txt solo si cambió algún HTML
+sitemap: $(DIST_DIR)/sitemap.txt
+
+# Target de archivo real: Make compara su fecha con la de los HTML
+$(DIST_DIR)/sitemap.txt: $(SRC_DIR)/index.html $(SRC_DIR)/about.html
+	@mkdir -p $(DIST_DIR)
+	@echo "Generando $(DIST_DIR)/sitemap.txt"
+	@ls $(SRC_DIR)/*.html | sed 's|^$(SRC_DIR)||' > $(DIST_DIR)/sitemap.txt
 
 ## serve: inicia servidor local en dist/ (Ctrl+C para detener)
 serve: build

@@ -42,6 +42,11 @@
 
 # TODO: define DB_URL con = construyendo "postgres://$(DB_HOST):5432/$(DB_NAME)"
 
+# ── Flags de build ────────────────────────────────────────────
+# TODO: define BUILD_ARGS con ?= y valor vacío (configurable desde la CLI)
+# TODO: añade --pull a BUILD_ARGS de forma que se conserve aunque el usuario
+#       pase BUILD_ARGS por la línea de comandos. Pista: override + +=
+
 ## config: muestra la configuración completa del entorno actual
 config:
 	# TODO: imprime todas las variables relevantes con formato alineado
@@ -49,11 +54,13 @@ config:
 	#   @echo "Entorno:    $(ENV)"
 	#   @echo "Versión:    $(VERSION)"
 	#   ... (continúa con las demás)
+	# Última línea: "Origen ENV: " seguido de lo que devuelve la función origin para ENV
 
 ## build: construye la imagen de la aplicación
 build:
 	# TODO: imprime líneas de build con el prefijo [build]
 	# Incluye el IMAGE_TAG en el output
+	# Incluye una línea "[build] Flags: " seguida de BUILD_ARGS
 
 ## test: ejecuta la suite de pruebas
 test:

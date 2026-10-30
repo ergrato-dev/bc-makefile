@@ -52,6 +52,27 @@
       "pista": "2-practicas/lab-04-variables-condicionales/README.md, reto extra"
     },
     {
+      "id": "origen-cli",
+      "descripcion": "make config ENV=staging informa de que ENV viene de la línea de comandos",
+      "cmd": "{make} -C {proyecto} config ENV=staging 2>&1",
+      "assert": "stdout~^Origen ENV: +command line$",
+      "pista": "2-practicas/lab-05-override-cli/README.md, paso 6"
+    },
+    {
+      "id": "origen-entorno",
+      "descripcion": "Con ENV exportada, make config informa de que ENV viene del entorno",
+      "cmd": "ENV=prod {make} -C {proyecto} config 2>&1",
+      "assert": "stdout~^Origen ENV: +environment$",
+      "pista": "2-practicas/lab-04-variables-condicionales/README.md, paso 6"
+    },
+    {
+      "id": "build-args-obligatorio",
+      "descripcion": "make build BUILD_ARGS=--no-cache conserva el flag obligatorio --pull",
+      "cmd": "{make} -C {proyecto} build BUILD_ARGS=--no-cache 2>&1",
+      "assert": "stdout~^.build. Flags: +--no-cache --pull$",
+      "pista": "2-practicas/lab-05-override-cli/README.md, paso 7"
+    },
+    {
       "id": "image-tag-recursiva",
       "descripcion": "IMAGE_TAG se define con = y referencia a ENV",
       "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^IMAGE_TAG = .*[$][(]ENV[)]'",

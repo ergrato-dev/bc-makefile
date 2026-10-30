@@ -1,6 +1,6 @@
 # Lab 04 — `$*`: el stem en reglas de patrón
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -50,14 +50,48 @@ En una regla de patrón como `%.resultado: %.entrada`, el `%` es un wildcard que
 
 6. Completa el target `limpiar` para eliminar todos los `.resultado`.
 
+7. **Derivar rutas desde el stem.** Haz que la regla escriba además un log por
+   archivo procesado en `logs/<stem>.log`. Completa el TODO del paso 7 y
+   ejecuta:
+   ```bash
+   make -B alfa.resultado
+   cat logs/alfa.log
+   # alfa procesado desde alfa.entrada
+   ```
+   `-B` fuerza a rehacer aunque esté al día. El nombre del log no está escrito
+   en ningún sitio: sale de `$*`.
+
+8. **El stem incluye el directorio.** `setup` creó también `sub/delta.entrada`.
+   Ejecuta:
+   ```bash
+   make sub/delta.resultado
+   ```
+   Debes ver:
+   ```
+   [proceso] Stem:    sub/delta
+   [proceso] Entrada: sub/delta.entrada
+   [proceso] Salida:  sub/delta.resultado
+   [proceso] Log:     logs/delta.log
+   ```
+   Cuando el target tiene directorio y el patrón no, `%` se ajusta solo al
+   nombre y Make añade el directorio al stem: `$*` vale `sub/delta`. Por eso
+   el log usa `$(*F)`, la parte de archivo del stem (igual que `$(@F)` con
+   `$@`); con `logs/$*.log` intentaría escribir en `logs/sub/delta.log`, un
+   directorio que no existe. Termina con `make limpiar`.
+
 ## Criterios de éxito
 
 - [ ] `make alfa.resultado` imprime el stem `alfa`, la entrada `alfa.entrada` y la salida `alfa.resultado`
 - [ ] `make all` construye los tres archivos `.resultado`
 - [ ] Modificar `beta.entrada` y volver a ejecutar `make all` solo reconstruye `beta.resultado`
-- [ ] `make limpiar` elimina todos los `.resultado` sin errores
+- [ ] `logs/alfa.log` contiene `alfa procesado desde alfa.entrada`
+- [ ] `make sub/delta.resultado` imprime el stem `sub/delta` y escribe `logs/delta.log`
+- [ ] `make limpiar` elimina los `.resultado`, `logs/` y `sub/` sin errores
 - [ ] `make help` lista todos los targets con descripción
 
 ## Reto extra
 
-Agrega en la regla de patrón un tercer echo que imprime la ruta de un hipotético archivo de log: `"[proceso] Log: logs/$*.log"`. No es necesario crear el archivo; solo demostrar que `$*` permite derivar rutas arbitrarias desde el stem.
+Cambia el log a `logs/$*.log` y ejecuta `make sub/delta.resultado`: lee el
+error. Arréglalo sin volver a `$(*F)`, creando el directorio que haga falta
+(pista: `mkdir -p` y la parte de directorio de la ruta del log). ¿Qué
+estructura queda dentro de `logs/`?

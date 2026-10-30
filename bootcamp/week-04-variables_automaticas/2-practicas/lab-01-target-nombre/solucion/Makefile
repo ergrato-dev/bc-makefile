@@ -7,7 +7,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: reporte-html reporte-pdf reporte-csv reporte-json help
+.PHONY: reporte-html reporte-pdf reporte-csv reporte-json archivos limpiar help
 
 .DEFAULT_GOAL := help
 
@@ -32,6 +32,19 @@ reporte-csv:
 reporte-json:
 	@echo "[generando] $@"
 	@echo "[listo] Archivo: $(FECHA)-$@.json"
+
+## archivos: genera ventas.txt y gastos.txt con una sola regla
+archivos: ventas.txt gastos.txt
+
+# Una regla, dos targets: Make la ejecuta una vez por cada uno y $@ cambia
+ventas.txt gastos.txt:
+	@echo "Informe $@ del $(FECHA)" > $@
+	@echo "[listo] $@ creado"
+
+## limpiar: borra los archivos generados
+limpiar:
+	@rm -f ventas.txt gastos.txt
+	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda
 help:

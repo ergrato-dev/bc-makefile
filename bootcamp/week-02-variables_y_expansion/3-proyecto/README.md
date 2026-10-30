@@ -1,6 +1,6 @@
 # Proyecto Semana 02 — Makefile parametrizable multi-entorno
 
-⏱ Duración estimada: ~2h 30min
+⏱ Duración estimada: ~3 h
 
 ## Contexto
 
@@ -30,15 +30,28 @@ Fecha:      2026-01-15
 Imagen:     registry.local/mywebservice:0.1.0-abc1234-staging
 DB URL:     postgres://localhost:5432/mywebservice_staging
 Log level:  info
+Origen ENV: command line
 ```
+
+La última línea usa `$(origin ENV)` y dice de dónde salió el valor: `file` si
+nadie pasó `ENV` (se aplicó el `?=`), `command line` con `make config ENV=...`
+y `environment` con `ENV=... make config`. Es tu herramienta de diagnóstico
+cuando alguien jura que "desplegó en prod" y Make usó `dev`.
 
 ### 2. `build`
 Simula la construcción. Output esperado con `make build ENV=prod VERSION=1.2.0`:
 ```
 [build] Construyendo mywebservice:1.2.0-prod...
+[build] Flags: --pull
 [build] Compilación OK.
 [build] Imagen lista: registry.local/mywebservice:1.2.0-prod
 ```
+
+`BUILD_ARGS` es configurable, pero `--pull` (traer siempre la imagen base
+actualizada) es obligatorio. Con `make build BUILD_ARGS=--no-cache` la línea
+de flags debe ser `[build] Flags: --no-cache --pull`: el valor del usuario se
+respeta y el flag obligatorio no se pierde. Sin `override`, la asignación del
+Makefile se ignoraría y `--pull` desaparecería.
 
 ### 3. `test`
 Simula la ejecución de tests. Output esperado:
@@ -85,6 +98,7 @@ Tu Makefile debe definir al menos:
 | `DB_NAME` | `=` | `$(APP_NAME)_$(ENV)` | Nombre de la base de datos |
 | `DB_URL` | `=` | `postgres://$(DB_HOST):5432/$(DB_NAME)` | URL completa de BD |
 | `BUILD_DATE` | `:=` | `$(shell date +%F)` | Fecha de construcción |
+| `BUILD_ARGS` | `?=` y `override +=` | vacío, más `--pull` siempre | Flags del build; `--pull` no se puede quitar desde la CLI |
 
 ## Verificación
 
@@ -98,6 +112,8 @@ make config ENV=prod DB_HOST=prod-db.internal
 make build
 make build ENV=prod VERSION=2.0.0
 make deploy ENV=staging VERSION=1.1.0
+make build BUILD_ARGS=--no-cache   # [build] Flags: --no-cache --pull
+ENV=prod make config               # Origen ENV: environment
 make clean
 ```
 
@@ -114,6 +130,9 @@ Los comprueba `./scripts/verificar-semana.sh 02` desde la raíz del repositorio
 - [ ] make config ENV=prod VERSION=2.0.0 muestra la imagen registry.local/mywebservice:2.0.0-prod
 - [ ] La URL de base de datos incluye el entorno activo
 - [ ] DB_HOST se puede cambiar desde la línea de comandos
+- [ ] make config ENV=staging informa de que ENV viene de la línea de comandos
+- [ ] Con ENV exportada, make config informa de que ENV viene del entorno
+- [ ] make build BUILD_ARGS=--no-cache conserva el flag obligatorio --pull
 - [ ] IMAGE_TAG se define con = y referencia a ENV
 - [ ] BUILD_DATE se define con := y guarda una fecha AAAA-MM-DD
 - [ ] make deploy ejecuta build y test antes de desplegar

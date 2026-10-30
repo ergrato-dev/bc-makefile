@@ -2,7 +2,7 @@
 # Lab 01 — Variables básicas (SOLUCIÓN)
 # ============================================================
 
-.PHONY: info-compilador info-entorno info-libs help
+.PHONY: info-compilador info-entorno info-libs tipos help
 
 .DEFAULT_GOAL := help
 
@@ -29,6 +29,14 @@ info-entorno:
 ## info-libs: imprime las bibliotecas enlazadas
 info-libs:
 	@echo "LIBS: $(LIBS)"
+
+## tipos: muestra el sabor (flavor) de cada variable
+tipos:
+	@echo "CC:     $(flavor CC)"
+	@echo "CFLAGS: $(flavor CFLAGS)"
+	@echo "ENV:    $(flavor ENV)"
+	@echo "LIBS:   $(flavor LIBS)"
+	@echo "NADA:   $(flavor NADA)"
 
 ## help: muestra esta ayuda
 help:

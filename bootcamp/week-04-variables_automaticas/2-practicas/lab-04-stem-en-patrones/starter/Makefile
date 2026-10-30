@@ -30,6 +30,8 @@ all: $(SALIDAS)
 	# TODO: imprime "[proceso] Entrada: $<"
 	# TODO: imprime "[proceso] Salida:  $@"
 	# TODO: copia la entrada a la salida: @cp $< $@
+	# TODO (paso 7): crea logs/ con mkdir -p y escribe en logs/$(*F).log
+	#       la línea "<stem> procesado desde <entrada>" usando $* y $<
 
 # ── Targets de utilidad ───────────────────────────────────────
 
@@ -38,11 +40,14 @@ setup:
 	@echo "datos de alfa"  > alfa.entrada
 	@echo "datos de beta"  > beta.entrada
 	@echo "datos de gamma" > gamma.entrada
+	@mkdir -p sub
+	@echo "datos de delta" > sub/delta.entrada
 	@echo "[setup] Archivos creados: $(ENTRADAS)"
 
 ## limpiar: elimina los archivos generados
 limpiar:
 	# TODO: elimina todos los archivos .resultado y .entrada
+	# TODO (paso 7): elimina también los directorios logs y sub (rm -rf -- logs sub)
 	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda

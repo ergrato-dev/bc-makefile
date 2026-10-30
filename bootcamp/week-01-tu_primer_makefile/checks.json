@@ -4,9 +4,9 @@
   "checks": [
     {
       "id": "help-por-defecto",
-      "descripcion": "make sin argumentos lista los seis targets con su descripción",
-      "cmd": "{make} -C {proyecto} 2>&1 | grep -cE '^ +(build|serve|clean|check|deploy|help) +[^ ]'",
-      "assert": "stdout~^6$",
+      "descripcion": "make sin argumentos lista los siete targets con su descripción",
+      "cmd": "{make} -C {proyecto} 2>&1 | grep -cE '^ +(build|sitemap|serve|clean|check|deploy|help) +[^ ]'",
+      "assert": "stdout~^7$",
       "pista": "2-practicas/lab-06-patron-help/README.md, paso 3"
     },
     {
@@ -22,6 +22,27 @@
       "cmd": "{make} -C {proyecto} build >/dev/null 2>&1; {make} -C {proyecto} build >/dev/null 2>&1; test -f {proyecto}/dist/index.html && test ! -e {proyecto}/dist/src",
       "assert": "exit0",
       "pista": "3-proyecto/README.md, sección Lo que debes construir, punto 1"
+    },
+    {
+      "id": "sitemap-en-build",
+      "descripcion": "make build genera dist/sitemap.txt con una línea por página HTML",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} build >/dev/null 2>&1; grep -cE '^/[a-z]+[.]html$' {proyecto}/dist/sitemap.txt",
+      "assert": "stdout~^2$",
+      "pista": "3-proyecto/README.md, sección Lo que debes construir, punto 7"
+    },
+    {
+      "id": "sitemap-al-dia",
+      "descripcion": "Sin cambios en src/, make dist/sitemap.txt no lo regenera",
+      "cmd": "{make} -C {proyecto} build >/dev/null 2>&1; {make} -C {proyecto} dist/sitemap.txt 2>&1",
+      "assert": "stdout~is up to date|Nothing to be done",
+      "pista": "2-practicas/lab-04-targets-y-archivos/README.md, paso 3"
+    },
+    {
+      "id": "sitemap-se-regenera",
+      "descripcion": "Tocar src/about.html regenera dist/sitemap.txt",
+      "cmd": "{make} -C {proyecto} build >/dev/null 2>&1; touch {proyecto}/src/about.html; {make} -C {proyecto} dist/sitemap.txt >/dev/null 2>&1; test {proyecto}/dist/sitemap.txt -nt {proyecto}/src/about.html",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-targets-y-archivos/README.md, paso 6"
     },
     {
       "id": "check-ok",

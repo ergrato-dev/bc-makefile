@@ -15,6 +15,12 @@ APP_NAME ?= myapp
 # = (no :=) para que ENV y VERSION del CLI se propaguen al tag
 IMAGE_TAG = $(REGISTRY)/$(APP_NAME):$(VERSION)-$(ENV)
 
+# ── Flags de build ────────────────────────────────────────────
+# El usuario puede pasar BUILD_FLAGS, pero --pull es obligatorio:
+# sin override, el += se ignoraría cuando BUILD_FLAGS llega por la CLI
+BUILD_FLAGS ?=
+override BUILD_FLAGS += --pull
+
 ## info: muestra la configuración actual del build
 info:
 	@echo "Configuración de build:"
@@ -22,11 +28,13 @@ info:
 	@echo "  VERSION:   $(VERSION)"
 	@echo "  REGISTRY:  $(REGISTRY)"
 	@echo "  IMAGE_TAG: $(IMAGE_TAG)"
+	@echo "  Origen de ENV: $(origin ENV)"
 
 ## build: simula la construcción de la imagen
 build:
 	@echo "Construyendo imagen..."
 	@echo "  Tag: $(IMAGE_TAG)"
+	@echo "  Flags: $(BUILD_FLAGS)"
 	@echo "Build OK."
 
 ## deploy: despliega la imagen en el entorno configurado

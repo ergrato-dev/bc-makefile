@@ -21,9 +21,10 @@ DESTINATARIO_EAGER := Mundo
 # ── Reto extra: recursión infinita ───────────────────────────
 PELIGROSO = $(PELIGROSO)-snapshot
 
-# Versión corregida: usa una variable base separada
-BASE_VERSION    := v1.0
-VERSION_RELEASE := $(BASE_VERSION)-snapshot
+# Versión corregida: con := el lado derecho se expande UNA vez, con el valor
+# anterior de la variable, y el resultado se guarda. No queda referencia pendiente
+VERSION_RELEASE := v1.0
+VERSION_RELEASE := $(VERSION_RELEASE)-snapshot
 
 ## lazy: = evalúa al usar la variable; DESTINATARIO puede definirse después
 lazy:

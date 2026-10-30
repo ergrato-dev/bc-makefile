@@ -8,7 +8,7 @@
 #   3. Agrega reporte-json como reto
 # ============================================================
 
-.PHONY: reporte-html reporte-pdf reporte-csv help
+.PHONY: reporte-html reporte-pdf reporte-csv archivos limpiar help
 
 .DEFAULT_GOAL := help
 
@@ -33,6 +33,20 @@ reporte-pdf:
 ## reporte-csv: genera el informe en formato CSV
 reporte-csv:
 	# TODO: mismo patrón; extensión: .csv
+
+## archivos: genera ventas.txt y gastos.txt con una sola regla
+archivos: ventas.txt gastos.txt
+
+# TODO (paso 7): una sola regla con DOS targets. Receta, sin escribir ningún nombre:
+#   escribe "Informe <target> del <FECHA>" en el archivo del target (> $@)
+#   imprime "[listo] <target> creado"
+ventas.txt gastos.txt:
+	@echo "TODO: implementa la regla de archivos"
+
+## limpiar: borra los archivos generados
+limpiar:
+	@rm -f ventas.txt gastos.txt
+	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda
 help:

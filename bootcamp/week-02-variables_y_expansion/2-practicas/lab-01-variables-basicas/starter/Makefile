@@ -8,7 +8,7 @@
 #   3. Verifica con `make info-compilador`, `make info-entorno`, `make info-libs`
 # ============================================================
 
-.PHONY: info-compilador info-entorno info-libs help
+.PHONY: info-compilador info-entorno info-libs tipos help
 
 .DEFAULT_GOAL := help
 
@@ -40,6 +40,13 @@ info-entorno:
 info-libs:
 	# TODO: @echo "LIBS: $(LIBS)"
 	# Resultado esperado: "LIBS: -lm -lpthread"
+
+# TODO (paso 8): imprime el sabor de cada variable con la función flavor.
+#   Formato:  CC:     <flavor de CC>   (una línea para CC, CFLAGS, ENV, LIBS)
+#   Añade una quinta línea para NADA, una variable que no existe.
+## tipos: muestra el sabor (flavor) de cada variable
+tipos:
+	@echo "TODO: implementa tipos"
 
 ## help: muestra esta ayuda
 help:

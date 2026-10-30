@@ -1,6 +1,6 @@
 # Lab 06 — Variables automáticas rotas
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -29,39 +29,67 @@ Este lab contiene cinco bugs. Tu tarea es identificar cada uno, entender por qu�
 
 ## Instrucciones
 
-1. Abre `starter/Makefile`. Lee todos los comentarios `# BUG:` para identificar cada problema.
+1. Crea los archivos de prueba que usan los targets:
+   ```bash
+   make setup
+   ```
+   Debes ver `[setup] Listo: main.c utils.c alfa.md main.o utils.o math.o`.
 
-2. Para cada bug, escribe en un comentario `# FIX:` inmediatamente debajo qué cambio harías y por qué.
+2. Ejecuta cada target **antes** de corregir y anota el síntoma:
+   ```bash
+   make info-etiqueta   # Etiqueta: build-
+   make enlazar         # [ld] Enlazando: main.o
+   make construir       # [cc+ld] Binario: mi-app
+   make alfa.html       # [convert] Stem: (vacío)
+   make build/main.o    # touch: cannot touch 'build/main.o': No such file or directory
+   ```
 
-3. Aplica todas las correcciones. El Makefile corregido debe:
+3. Abre `starter/Makefile`. Lee todos los comentarios `# BUG:` para identificar cada problema. Para cada bug, escribe en un comentario `# FIX:` inmediatamente debajo qué cambio harías y por qué.
+
+4. Aplica todas las correcciones. El Makefile corregido debe:
    - Imprimir `ETIQUETA` con el nombre del target correcto
    - El target `enlazar` debe listar los tres objetos
    - El binario debe llamarse igual que el target
    - El mensaje de stem debe mostrar el stem real
    - La compilación en subdirectorio debe crear el directorio automáticamente
 
-4. Verifica con:
+5. **Comprueba sin ejecutar.** Antes de lanzar cada target corregido, mira qué
+   haría con `make -n` (y `-B` para que lo rehaga aunque esté al día):
+   ```bash
+   make limpiar && make setup
+   make -n -B build/main.o
+   # mkdir -p build
+   # echo "[cc] Compilando main.c → build/main.o"
+   # touch build/main.o
+   ```
+   Fíjate en que las variables automáticas ya salen expandidas: `make -n` es
+   la forma más rápida de ver qué vale `$@`, `$<` o `$^` en una regla concreta.
+
+6. Verifica con:
    ```bash
    make info-etiqueta
    make enlazar
    make construir
    make alfa.html
    make build/main.o
+   make limpiar
    ```
 
 ## Criterios de éxito
 
-- [ ] Bug A: `make info-etiqueta` imprime una etiqueta no vacía
+- [ ] Bug A: `make info-etiqueta` imprime `Etiqueta: build-info-etiqueta`
 - [ ] Bug B: `make enlazar` lista los tres objetos en el linker
-- [ ] Bug C: `make construir` crea un binario con el nombre del target, no hardcodeado
+- [ ] Bug C: `make construir` muestra un binario con el nombre del target, no hardcodeado
 - [ ] Bug D: `make alfa.html` imprime el stem `alfa`, no una cadena vacía
 - [ ] Bug E: `make build/main.o` se ejecuta sin error de directorio
+- [ ] `make -n -B build/main.o` muestra `mkdir -p build` como primer comando
 - [ ] Cada corrección tiene un comentario `# FIX:` explicando el cambio
 
 ## Reto extra
 
-Rompe tú el Makefile corregido de una sexta forma: usa `$^` en la regla de
-compilación en lugar de `$<` y añade `include/util.h` como prerrequisito del
-`.o`. Ejecuta `make -B build/main.o` y explica en un comentario `# FIX:` por qué
-el error que da gcc no menciona `$^` en ningún momento, y cómo lo habrías
-encontrado con `make -n`.
+Rompe tú el Makefile corregido de una sexta forma: cambia la receta de
+`build/main.o` por una compilación real que use `$^` en lugar de `$<`
+(`gcc -c $^ -o $@`) y añade `utils.c` como segundo prerrequisito. Ejecuta
+`make -B build/main.o` y explica en un comentario `# FIX:` por qué el error de
+gcc no menciona `$^` en ningún momento, y cómo lo habrías encontrado con
+`make -n`.

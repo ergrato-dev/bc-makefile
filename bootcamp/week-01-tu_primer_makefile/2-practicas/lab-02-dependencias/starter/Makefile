@@ -10,7 +10,7 @@
 #   3. Ejecuta `make run` de nuevo — debe imprimir los 4 pasos en orden
 # ============================================================
 
-.PHONY: all prepare compile link run clean help
+.PHONY: prepare compile link run test lint check clean help
 
 .DEFAULT_GOAL := help
 
@@ -33,6 +33,21 @@ compile:
 ## prepare: prepara el entorno de build
 prepare:
 	@echo "[1/4] Preparando entorno..."
+
+# TODO (paso 7): test y lint dependen los dos de compile  →  test: compile
+## test: ejecuta las pruebas (necesita el código compilado)
+test:
+	@echo "[test] Pruebas OK."
+
+# TODO (paso 7):  →  lint: compile
+## lint: revisa el estilo (necesita el código compilado)
+lint:
+	@echo "[lint] Estilo OK."
+
+# TODO (paso 7): check depende de test y de lint, en ese orden  →  check: test lint
+## check: pruebas y estilo; compile se ejecuta una sola vez
+check:
+	@echo "[check] Todo verificado."
 
 ## clean: limpia el estado (sin archivos reales en este lab)
 clean:

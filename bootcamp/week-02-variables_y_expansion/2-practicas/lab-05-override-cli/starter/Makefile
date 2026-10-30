@@ -31,6 +31,11 @@
 #       Usa = para que los overrides CLI de ENV/VERSION se propaguen
 # IMAGE_TAG = ...
 
+# ── Flags de build ────────────────────────────────────────────
+# TODO (paso 7): define BUILD_FLAGS con ?= y valor vacío, y en la línea
+#       siguiente añade --pull con += de forma que se aplique aunque
+#       BUILD_FLAGS llegue por la línea de comandos (pista: override)
+
 ## info: muestra la configuración actual del build
 info:
 	@echo "Configuración de build:"
@@ -38,11 +43,13 @@ info:
 	# TODO: @echo "  VERSION:   $(VERSION)"
 	# TODO: @echo "  REGISTRY:  $(REGISTRY)"
 	# TODO: @echo "  IMAGE_TAG: $(IMAGE_TAG)"
+	# TODO (paso 6): una línea "  Origen de ENV: " con el resultado de la función origin
 
 ## build: simula la construcción de la imagen
 build:
 	@echo "Construyendo imagen..."
 	# TODO: @echo "  Tag: $(IMAGE_TAG)"
+	# TODO (paso 7): una línea "  Flags: " con BUILD_FLAGS
 	@echo "Build OK."
 
 ## deploy: despliega la imagen en el entorno configurado

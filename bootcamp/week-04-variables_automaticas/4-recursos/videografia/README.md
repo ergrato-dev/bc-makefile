@@ -2,8 +2,7 @@
 
 | Título | Canal | Duración | Enlace |
 |--------|-------|----------|--------|
-| Makefile Tutorial — Automatic Variables | makefiletutorial.com (inglés) | ~15 min | https://www.youtube.com/watch?v=_r7i5X0rXJk |
-| GNU Make: Pattern Rules and Implicit Rules | Engineer Man (inglés) | ~14 min | https://www.youtube.com/watch?v=GExnnTaBELk |
-| C Project Compilation with Makefiles | Jacob Sorber (inglés) | ~20 min | https://www.youtube.com/watch?v=aw9wHbFvedere |
-
-> **Nota:** No existen tutoriales en español de calidad suficiente para variables automáticas y reglas de patrón en GNU Make. Los tres videos en inglés cubren exactamente el contenido de esta semana. Con los subtítulos automáticos de YouTube en español son perfectamente seguibles.
+| GNU Make – 7. Patrones y variables automáticas | makigas (español) | 5 min | https://www.youtube.com/watch?v=h6cFvHNKimg |
+| More make: automatic variables for smaller and easier to maintain makefiles | Jacob Sorber (inglés) | 3 min | https://www.youtube.com/watch?v=G5dNorAoeCM |
+| Make - 3.2 - Essentials - Automatic Variables | Steel Foundations (inglés) | 7 min | https://www.youtube.com/watch?v=hgq3uiEQNtE |
+| A better C makefile with automatic header make dependences | Jacob Sorber (inglés) | 5 min | https://www.youtube.com/watch?v=2kbQN74EU8Q |

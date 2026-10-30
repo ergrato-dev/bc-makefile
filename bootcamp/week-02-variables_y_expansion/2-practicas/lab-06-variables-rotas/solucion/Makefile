@@ -8,7 +8,7 @@
 #   Bug 4: usar BASE como variable separada y no referenciar VERSION a sí misma
 # ============================================================
 
-.PHONY: check-image check-flags check-url check-version help
+.PHONY: check-image check-flags check-url check-version diagnostico help
 
 .DEFAULT_GOAL := help
 
@@ -45,6 +45,14 @@ check-url:
 ## check-version: verifica que VERSION sea v1.0-rc1
 check-version:
 	@echo "VERSION: $(VERSION)"
+
+## diagnostico: muestra el sabor de cada variable sin expandirla
+diagnostico:
+	@echo "IMAGE:   $(flavor IMAGE)"
+	@echo "FLAGS:   $(flavor FLAGS)"
+	@echo "DB_URL:  $(flavor DB_URL)"
+	@echo "VERSION: $(flavor VERSION)"
+	@echo "DB_HOST: $(flavor DB_HOST), origen $(origin DB_HOST)"
 
 ## help: muestra esta ayuda
 help:

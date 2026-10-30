@@ -2,9 +2,9 @@
 
 ## ¿Por qué importa esto?
 
-Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre del compilador en cinco lugares y te olvidas del sexto, tienes un bug silencioso. Las variables resuelven eso, pero Make tiene cuatro operadores de asignación con comportamientos distintos. Elegir el incorrecto produce bugs que solo aparecen bajo condiciones específicas — y que son difíciles de rastrear porque el error no está en la receta sino en cuándo se evaluó la variable.
+Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre del compilador en cinco lugares y te olvidas del sexto, tienes un bug silencioso. Las variables resuelven eso, pero Make tiene varios operadores de asignación con comportamientos distintos. Elegir el incorrecto produce bugs que solo aparecen bajo condiciones específicas — y que son difíciles de rastrear porque el error no está en la receta sino en cuándo se evaluó la variable.
 
-## Los cuatro operadores
+## Los operadores
 
 | Operador | Nombre | Cuándo se expande | Regla práctica |
 |----------|--------|-------------------|----------------|
@@ -12,6 +12,7 @@ Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre d
 | `:=` | Simple (inmediata) | Al asignar | Usa siempre que puedas; es predecible |
 | `?=` | Condicional | Al usar (crea una variable recursiva) | Usa para defaults sobreescribibles; solo asigna si la variable no está definida (vacía cuenta como definida) |
 | `+=` | Append | Hereda el tipo original | Usa para acumular listas de flags o archivos |
+| `!=` | Shell | El comando corre al asignar; el resultado se guarda como recursiva | Equivale a `:= $(shell ...)`; detalles en [02-origen-y-precedencia.md](02-origen-y-precedencia.md) |
 
 ## Ejemplo funcional — pega y ejecuta
 
@@ -77,8 +78,8 @@ make ENV=prod deploy        # ENV vale "prod" en todos los targets
 make CC=clang CFLAGS=-O2    # pasa múltiples variables
 ```
 
-Las variables de CLI tienen mayor precedencia que `=`, `:=` y `?=`, pero no superan a `override`.
+Las variables de CLI tienen mayor precedencia que `=`, `:=` y `?=`, pero no superan a `override`. Las de entorno, en cambio, pierden ante `=` y `:=`: el orden completo está en [02-origen-y-precedencia.md](02-origen-y-precedencia.md).
 
 ---
 
-Listo. Ve al [lab-01](../2-practicas/lab-01-variables-basicas/README.md) y ponlo en práctica.
+Sigue con [02-origen-y-precedencia.md](02-origen-y-precedencia.md) y después ve al [lab-01](../2-practicas/lab-01-variables-basicas/README.md).

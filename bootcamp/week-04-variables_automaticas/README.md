@@ -10,60 +10,69 @@ Al terminar esta semana, podrás:
 
 - Usar `$@` para referenciar el nombre del target dentro de su propia receta
 - Usar `$<` para pasar el primer prerrequisito a un compilador
-- Usar `$^` para pasar todos los prerrequisitos a un linker (sin duplicados)
+- Usar `$^` para pasar todos los prerrequisitos a un linker (sin duplicados) y `$+` cuando importan las repeticiones
 - Usar `$?` para reprocesar solo los prerrequisitos modificados desde el último build
 - Usar `$*` para extraer el stem en reglas de patrón `%.o: %.c`
-- Usar `$(@D)` y `$(@F)` para construir rutas de salida en subdirectorios dinámicamente
-- Escribir una regla genérica que compile cualquier `.c` a `.o` sin escribir nombres de archivo
+- Usar `$(@D)`, `$(@F)`, `$(<D)` y `$(<F)` para construir rutas de salida en subdirectorios dinámicamente
+- Escribir una regla genérica que compile cualquier `.c` a `.o` sin escribir nombres de archivo, con dependencias de headers generadas por `-MMD -MP`
 
 ## Prerrequisitos
 
-- Semana 01 completada: targets, dependencias, `.PHONY`, target `help`
-- Semana 02 completada: variables `=`, `:=`, `?=`, `+=`
-- GNU Make ≥ 4.x instalado (`make --version`)
-- `gcc` instalado — requerido solo para el proyecto semanal (`gcc --version`)
+- Semana 01: targets, dependencias, `.PHONY`, target `help`
+- Semana 02: variables `=`, `:=`, `?=`, `+=` y `$(origin)`
+- Semana 03: preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y guardas de `rm -rf`; todas las soluciones de esta semana los usan
+- GNU Make ≥ 4.3 (`make --version`; en macOS `gmake`)
+- `gcc` (`gcc --version`) para el lab 02 y el proyecto; `tar` para `make dist`
 
 ## Contenido
 
 | # | Tipo | Tema | Tiempo |
 |---|------|------|--------|
-| — | Contexto | [01-contexto.md](1-teoria/01-contexto.md) | 30 min |
-| 1 | Lab | [lab-01-target-nombre](2-practicas/lab-01-target-nombre/) | 50 min |
-| 2 | Lab | [lab-02-primer-prerrequisito](2-practicas/lab-02-primer-prerrequisito/) | 50 min |
-| 3 | Lab | [lab-03-todos-prerrequisitos](2-practicas/lab-03-todos-prerrequisitos/) | 50 min |
-| 4 | Lab | [lab-04-stem-en-patrones](2-practicas/lab-04-stem-en-patrones/) | 50 min |
-| 5 | Lab | [lab-05-rutas-dinamicas](2-practicas/lab-05-rutas-dinamicas/) | 50 min |
-| 6 | Lab | [lab-06-variables-rotas](2-practicas/lab-06-variables-rotas/) | 50 min |
-| — | Proyecto | [Build system C multi-archivo](3-proyecto/) | 2h 30min |
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) | 45 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-target-nombre](2-practicas/lab-01-target-nombre/) | 60 min |
+| 2 | Lab | [lab-02-primer-prerrequisito](2-practicas/lab-02-primer-prerrequisito/) | 60 min |
+| 3 | Lab | [lab-03-todos-prerrequisitos](2-practicas/lab-03-todos-prerrequisitos/) | 60 min |
+| 4 | Lab | [lab-04-stem-en-patrones](2-practicas/lab-04-stem-en-patrones/) | 60 min |
+| 5 | Lab | [lab-05-rutas-dinamicas](2-practicas/lab-05-rutas-dinamicas/) | 60 min |
+| 6 | Lab | [lab-06-variables-rotas](2-practicas/lab-06-variables-rotas/) | 60 min |
+| — | Proyecto | [Build system C multi-archivo](3-proyecto/) | 3 h |
 
-**Total: 8 horas**
+**Total: 10 horas**
 
 ## Distribución del tiempo
 
 ```
-[30 min] Leer 1-teoria/01-contexto.md
-[50 min] lab-01 — $@: el target se conoce a sí mismo
-[50 min] lab-02 — $<: el primer prerrequisito, y solo ese
-[50 min] lab-03 — $^ y $?: todos vs. los modificados
-[50 min] lab-04 — $*: el stem en reglas de patrón
-[50 min] lab-05 — $(@D) y $(@F): construir rutas de salida dinámicas
-[50 min] lab-06 — Depurar cinco bugs con variables automáticas
-[2h 30] Proyecto: build system C multi-archivo con reglas genéricas
+[45 min] Leer 1-teoria/01-contexto.md (incluida la sección Headers: -MMD -MP)
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — $@: el target se conoce a sí mismo
+[60 min] lab-02 — $<: el primer prerrequisito, y compilar de verdad
+[60 min] lab-03 — $^, $+ y $?: todos, con duplicados o los modificados
+[60 min] lab-04 — $*: el stem en reglas de patrón
+[60 min] lab-05 — $(@D), $(@F), $(<D) y $(<F): rutas dinámicas
+[60 min] lab-06 — Depurar cinco bugs con variables automáticas
+[3 h]    Proyecto: build system C multi-archivo con reglas genéricas y empaquetado
 ```
 
 ## Verificación de completitud
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
+Desde la raíz del repositorio:
 
 ```bash
-cd 3-proyecto/solucion
-make help
-make all
-make clean
-make all CC=clang
+./scripts/verificar-semana.sh 04
 ```
 
-El binario `build/app` debe ejecutarse y producir:
+Comprueba tu proyecto (`3-proyecto/starter/`) contra los 14 requisitos
+verificables de la semana. Al terminar deben pasar todos, y dentro de tu
+proyecto:
+
+```bash
+make all && ./build/app
+make dist && tar -tzf dist/app-1.0.0.tar.gz
+make clean
+```
+
+El binario `build/app` debe producir:
 
 ```
 Hola desde Make!

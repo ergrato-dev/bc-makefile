@@ -110,12 +110,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — Primer target](2-practicas/lab-01-primer-target/README.md) | `make saludar` imprime `Hola desde Make!`; `make info` muestra fecha, usuario y directorio; `make help` lista los tres targets | 10 |
-| [02 — Dependencias](2-practicas/lab-02-dependencias/README.md) | `make run` ejecuta los 4 pasos en orden; `make compile` solo ejecuta `prepare` y `compile` | 10 |
-| [03 — `.PHONY`](2-practicas/lab-03-phony-targets/README.md) | Con un archivo `clean` presente, `make clean` ejecuta la receta gracias a `.PHONY`; `build` crea `output/app.txt` | 10 |
-| [04 — Targets y archivos](2-practicas/lab-04-targets-y-archivos/README.md) | La segunda ejecución de `make reporte.txt` dice `is up to date`; tras `touch datos.csv` lo regenera | 10 |
-| [05 — Makefile roto](2-practicas/lab-05-makefile-roto/README.md) | Los 4 errores corregidos; `make all` sin errores ni avisos; `make test` corre aunque exista el archivo `test` | 10 |
-| [06 — Patrón `help`](2-practicas/lab-06-patron-help/README.md) | `make` sin argumentos muestra la ayuda en dos columnas; un target nuevo con `##` aparece sin tocar `help` | 10 |
+| [01 — Primer target](2-practicas/lab-01-primer-target/README.md) | GNU Make ≥ 4.3 comprobado; `saludar` e `info` imprimen lo pedido; `check-make` falla con `MAKE_VERSION=3.81`; `donde` demuestra una shell por línea | 10 |
+| [02 — Dependencias](2-practicas/lab-02-dependencias/README.md) | `make run` ejecuta los 4 pasos en orden; `make compile` solo ejecuta `prepare` y `compile`; `make check` compila una sola vez | 10 |
+| [03 — `.PHONY`](2-practicas/lab-03-phony-targets/README.md) | Con un archivo `clean` presente, `make clean` ejecuta la receta gracias a `.PHONY`; `build` crea `output/app.txt`; explicas qué hace `make` sin `.DEFAULT_GOAL` | 10 |
+| [04 — Targets y archivos](2-practicas/lab-04-targets-y-archivos/README.md) | La segunda ejecución de `make reporte.txt` dice `is up to date`; tras `touch datos.csv` lo regenera; en la cadena `resumen.txt` solo se rehace el eslabón necesario | 10 |
+| [05 — Makefile roto](2-practicas/lab-05-makefile-roto/README.md) | Los 4 errores corregidos; `make all` sin errores ni avisos; `make validate-output` termina en `Salida validada.`; usas `cat -A` y `make -n` | 10 |
+| [06 — Patrón `help`](2-practicas/lab-06-patron-help/README.md) | `make` sin argumentos muestra la ayuda en dos columnas; un target nuevo con `##` aparece sin tocar `help`; `make -f otro.mk help` demuestra `$(MAKEFILE_LIST)` | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras por qué funciona; 8 si se cumplen todos; 7 si falla uno; menos de
@@ -131,14 +131,17 @@ Lo ejecuta `./scripts/verificar-semana.sh 01`. Es binario: pasa o no pasa.
 
 | Comprobación | Puntos |
 |---|:--:|
-| `help-por-defecto` — `make` sin argumentos lista los seis targets con su descripción | 6 |
-| `build-copia-src` — `make build` copia los HTML y el CSS a `dist/` | 10 |
-| `build-repetible` — ejecutar `make build` dos veces no anida `src/` dentro de `dist/` | 7 |
-| `check-ok` — tras `make build`, `make check` termina con `Check OK.` | 7 |
-| `check-falla-sin-dist` — `make check` sale con error si `dist/` no existe | 9 |
-| `deploy-lista-archivos` — `make deploy` lista los archivos de `dist/` | 7 |
-| `clean-borra-dist` — `make clean` elimina `dist/` por completo | 6 |
-| `clean-es-phony` — `make clean` se ejecuta aunque exista un archivo llamado `clean` | 8 |
+| `help-por-defecto` — `make` sin argumentos lista los siete targets con su descripción | 5 |
+| `build-copia-src` — `make build` copia los HTML y el CSS a `dist/` | 7 |
+| `build-repetible` — ejecutar `make build` dos veces no anida `src/` dentro de `dist/` | 5 |
+| `sitemap-en-build` — `make build` genera `dist/sitemap.txt` con una línea por página HTML | 6 |
+| `sitemap-al-dia` — sin cambios en `src/`, `make dist/sitemap.txt` no lo regenera | 6 |
+| `sitemap-se-regenera` — tocar `src/about.html` regenera `dist/sitemap.txt` | 6 |
+| `check-ok` — tras `make build`, `make check` termina con `Check OK.` | 5 |
+| `check-falla-sin-dist` — `make check` sale con error si `dist/` no existe | 6 |
+| `deploy-lista-archivos` — `make deploy` lista los archivos de `dist/` | 4 |
+| `clean-borra-dist` — `make clean` elimina `dist/` por completo | 4 |
+| `clean-es-phony` — `make clean` se ejecuta aunque exista un archivo llamado `clean` | 6 |
 | **Total** | **60** |
 
 ### Calidad — 40 puntos
@@ -147,7 +150,7 @@ Lo que el autograding no puede ver.
 
 | Criterio | Excelente | Suficiente | Puntos |
 |---|---|---|:--:|
-| **`.PHONY` completo** | Los seis targets declarados en una sola línea al inicio | Falta uno | 8 |
+| **`.PHONY` completo** | Los siete targets declarados en una sola línea al inicio, y `dist/sitemap.txt` fuera de `.PHONY` | Falta uno | 8 |
 | **Variables en las recetas** | Ninguna receta escribe `src`, `dist` ni `8080`: todo sale de `SRC_DIR`, `DIST_DIR`, `PORT` | Un literal en un mensaje `@echo` | 8 |
 | **Errores útiles en `check`** | Cada archivo que falta tiene su mensaje y dice qué ejecutar para arreglarlo | Mensaje genérico | 6 |
 | **`serve` funcional** | Depende de `build`, imprime la URL antes de arrancar y sirve `dist/` | Arranca pero no imprime la URL | 6 |
@@ -170,7 +173,7 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 01` con las 8 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 01` con las 11 comprobaciones en verde
 - [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `dist/`)
 
 ---

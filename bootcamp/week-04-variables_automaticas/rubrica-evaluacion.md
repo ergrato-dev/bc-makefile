@@ -108,12 +108,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — `$@`](2-practicas/lab-01-target-nombre/README.md) | Los tres `reporte-*` imprimen su propio nombre y extensión; ninguna receta lleva el nombre escrito | 10 |
-| [02 — `$<`](2-practicas/lab-02-primer-prerrequisito/README.md) | `compilar-*` usa solo el primer prerrequisito; `enlazar` muestra la diferencia con `$^`; comentario sobre el linker | 10 |
-| [03 — `$^` y `$?`](2-practicas/lab-03-todos-prerrequisitos/README.md) | `$^` sin duplicados; tras `touch seccion-b.txt`, `$?` muestra solo ese archivo | 10 |
-| [04 — `$*`](2-practicas/lab-04-stem-en-patrones/README.md) | Cada `.resultado` imprime su stem; modificar `beta.entrada` reconstruye solo `beta.resultado` | 10 |
-| [05 — `$(@D)` y `$(@F)`](2-practicas/lab-05-rutas-dinamicas/README.md) | `make all` crea los tres archivos en sus subdirectorios; cambiar `DIST` mueve todo sin tocar recetas | 10 |
-| [06 — Variables rotas](2-practicas/lab-06-variables-rotas/README.md) | Los cinco bugs corregidos, cada uno con su comentario `# FIX:` | 10 |
+| [01 — `$@`](2-practicas/lab-01-target-nombre/README.md) | Los `reporte-*` imprimen su propio nombre y extensión sin escribirlo; una sola regla crea `ventas.txt` y `gastos.txt` con `$@` | 10 |
+| [02 — `$<`](2-practicas/lab-02-primer-prerrequisito/README.md) | `compilar-*` usa solo el primer prerrequisito; `build/app` compila y enlaza de verdad; con `$<` en el enlace reproduces el `undefined reference` | 10 |
+| [03 — `$^` y `$?`](2-practicas/lab-03-todos-prerrequisitos/README.md) | `$^` sin duplicados y `$+` con ellos; tras `touch seccion-b.txt`, `$?` muestra solo ese archivo; `cambios.log` registra solo lo cambiado | 10 |
+| [04 — `$*`](2-practicas/lab-04-stem-en-patrones/README.md) | Cada `.resultado` imprime su stem y escribe su log; `sub/delta.resultado` muestra el stem con directorio; modificar `beta.entrada` reconstruye solo `beta.resultado` | 10 |
+| [05 — `$(@D)` y `$(@F)`](2-practicas/lab-05-rutas-dinamicas/README.md) | `make all` crea los artefactos en sus subdirectorios; cambiar `DIST` mueve todo sin tocar recetas; la copia usa `$(<D)`/`$(<F)` y el índice se rehace solo cuando hace falta | 10 |
+| [06 — Variables rotas](2-practicas/lab-06-variables-rotas/README.md) | Los cinco bugs corregidos, cada uno con su comentario `# FIX:`; usas `make -n -B` para comprobar las recetas | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué hace cada variable automática que usaste; 8 si se cumplen
@@ -129,16 +129,19 @@ Lo ejecuta `./scripts/verificar-semana.sh 04`. Es binario: pasa o no pasa.
 
 | Comprobación | Puntos |
 |---|:--:|
-| `binario-funciona` — `make all` desde cero produce `build/app` y el binario imprime el resultado correcto | 8 |
-| `objetos-en-build` — cada `src/*.c` produce su objeto en `build/` | 4 |
-| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no rehace nada | 6 |
-| `incremental-un-objeto` — tocar un `.c` recompila solo ese objeto | 6 |
-| `deps-generadas` — el build genera un `.d` por objeto | 5 |
-| `header-recompila` — tocar `include/calc.h` recompila exactamente los dos objetos que lo incluyen | 7 |
-| `cc-desde-cli` — `CC` se puede cambiar desde la línea de comandos | 4 |
-| `clean-borra-build` — `make clean` elimina `build/` por completo | 5 |
+| `binario-funciona` — `make all` desde cero produce `build/app` y el binario imprime el resultado correcto | 6 |
+| `objetos-en-build` — cada `src/*.c` produce su objeto en `build/` | 3 |
+| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no rehace nada | 4 |
+| `incremental-un-objeto` — tocar un `.c` recompila solo ese objeto | 5 |
+| `deps-generadas` — el build genera un `.d` por objeto | 4 |
+| `header-recompila` — tocar `include/calc.h` recompila exactamente los dos objetos que lo incluyen | 6 |
+| `cc-desde-cli` — `CC` se puede cambiar desde la línea de comandos | 3 |
+| `dist-empaqueta-app` — `make dist` genera `dist/app-1.0.0.tar.gz` con `app` en la raíz | 5 |
+| `dist-version-cli` — `make dist VERSION=2.0.0` genera `dist/app-2.0.0.tar.gz` | 4 |
+| `clean-borra-dist` — `make clean` elimina también `dist/` | 3 |
+| `clean-borra-build` — `make clean` elimina `build/` por completo | 3 |
 | `clean-con-guarda` — `make clean` se niega a borrar si `BUILD_DIR` está vacío | 6 |
-| `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 5 |
+| `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 4 |
 | `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 4 |
 | **Total** | **60** |
 
@@ -149,7 +152,7 @@ Lo que el autograding no puede ver.
 | Criterio | Excelente | Suficiente | Puntos |
 |---|---|---|:--:|
 | **Cero nombres en recetas** | Ninguna receta contiene `main`, `greet`, `calc` ni rutas fijas: todo sale de variables automáticas | Uno o dos literales en mensajes `@echo` | 10 |
-| **Variables automáticas comentadas** | Cada regla explica qué vale `$@`, `$<`, `$^` y `$(@D)` en ella | Comentarios genéricos | 8 |
+| **Variables automáticas comentadas** | Cada regla explica qué vale `$@`, `$<`, `$^`, `$(@D)` y `$(<D)`/`$(<F)` en ella | Comentarios genéricos | 8 |
 | **Flags en variables** | `CFLAGS`, `LDFLAGS` y `-I$(INC_DIR)` en variables; ninguna flag fija en una receta | Alguna flag fija | 6 |
 | **`.PHONY` completo** | Todos los targets que no producen archivo están declarados | Falta uno | 6 |
 | **Orden y secciones** | Preámbulo, variables agrupadas con comentario de sección, reglas, utilidades | Variables dispersas | 6 |
@@ -161,7 +164,7 @@ Lo que el autograding no puede ver.
 | Situación | Deducción |
 |---|:--:|
 | `rm -rf` sobre una variable sin guarda de vacío | **−15 pts**. Un `BUILD_DIR` vacío por un typo no puede borrar el directorio equivocado |
-| `build/`, objetos o el binario comiteados | −10 pts |
+| `build/`, `dist/`, objetos o el binario comiteados | −10 pts |
 | Dependencias de headers escritas a mano en lugar de `-MMD -MP` | −10 pts. Se desactualizan en el primer refactor |
 | `make` sin argumentos compila en lugar de mostrar la ayuda | −5 pts |
 
@@ -172,8 +175,8 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 04` con las 11 comprobaciones en verde
-- [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `build/`)
+- [ ] `./scripts/verificar-semana.sh 04` con las 14 comprobaciones en verde
+- [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `build/` ni `dist/`)
 
 ---
 

@@ -16,10 +16,12 @@ DIST := dist
 ARTEFACTOS := \
     $(DIST)/reportes/informe-q1.txt \
     $(DIST)/reportes/informe-q2.txt \
-    $(DIST)/datos/estadisticas.csv
+    $(DIST)/datos/estadisticas.csv \
+    $(DIST)/docs/guia.md \
+    $(DIST)/docs/faq.md
 
 ## all: genera todos los artefactos en sus subdirectorios
-all: $(ARTEFACTOS)
+all: $(ARTEFACTOS) $(DIST)/indice.txt
 
 # $(@D) = directorio del target (ej: dist/reportes)
 # $(@F) = nombre del archivo del target (ej: informe-q1.txt)
@@ -34,6 +36,19 @@ $(DIST)/datos/%.csv:
 	@echo "[gen] Directorio: $(@D)"
 	@echo "[gen] Archivo:    $(@F)"
 	@touch $@
+
+# Copia plantillas/*.md a dist/docs/: entrada y salida en directorios distintos
+# $(<D) = plantillas, $(<F) = guia.md; $(@D) = dist/docs, $(@F) = guia.md
+$(DIST)/docs/%.md: plantillas/%.md
+	@mkdir -p $(@D)
+	@echo "[copia] $(<D) / $(<F) → $(@D) / $(@F)"
+	@cp $< $@
+
+# Índice: $^ son todos los artefactos; se rehace si alguno es más nuevo
+$(DIST)/indice.txt: $(ARTEFACTOS)
+	@mkdir -p $(@D)
+	@printf '%s\n' $^ > $@
+	@echo "[indice] $@ listo."
 
 ## limpiar: elimina el directorio de artefactos completo
 limpiar:

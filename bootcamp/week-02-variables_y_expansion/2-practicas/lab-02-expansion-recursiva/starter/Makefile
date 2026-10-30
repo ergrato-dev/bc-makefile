@@ -6,7 +6,7 @@
 # Compara los outputs de `make lazy` y `make eager`
 # ============================================================
 
-.PHONY: lazy eager peligro help
+.PHONY: lazy eager peligro corregido help
 
 .DEFAULT_GOAL := help
 
@@ -26,10 +26,14 @@
 # TODO: define DESTINATARIO_EAGER con := y valor "Mundo"
 # DESTINATARIO_EAGER := ...
 
-# ── Reto extra: recursión infinita (¡no ejecutes sin leer el README!) ──
+# ── Recursión infinita (pasos 8-10; ¡no ejecutes sin leer el README!) ──
 # Esta variable hace referencia a sí misma con =
 # GNU Make detecta la recursión y falla con un error claro
 PELIGROSO = $(PELIGROSO)-snapshot
+
+# TODO (paso 10): define VERSION_RELEASE en dos líneas, las dos con :=
+#   primera:  valor "v1.0"
+#   segunda:  VERSION_RELEASE := <valor anterior de VERSION_RELEASE>-snapshot
 
 ## lazy: = evalúa al usar la variable, DESTINATARIO puede definirse después
 lazy:
@@ -44,9 +48,13 @@ peligro:
 	@echo "Intentando expandir PELIGROSO..."
 	@echo "$(PELIGROSO)"
 
+## corregido: muestra VERSION_RELEASE sin recursión
+corregido:
+	@echo "VERSION_RELEASE: $(VERSION_RELEASE)"
+
 ## help: muestra esta ayuda
 help:
-	@echo "Uso: make [lazy|eager|peligro]"
+	@echo "Uso: make [lazy|eager|peligro|corregido]"
 	@grep -E '^## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
 		| sed 's/## //'

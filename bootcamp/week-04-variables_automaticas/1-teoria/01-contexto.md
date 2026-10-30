@@ -20,7 +20,18 @@ También existen `$(<D)` / `$(<F)` para las mismas partes de `$<`.
 
 ## Ejemplo funcional — pega y ejecuta
 
+Crea antes dos fuentes mínimas:
+
+```bash
+printf 'void util(void) {}\n' > utils.c
+printf 'void util(void);\nint main(void) { util(); return 0; }\n' > main.c
+```
+
 ```makefile
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean help
 
 .DEFAULT_GOAL := help
@@ -44,7 +55,8 @@ $(BUILD)/%.o: %.c
 
 ## clean: elimina build/
 clean:
-	@rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 
 ## help: muestra esta ayuda
 help:
@@ -53,7 +65,7 @@ help:
 		| sed 's/## //'
 ```
 
-La regla `$(BUILD)/%.o: %.c` aplica a `main.c` y a `utils.c` con el mismo código. Make resuelve para cada uno:
+Las tres primeras líneas son el preámbulo estricto y `clean` lleva la guarda de `rm -rf`, ambos de la semana 03. La regla `$(BUILD)/%.o: %.c` aplica a `main.c` y a `utils.c` con el mismo código. Make resuelve para cada uno:
 
 - `build/main.o`: `$<` = `main.c`, `$@` = `build/main.o`, `$(@D)` = `build`
 - `build/utils.o`: `$<` = `utils.c`, `$@` = `build/utils.o`, `$(@D)` = `build`

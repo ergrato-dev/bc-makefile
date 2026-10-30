@@ -1,6 +1,6 @@
 # Lab 02 — Expansión recursiva
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -52,6 +52,40 @@ GNU Make detecta esto y falla con: `Recursive variable 'VERSION' references itse
 
 7. Compara los outputs e intenta explicar la diferencia.
 
+8. **Mira cómo guarda Make cada variable.** `make -p` vuelca su base de datos
+   interna; pídele un target inexistente para que no ejecute nada:
+   ```bash
+   make -p __nada__ 2>/dev/null | grep -E '^SALUDO_'
+   ```
+   Debes ver (el orden puede variar):
+   ```
+   SALUDO_EAGER := Hola, !
+   SALUDO_LAZY = Hola, $(DESTINATARIO_LAZY)!
+   ```
+   La recursiva guarda el texto sin expandir; la simple guarda el resultado
+   ya calculado, con el hueco vacío incluido.
+
+9. **Recursión infinita.** El starter define `PELIGROSO = $(PELIGROSO)-snapshot`.
+   Ejecuta:
+   ```bash
+   make peligro
+   ```
+   Make se detiene antes de ejecutar nada:
+   ```
+   Makefile:NN: *** Recursive variable 'PELIGROSO' references itself (eventually).  Stop.
+   ```
+   Para expandir `PELIGROSO` necesita expandir `PELIGROSO`, sin fin.
+
+10. Ahora la versión que sí funciona. Completa el TODO del paso 10:
+    ```makefile
+    VERSION_RELEASE := v1.0
+    VERSION_RELEASE := $(VERSION_RELEASE)-snapshot
+    ```
+    y ejecuta `make corregido`. Debes ver `VERSION_RELEASE: v1.0-snapshot`. Con
+    `:=` el lado derecho se expande una sola vez, con el valor anterior, y el
+    resultado se guarda: no queda ninguna referencia pendiente. Es el patrón
+    para "añadir un sufijo a lo que ya había".
+
 ## Criterios de éxito
 
 - [ ] `make lazy` imprime:
@@ -63,9 +97,25 @@ GNU Make detecta esto y falla con: `Recursive variable 'VERSION' references itse
   SALUDO_EAGER: Hola, !
   ```
   (DESTINATARIO_EAGER estaba vacío cuando se evaluó `:=`)
+- [ ] `make -p` muestra `SALUDO_LAZY` sin expandir y `SALUDO_EAGER` expandido
+- [ ] `make peligro` falla con `Recursive variable 'PELIGROSO' references itself`
+- [ ] `make corregido` imprime `VERSION_RELEASE: v1.0-snapshot`
 - [ ] Puedes explicar verbalmente por qué los resultados son distintos
 - [ ] `make help` funciona correctamente
 
 ## Reto extra
 
-Añade un target `peligro` que demuestre la recursión infinita. En el `starter`, `PELIGROSO` ya está definido con `=` de forma circular. Ejecuta `make peligro` y observa el mensaje de error. Luego corrige la variable para que imprima `"v1.0-snapshot"` sin recursión.
+> [!NOTE]
+> **Make 4.4+.** El operador `:::=` expande el lado derecho al momento, como
+> `:=`, pero crea una variable **recursiva**. Si tienes Make 4.4 (o Docker:
+> `docker run --rm -v "$PWD":/w -w /w debian:13 bash -c 'apt-get update -qq && apt-get install -y -qq make >/dev/null && make ...'`),
+> prueba:
+> ```makefile
+> NOMBRE := Ana
+> SALUDO :::= Hola $(NOMBRE)
+> NOMBRE := Luis
+> SALUDO += $(NOMBRE)
+> ```
+> `$(SALUDO)` vale `Hola Ana Luis` y `$(flavor SALUDO)` dice `recursive`.
+> ¿Por qué `Ana` quedó congelado y `Luis` no? En Make 4.3 la línea `:::=` da
+> `*** empty variable name.  Stop.`; allí la alternativa es `:=`.

@@ -31,12 +31,18 @@ reporte.txt:
 	@cat datos.csv >> reporte.txt
 	@echo "reporte.txt generado."
 
+# TODO (paso 8): agrega 'reporte.txt' como dependencia  →  resumen.txt: reporte.txt
+## resumen.txt: cuenta las líneas de reporte.txt
+resumen.txt:
+	@echo "Generando resumen.txt..."
+	@echo "Líneas del reporte: $$(wc -l < reporte.txt)" > resumen.txt
+
 ## all: prepara datos y genera reporte
 all: preparar reporte.txt
 
 ## clean: elimina archivos generados
 clean:
-	@rm -f datos.csv reporte.txt
+	@rm -f datos.csv reporte.txt resumen.txt
 	@echo "Limpio."
 
 ## help: muestra esta ayuda

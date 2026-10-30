@@ -52,6 +52,27 @@
       "pista": "3-proyecto/README.md, tabla de variables"
     },
     {
+      "id": "dist-empaqueta-app",
+      "descripcion": "make dist genera dist/app-1.0.0.tar.gz con el binario app en la raíz",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} dist >/dev/null 2>&1 && tar -tzf {proyecto}/dist/app-1.0.0.tar.gz",
+      "assert": "stdout~^app$",
+      "pista": "3-proyecto/README.md, sección 6"
+    },
+    {
+      "id": "dist-version-cli",
+      "descripcion": "make dist VERSION=2.0.0 genera dist/app-2.0.0.tar.gz",
+      "cmd": "{make} -C {proyecto} dist VERSION=2.0.0 >/dev/null 2>&1 && test -s {proyecto}/dist/app-2.0.0.tar.gz",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, sección 6"
+    },
+    {
+      "id": "clean-borra-dist",
+      "descripcion": "make clean elimina también dist/",
+      "cmd": "{make} -C {proyecto} dist >/dev/null 2>&1; test -d {proyecto}/dist && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/dist",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, sección 3"
+    },
+    {
       "id": "clean-borra-build",
       "descripcion": "make clean elimina build/ por completo",
       "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",
