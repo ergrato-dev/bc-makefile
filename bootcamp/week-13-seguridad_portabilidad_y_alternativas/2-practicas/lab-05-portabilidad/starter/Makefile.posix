@@ -1,0 +1,19 @@
+# Makefile.posix — convierte docs/*.md en docs/*.html (STARTER)
+# Debe funcionar con GNU make, bmake y cualquier make POSIX.1-2024.
+# TODO (paso 4): hoy solo funciona con GNU make. Cuenta las extensiones GNU.
+
+DOCS := $(wildcard docs/*.md)
+HTML := $(patsubst %.md,%.html,$(DOCS))
+
+.PHONY: all clean
+
+all: $(HTML)
+
+%.html: %.md
+ifeq ($(VERBOSE),1)
+	@echo "md -> html: $<"
+endif
+	sed -e 's|^# \(.*\)|<h1>\1</h1>|' $< > $@
+
+clean:
+	rm -f $(HTML)

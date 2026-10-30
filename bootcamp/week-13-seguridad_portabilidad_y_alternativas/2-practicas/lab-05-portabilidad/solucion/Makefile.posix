@@ -1,0 +1,24 @@
+# Makefile.posix — convierte docs/*.md en docs/*.html (SOLUCIÓN)
+# POSIX.1-2024: funciona con GNU make, bmake y cualquier make conforme.
+# .POSIX tiene que ser la primera línea que no es comentario.
+.POSIX:
+.SUFFIXES:
+.SUFFIXES: .md .html
+
+# Sin $(wildcard): la lista se escribe a mano (o se genera fuera de Make).
+DOCS = docs/intro.md docs/uso.md
+# Sustitución de sufijo: POSIX desde siempre, en vez de $(patsubst).
+HTML = $(DOCS:.md=.html)
+
+all: $(HTML)
+
+# Regla de inferencia (sufijos) en vez de la regla de patrón %.html: %.md.
+# En una regla de inferencia $< sí está definido por POSIX.
+.md.html:
+	sed -e 's|^# \(.*\)|<h1>\1</h1>|' $< > $@
+
+clean:
+	rm -f $(HTML)
+
+# .PHONY es POSIX desde 2024; un make más antiguo lo trata como un target más.
+.PHONY: all clean

@@ -1,0 +1,3 @@
+Capítulo 2: Uso
+
+make build genera el manual.
