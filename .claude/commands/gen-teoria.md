@@ -10,7 +10,7 @@ Genera el archivo de contexto mínimo (1-teoria) para una semana.
 
 **Ejemplo:**
 ```
-/gen-teoria week-04-reglas_de_patron "Reglas de Patrón" "%.o: %.c, static pattern rules, vpath, reglas implícitas"
+/gen-teoria week-05-reglas_de_patron "Reglas de Patrón" "%.o: %.c, static pattern rules, vpath, reglas implícitas"
 ```
 
 ---

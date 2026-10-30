@@ -61,3 +61,11 @@ make config ENV=staging
 make build ENV=prod VERSION=1.2.0
 make clean
 ```
+
+## 🔗 Navegación
+
+| Anterior | Actual | Siguiente |
+|---|---|---|
+| [Semana 01 — Tu primer Makefile](../week-01-tu_primer_makefile/README.md) | **Semana 02 — Variables y expansión** | [Semana 03 — Shell en recetas y modo estricto](../week-03-shell_y_modo_estricto/README.md) |
+
+[← Volver al índice del bootcamp](../README.md)

@@ -60,3 +60,11 @@ make build
 make check
 make clean
 ```
+
+## 🔗 Navegación
+
+| Anterior | Actual | Siguiente |
+|---|---|---|
+| — | **Semana 01 — Tu primer Makefile** | [Semana 02 — Variables y expansión](../week-02-variables_y_expansion/README.md) |
+
+[← Volver al índice del bootcamp](../README.md)
