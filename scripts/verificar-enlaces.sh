@@ -8,7 +8,7 @@
 #   6. Todo .sh con shebang `env bash`, `set -euo pipefail` y bit de ejecucion.
 #   7. Archivos de teoria de semanas publicadas con 600 palabras o menos.
 #   8. Los starter/Makefile de semanas publicadas parsean (salvo labs rotos
-#      a proposito: carpetas con "roto" o "debug" en el nombre).
+#      a proposito: carpetas con "roto(s)", "rota(s)" o "debug" en el nombre).
 #
 # Las comprobaciones 3, 7 y 8 solo se aplican a las semanas marcadas con ✅ en
 # bootcamp/README.md: una semana todavia sin refactorizar fallaria por diseno.
@@ -136,7 +136,7 @@ done < <(find bootcamp -path "*/1-teoria/*" -name "*.md" 2>/dev/null)
 echo "== 8. Los starter/Makefile parsean =="
 while IFS= read -r mk; do
   esta_publicada "$mk" || continue
-  case "$mk" in *roto*|*debug*) continue ;; esac
+  case "$mk" in *rot[oa]*|*debug*) continue ;; esac
   dir=$(dirname "$mk")
   # Se pide un target inexistente: si Make llega a quejarse de el, es que el
   # archivo se leyo entero sin errores de sintaxis. No ejecuta ninguna receta.
