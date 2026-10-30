@@ -10,7 +10,7 @@ Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre d
 |----------|--------|-------------------|----------------|
 | `=`  | Recursiva (lazy) | Al usar la variable | Usa si dependes de variables definidas después |
 | `:=` | Simple (inmediata) | Al asignar | Usa siempre que puedas; es predecible |
-| `?=` | Condicional | Al asignar (si vacía) | Usa para defaults sobreescribibles desde CLI |
+| `?=` | Condicional | Al usar (crea una variable recursiva) | Usa para defaults sobreescribibles; solo asigna si la variable no está definida (vacía cuenta como definida) |
 | `+=` | Append | Hereda el tipo original | Usa para acumular listas de flags o archivos |
 
 ## Ejemplo funcional — pega y ejecuta

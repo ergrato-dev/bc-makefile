@@ -51,6 +51,8 @@ Al terminar esta semana, podrás:
 
 ## Verificación de completitud
 
+Desde la raíz del repositorio, `./scripts/verificar-semana.sh 02` comprueba tu proyecto (`3-proyecto/starter/`) contra los requisitos verificables de la semana.
+
 Al terminar la semana, estos comandos deben funcionar sin errores:
 
 ```bash

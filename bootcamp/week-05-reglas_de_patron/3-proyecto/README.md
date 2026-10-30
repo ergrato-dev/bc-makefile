@@ -49,8 +49,10 @@ Este proyecto integra las tres técnicas de la semana: regla de patrón con dire
 3. **Makefile** con:
    - Regla de patrón `build/obj/%.o: src/%.c` para módulos de aplicación
    - Static pattern rule para `$(TEST_OBJS): build/test/%.o: tests/%.c`
-   - Variables `CC`, `CFLAGS`, `BUILD_DIR`, `SRC_DIR`, `INC_DIR`
+   - Variables `CC`, `CFLAGS`, `BUILD`, `SRC_DIR`, `INC_DIR`
    - Targets: `all`, `test`, `clean`, `help`
+   - Dependencias de headers con `-MMD -MP` y `-include` de los `.d` (semana 04)
+   - Preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y `clean` con guarda de variable vacía (semana 03)
 
 ## Comandos de verificación
 
@@ -64,21 +66,32 @@ make test
 
 # Cambio de compilador
 make clean && make all CC=clang
-touch include/math_ops.h && make all   # recompila solo los objetos que lo incluyen
+touch include/math_ops.h && make all   # recompila solo main.o y math_ops.o
 
 # Build limpio desde cero
 make clean
 make all
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| Regla de patrón `build/obj/%.o: src/%.c` funcional para todos los módulos | 10 |
-| Static pattern rule para `$(TEST_OBJS)` con ruta `build/test/` | 8 |
-| `make clean` + `make all` produce el mismo resultado que el primer build | 7 |
-| `make test` compila el runner y ejecuta las pruebas con output correcto | 5 |
+Los comprueba `./scripts/verificar-semana.sh 05` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make all desde cero produce build/app y el binario imprime potencia(2, 8) = 256
+- [ ] Cada src/*.c produce su objeto en build/obj/
+- [ ] Un .c nuevo en src/ se compila sin tocar el Makefile
+- [ ] Una segunda ejecución de make all no rehace nada
+- [ ] Tocar un .c recompila solo ese objeto
+- [ ] Tocar include/math_ops.h recompila exactamente los dos objetos de la app que lo incluyen
+- [ ] make test compila el runner y termina con Todos los tests pasaron.
+- [ ] El objeto del runner de tests se genera en build/test/
+- [ ] CC se puede cambiar desde la línea de comandos
+- [ ] make clean elimina build/ por completo
+- [ ] make clean se niega a borrar si BUILD está vacía
+- [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile declara .DELETE_ON_ERROR
 
 ## Instrucciones de entrega
 

@@ -32,7 +32,7 @@ dist/
 
 ## Lo que debes construir
 
-1. **`build`** — copia `src/` a `dist/` con `cp -r`
+1. **`build`** — crea `dist/` y copia dentro el contenido de `src/` (`cp -r src/. dist/`); ejecutarlo dos veces no debe crear `dist/src/`
 2. **`serve`** — inicia un servidor local desde `dist/` con `python3 -m http.server 8080`; imprime la URL antes de arrancar
 3. **`clean`** — elimina `dist/` completamente
 4. **`check`** — verifica que `dist/index.html` y `dist/about.html` existen y no están vacíos; falla con mensaje claro si algo falta
@@ -69,15 +69,20 @@ Error: dist/index.html no encontrado. Ejecuta 'make build' primero.
 make: *** [Makefile:XX: check] Error 1
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make build` copia `src/` a `dist/` correctamente | 8 |
-| `make clean` elimina `dist/` sin errores | 5 |
-| `make check` verifica archivos y falla con mensaje claro | 8 |
-| `make help` lista todos los targets con descripción | 5 |
-| `make deploy` lista archivos y confirma el deploy simulado | 4 |
+Los comprueba `./scripts/verificar-semana.sh 01` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make sin argumentos lista los seis targets con su descripción
+- [ ] make build copia index.html, about.html y css/styles.css a dist/
+- [ ] Ejecutar make build dos veces no anida src/ dentro de dist/
+- [ ] Tras make build, make check termina con Check OK.
+- [ ] make check sale con error si dist/ no existe
+- [ ] make deploy lista los archivos de dist/, incluido dist/css/styles.css
+- [ ] make clean elimina dist/ por completo
+- [ ] make clean se ejecuta aunque exista un archivo llamado clean
 
 ## Entrega
 

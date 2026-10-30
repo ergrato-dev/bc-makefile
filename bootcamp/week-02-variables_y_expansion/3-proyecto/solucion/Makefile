@@ -13,11 +13,14 @@ REGISTRY  ?= registry.local
 LOG_LEVEL ?= info
 
 # ── Versión ───────────────────────────────────────────────────
-VERSION    ?= $(shell git describe --tags --always 2>/dev/null || echo "0.1.0")
-BUILD_DATE := $(shell date +%F)
+# := ejecuta git una sola vez; ?= deja que VERSION llegue desde CLI o entorno
+GIT_VERSION := $(shell git describe --tags --always 2>/dev/null || echo "0.1.0")
+VERSION     ?= $(GIT_VERSION)
+BUILD_DATE  := $(shell date +%F)
 
 # ── Tags e imagen ─────────────────────────────────────────────
-# = para que los overrides de ENV y VERSION del CLI se propaguen
+# = se evalúa al usarse: sigue a ENV y VERSION aunque cambien después de esta
+# línea (por ejemplo, con una variable específica de target)
 IMAGE_TAG   = $(REGISTRY)/$(APP_NAME):$(VERSION)-$(ENV)
 
 # ── Base de datos ─────────────────────────────────────────────

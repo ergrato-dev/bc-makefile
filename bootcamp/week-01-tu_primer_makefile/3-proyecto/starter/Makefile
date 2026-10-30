@@ -22,8 +22,8 @@ PORT     := 8080
 
 ## build: copia src/ a dist/
 build:
-	# TODO: copia $(SRC_DIR)/ a $(DIST_DIR)/ usando cp -r
-	# Pista: cp -r $(SRC_DIR)/ $(DIST_DIR)/
+	# TODO: crea $(DIST_DIR)/ con mkdir -p y copia el CONTENIDO de $(SRC_DIR)/ dentro
+	# Pista: cp -r $(SRC_DIR)/. $(DIST_DIR)/  (el /. evita que la segunda vez cree $(DIST_DIR)/src/)
 	# Después del copy, imprime "Build OK: $(DIST_DIR)/ listo"
 
 ## serve: inicia servidor local en dist/ (puerto 8080)

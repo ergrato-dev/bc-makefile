@@ -22,9 +22,12 @@
 # TODO: define LOG_LEVEL con ?= y valor "info"
 
 # ── Versión ───────────────────────────────────────────────────
-# TODO: define VERSION con ?= capturando git describe --tags --always
+# TODO: define GIT_VERSION con := capturando git describe --tags --always
 #       Si no hay git, usar "0.1.0" como fallback
 #       Pista: $(shell git describe --tags --always 2>/dev/null || echo "0.1.0")
+#       Usa := y no ?=: ?= crea una variable recursiva y ejecutaría git en cada uso
+
+# TODO: define VERSION con ?= y valor $(GIT_VERSION)
 
 # TODO: define BUILD_DATE con := capturando la fecha actual (date +%F)
 

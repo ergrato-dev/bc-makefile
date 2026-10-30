@@ -1,0 +1,83 @@
+{
+  "semana": "02",
+  "titulo": "Variables y expansión",
+  "checks": [
+    {
+      "id": "env-por-defecto",
+      "descripcion": "Sin ENV, make config muestra el entorno dev",
+      "cmd": "env -u ENV {make} -C {proyecto} config 2>&1",
+      "assert": "stdout~^Entorno: +dev$",
+      "pista": "2-practicas/lab-04-variables-condicionales/README.md, paso 2"
+    },
+    {
+      "id": "env-desde-cli",
+      "descripcion": "make config ENV=staging muestra el entorno staging",
+      "cmd": "{make} -C {proyecto} config ENV=staging 2>&1",
+      "assert": "stdout~^Entorno: +staging$",
+      "pista": "2-practicas/lab-05-override-cli/README.md, paso 5"
+    },
+    {
+      "id": "env-desde-entorno",
+      "descripcion": "ENV exportada en la shell cambia el entorno sin tocar el Makefile",
+      "cmd": "ENV=prod {make} -C {proyecto} config 2>&1",
+      "assert": "stdout~^Entorno: +prod$",
+      "pista": "2-practicas/lab-04-variables-condicionales/README.md, paso 5"
+    },
+    {
+      "id": "version-por-defecto",
+      "descripcion": "Sin VERSION, la imagen lleva una versión no vacía obtenida de git o 0.1.0",
+      "cmd": "env -u VERSION {make} -C {proyecto} config 2>&1",
+      "assert": "stdout~^Imagen: +registry.local/mywebservice:[0-9A-Za-z][^ ]*-dev$",
+      "pista": "2-practicas/lab-03-expansion-inmediata/README.md, paso 4"
+    },
+    {
+      "id": "imagen-sigue-cli",
+      "descripcion": "make config ENV=prod VERSION=2.0.0 muestra la imagen registry.local/mywebservice:2.0.0-prod",
+      "cmd": "{make} -C {proyecto} config ENV=prod VERSION=2.0.0 2>&1",
+      "assert": "stdout~^Imagen: +registry.local/mywebservice:2[.]0[.]0-prod$",
+      "pista": "2-practicas/lab-05-override-cli/README.md, paso 3"
+    },
+    {
+      "id": "db-url-sigue-env",
+      "descripcion": "La URL de base de datos incluye el entorno activo",
+      "cmd": "{make} -C {proyecto} config ENV=staging 2>&1",
+      "assert": "stdout~^DB URL: +postgres://localhost:5432/mywebservice_staging$",
+      "pista": "3-proyecto/README.md, tabla de variables"
+    },
+    {
+      "id": "db-host-cli",
+      "descripcion": "DB_HOST se puede cambiar desde la línea de comandos",
+      "cmd": "{make} -C {proyecto} config ENV=prod DB_HOST=prod-db.internal 2>&1",
+      "assert": "stdout~^DB URL: +postgres://prod-db.internal:5432/mywebservice_prod$",
+      "pista": "2-practicas/lab-04-variables-condicionales/README.md, reto extra"
+    },
+    {
+      "id": "image-tag-recursiva",
+      "descripcion": "IMAGE_TAG se define con = y referencia a ENV",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^IMAGE_TAG = .*[$][(]ENV[)]'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-expansion-recursiva/README.md, paso 2"
+    },
+    {
+      "id": "build-date-inmediata",
+      "descripcion": "BUILD_DATE se define con := y guarda una fecha AAAA-MM-DD",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^BUILD_DATE := [0-9]{4}-[0-9]{2}-[0-9]{2}$'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-expansion-inmediata/README.md, paso 3"
+    },
+    {
+      "id": "deploy-orden",
+      "descripcion": "make deploy ejecuta build y test antes de desplegar",
+      "cmd": "{make} -C {proyecto} deploy 2>&1 | grep -oE '^[[][a-z]+[]]' | uniq | paste -sd' '",
+      "assert": "stdout~^.build. .test. .deploy.$",
+      "pista": "3-proyecto/README.md, sección 4"
+    },
+    {
+      "id": "clean-sin-dist",
+      "descripcion": "make clean no falla aunque dist/ no exista",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; test ! -e {proyecto}/dist && {make} -C {proyecto} clean 2>&1",
+      "assert": "stdout~^.clean. Listo",
+      "pista": "3-proyecto/README.md, sección 5"
+    }
+  ]
+}

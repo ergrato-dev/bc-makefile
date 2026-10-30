@@ -15,7 +15,8 @@ PORT     := 8080
 
 ## build: copia src/ a dist/
 build:
-	@cp -r $(SRC_DIR)/ $(DIST_DIR)/
+	@mkdir -p $(DIST_DIR)
+	@cp -r $(SRC_DIR)/. $(DIST_DIR)/
 	@echo "Build OK: $(DIST_DIR)/ listo"
 
 ## serve: inicia servidor local en dist/ (Ctrl+C para detener)

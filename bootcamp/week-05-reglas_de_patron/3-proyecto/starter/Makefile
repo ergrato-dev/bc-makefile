@@ -8,6 +8,11 @@
 # Targets requeridos: all, test, clean, help
 # ============================================================
 
+# TODO: preámbulo estricto de la semana 03 (va antes que todo lo demás):
+#   SHELL       := bash
+#   .SHELLFLAGS := -eu -o pipefail -c
+#   .DELETE_ON_ERROR:
+
 .PHONY: all test clean help
 
 .DEFAULT_GOAL := help
@@ -80,10 +85,11 @@ $(TEST_RUNNER): $(LIB_OBJS) $(TEST_OBJS)
 #   DEPS := $(patsubst %.o,%.d,$(LIB_OBJS) $(APP_OBJS) $(TEST_OBJS))
 #   -include $(DEPS)
 
+# TODO: borra $(BUILD) con la guarda de la semana 03 (dos líneas de receta):
+#   $(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+#   @rm -rf -- '$(BUILD)'
 ## clean: elimina el directorio build/
 clean:
-	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
-	@rm -rf -- '$(BUILD)'
 	@echo "[clean] listo"
 
 ## help: muestra esta ayuda

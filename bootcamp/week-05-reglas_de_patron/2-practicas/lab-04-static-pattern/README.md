@@ -22,7 +22,7 @@ La diferencia con una regla de patrón genérica es que solo aplica a los target
 - Necesitas que una regla no "escape" a targets que accidentalmente coincidan con el patrón
 
 ```makefile
-LIB_SRCS  := src/math.c src/string_ops.c
+LIB_SRCS  := src/math_ops.c src/string_ops.c
 APP_SRCS  := src/main.c
 
 LIB_OBJS  := $(LIB_SRCS:src/%.c=build/lib/%.o)
@@ -34,21 +34,21 @@ $(LIB_OBJS): build/lib/%.o: src/%.c
 	$(CC) $(CFLAGS) -DLIB -c $< -o $@
 
 # Módulos de aplicación: compilados sin -DLIB
-$(APP_OBJS): build/app/%.o: src/%.c
+$(APP_OBJS): build/main/%.o: src/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 ```
 
 ## Instrucciones
 
-1. Abre `starter/`. Los archivos `src/main.c`, `src/math.c` y `src/string_ops.c` están disponibles.
+1. Abre `starter/`. Los archivos `src/main.c`, `src/math_ops.c` y `src/string_ops.c` están disponibles.
 
 2. Define las listas separadas de objetos:
    ```makefile
-   LIB_SRCS := src/math.c src/string_ops.c
+   LIB_SRCS := src/math_ops.c src/string_ops.c
    APP_SRCS := src/main.c
    LIB_OBJS := $(LIB_SRCS:src/%.c=build/lib/%.o)
-   APP_OBJS := $(APP_SRCS:src/%.c=build/app/%.o)
+   APP_OBJS := $(APP_SRCS:src/%.c=build/main/%.o)
    ```
 
 3. Escribe la static pattern rule para `LIB_OBJS`:
@@ -70,14 +70,14 @@ $(APP_OBJS): build/app/%.o: src/%.c
 6. Verifica:
    ```bash
    make all
-   ls build/lib/    # math.o, string_ops.o
-   ls build/app/    # main.o
-   ./build/app
+   ls build/lib/    # math_ops.o, string_ops.o
+   ls build/main/   # main.o
+   ./build/calculator
    ```
 
 ## Criterios de éxito
 
-- [ ] `make all` produce `build/lib/math.o`, `build/lib/string_ops.o` y `build/app/main.o`
+- [ ] `make all` produce `build/lib/math_ops.o`, `build/lib/string_ops.o` y `build/main/main.o`
 - [ ] `./build/calculator` imprime:
   ```
   suma(3, 4) = 7

@@ -5,9 +5,9 @@
 # Instrucciones:
 #   1. Define LIB_OBJS y APP_OBJS como listas separadas
 #   2. Escribe la static pattern rule para LIB_OBJS → build/lib/
-#   3. Escribe la static pattern rule para APP_OBJS → build/app/
+#   3. Escribe la static pattern rule para APP_OBJS → build/main/
 #   4. Completa el target $(APP) enlazando los dos grupos
-#   5. Verifica con: make all && ./build/app
+#   5. Verifica con: make all && ./build/calculator
 # ============================================================
 
 .PHONY: all clean help

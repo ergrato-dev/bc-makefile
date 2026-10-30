@@ -29,7 +29,7 @@ Una trampa frecuente: si `IMAGE_TAG` se define con `:=` construido a partir de `
    - `APP_NAME` → `"myapp"`
 
 3. Define `IMAGE_TAG` con `=` (no `:=`) construyendo `"$(REGISTRY)/$(APP_NAME):$(VERSION)-$(ENV)"`.
-   *(Usa `=` para que los overrides CLI de ENV/VERSION se propaguen.)*
+   *(Con `=`, `IMAGE_TAG` sigue a `ENV` y `VERSION` aunque cambien después de esta línea. Los overrides CLI funcionarían también con `:=`, como explica el Contexto.)*
 
 4. Completa los targets `info`, `build` y `deploy`.
 

@@ -1,0 +1,97 @@
+{
+  "semana": "05",
+  "titulo": "Reglas de patrón",
+  "checks": [
+    {
+      "id": "binario-funciona",
+      "descripcion": "make all desde cero produce build/app y el binario imprime potencia(2, 8) = 256",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} all >/dev/null 2>&1 && {proyecto}/build/app",
+      "assert": "stdout~potencia.2, 8. = 256",
+      "pista": "3-proyecto/README.md, sección Entregables, punto 1"
+    },
+    {
+      "id": "objetos-en-build-obj",
+      "descripcion": "Cada src/*.c produce su objeto en build/obj/",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -f {proyecto}/build/obj/main.o && test -f {proyecto}/build/obj/io.o && test -f {proyecto}/build/obj/math_ops.o && test -f {proyecto}/build/obj/string_ops.o",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-directorio-salida/README.md, paso 3"
+    },
+    {
+      "id": "modulo-nuevo-sin-tocar-makefile",
+      "descripcion": "Un .c nuevo en src/ se compila sin tocar el Makefile",
+      "cmd": "echo 'int extra_fn(void) { return 1; }' > {proyecto}/src/extra.c; {make} -C {proyecto} all >/dev/null 2>&1; test -f {proyecto}/build/obj/extra.o; r=$?; rm -f {proyecto}/src/extra.c {proyecto}/build/obj/extra.o {proyecto}/build/obj/extra.d {proyecto}/build/app; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-directorio-salida/README.md, reto extra"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make all no rehace nada",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && {make} -C {proyecto} all",
+      "assert": "stdout~Nothing to be done|is up to date",
+      "pista": "1-teoria/01-contexto.md, sección Ejemplo funcional"
+    },
+    {
+      "id": "incremental-un-objeto",
+      "descripcion": "Tocar un .c recompila solo ese objeto",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; touch {proyecto}/src/string_ops.c && {make} -C {proyecto} all 2>&1 | grep -cE '[[:space:]]-c[[:space:]]'",
+      "assert": "stdout~^1$",
+      "pista": "2-practicas/lab-01-patron-basico/README.md, paso 5"
+    },
+    {
+      "id": "header-recompila",
+      "descripcion": "Tocar include/math_ops.h recompila exactamente los dos objetos de la app que lo incluyen",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; touch {proyecto}/include/math_ops.h && {make} -C {proyecto} all 2>&1 | grep -cE '[[:space:]]-c[[:space:]]'",
+      "assert": "stdout~^2$",
+      "pista": "3-proyecto/starter/Makefile, TODO de los .d (semana 04)"
+    },
+    {
+      "id": "test-pasa",
+      "descripcion": "make test compila el runner y termina con Todos los tests pasaron.",
+      "cmd": "{make} -C {proyecto} test 2>&1",
+      "assert": "stdout~^Todos los tests pasaron",
+      "pista": "3-proyecto/README.md, sección Entregables, punto 2"
+    },
+    {
+      "id": "test-objeto-en-build-test",
+      "descripcion": "El objeto del runner de tests se genera en build/test/",
+      "cmd": "{make} -C {proyecto} test >/dev/null 2>&1; test -f {proyecto}/build/test/test_runner.o",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-static-pattern/README.md, paso 3"
+    },
+    {
+      "id": "cc-desde-cli",
+      "descripcion": "CC se puede cambiar desde la línea de comandos",
+      "cmd": "{make} -C {proyecto} -n -B all CC=clang",
+      "assert": "stdout~(^|[[:space:]])clang .*-c ",
+      "pista": "3-proyecto/README.md, sección Entregables, punto 3"
+    },
+    {
+      "id": "clean-borra-build",
+      "descripcion": "make clean elimina build/ por completo",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD está vacía",
+      "cmd": "{make} -C {proyecto} clean BUILD=",
+      "assert": "stdout~BUILD vac",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    }
+  ]
+}
