@@ -21,7 +21,7 @@ Al terminar esta semana serás capaz de:
 - GNU Make ≥ 4.x
 - bash, git
 - Docker (labs 02 y proyecto)
-- Python 3.10+ y Node.js 18+ (labs y proyecto)
+- Python 3.14 y Node.js 26 LTS (labs y proyecto)
 - gcc (lab 01)
 
 ## Tabla de contenidos

@@ -4,7 +4,7 @@
 PYTHON    := python3
 VENV      := .venv
 PIP       := $(VENV)/bin/pip
-PYTEST    := $(VENV)/bin/pytest
+PYTEST    := $(VENV)/bin/python -m pytest
 FLAKE8    := $(VENV)/bin/flake8
 SRC_DIR   := src
 TESTS_DIR := tests

@@ -19,7 +19,7 @@ Al terminar esta semana serás capaz de:
 - Semanas 01–08 del bootcamp
 - GNU Make ≥ 4.x
 - bash
-- Python 3.10+ (algunos labs)
+- Python 3.14 (algunos labs)
 - git
 
 ## Tabla de contenidos

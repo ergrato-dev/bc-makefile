@@ -2,7 +2,7 @@
 
 **Duración estimada:** 50 minutos
 
-**Requisitos:** Python 3.10+, pip
+**Requisitos:** Python 3.14 con el módulo venv
 
 ## Objetivo
 

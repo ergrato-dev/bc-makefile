@@ -6,8 +6,8 @@ graph TD
 
     MAKE --> PY[Python / pip / pytest]
     MAKE --> DOC[Docker / docker build]
-    MAKE --> NPM[Node.js / npm]
-    MAKE --> CMP[docker-compose]
+    MAKE --> PNPM[Node.js / pnpm]
+    MAKE --> CMP[docker compose]
 
     PY --> R1[".venv/ creado<br/>tests ejecutados<br/>linting verificado"]
     DOC --> R2["Imagen construida<br/>Contenedor corriendo<br/>Push al registry"]

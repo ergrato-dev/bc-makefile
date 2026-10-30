@@ -6,7 +6,7 @@ APP_NAME   := notificador
 PYTHON     := python3
 VENV       := .venv
 PIP        := $(VENV)/bin/pip
-PYTEST     := $(VENV)/bin/pytest
+PYTEST     := $(VENV)/bin/python -m pytest
 FLAKE8     := $(VENV)/bin/flake8
 PY         := $(VENV)/bin/python
 
@@ -18,10 +18,13 @@ IMAGE      := $(APP_NAME):$(VERSION)
 FULL_IMAGE := $(REGISTRY)/$(APP_NAME)
 
 # ── Compose ────────────────────────────────────────────────────────────────────
-COMPOSE    := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE    := docker compose
 
 # ── Variables de entorno ────────────────────────────────────────────────────────
-# TODO A: Agrega '-include .env' y 'export' aquí para propagar variables al shell
+# TODO A: Agrega '-include .env' y exporta SOLO las variables que lee la app:
+#         export ENV LOG_LEVEL SMTP_HOST SMTP_PORT
+#         Nunca `export` a secas: mandaría todo a cada subproceso.
 
 
 # ── Instalación ────────────────────────────────────────────────────────────────
@@ -55,11 +58,11 @@ COMPOSE    := $(shell docker compose version > /dev/null 2>&1 && echo "docker co
 # ── Docker ─────────────────────────────────────────────────────────────────────
 # TODO 8: Target 'build' que:
 #   - ejecute docker build con --build-arg VERSION=$(VERSION) y --build-arg BUILD_DATE=$(BUILD_DATE)
-#   - etiquete como $(APP_NAME):$(VERSION) y $(APP_NAME):latest
+#   - etiquete como $(APP_NAME):$(VERSION) (sin latest: es mutable)
 #   - imprima "Imagen: $(IMAGE)" al terminar
 
 
-# TODO 9: Target 'docker-run' que ejecute el contenedor con --rm y --env-file .env
+# TODO 9: Target 'docker-run' que ejecute $(IMAGE) con --rm y --env-file .env
 
 
 # ── Compose ────────────────────────────────────────────────────────────────────
@@ -80,8 +83,9 @@ COMPOSE    := $(shell docker compose version > /dev/null 2>&1 && echo "docker co
 
 # ── Despliegue ─────────────────────────────────────────────────────────────────
 # TODO 13: Target 'deploy-prod' que:
-#   - pida confirmación: @read -p "¿Desplegar $(IMAGE) en PRODUCCIÓN? [y/N] " ans && [ "$$ans" = "y" ]
-#   - luego levante el stack con docker-compose
+#   - pida confirmación de forma portable (read -p no existe en dash/POSIX):
+#       @printf '¿Desplegar $(IMAGE) en PRODUCCIÓN? [y/N] '; read -r ans; [ "$$ans" = "y" ]
+#   - luego levante el stack con $(COMPOSE)
 
 
 # ── Limpieza ───────────────────────────────────────────────────────────────────

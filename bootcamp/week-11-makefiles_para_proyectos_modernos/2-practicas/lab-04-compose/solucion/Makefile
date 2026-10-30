@@ -1,10 +1,15 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all up down logs ps restart exec info help
 .DEFAULT_GOAL := help
 
 STACK_NAME := mi-stack
 SERVICE    ?= web
 
-COMPOSE := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2 viene integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE := docker compose
 
 up: ## Levantar stack en modo detached
 	$(COMPOSE) up -d

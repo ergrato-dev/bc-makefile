@@ -21,7 +21,7 @@ build-backend: ## Construir backend (Python)
 
 # TODO: convertir en target con stamp .stamps/deps-node
 # Dependencia real: package.json
-# Acción: npm install --silent && sleep 1 (simula instalación lenta)
+# Acción: pnpm install --silent && sleep 1 (simula instalación lenta)
 build-frontend: ## Construir frontend (Node.js)
 	@echo "==> Instalando deps Node ..."
 	@sleep 1

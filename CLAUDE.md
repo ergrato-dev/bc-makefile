@@ -159,13 +159,13 @@ Bandas: Sobresaliente 90–100, Notable 80–89, Aprobado 70–79.
 | **Fase 3 — Avanzado** ||||
 | 09 | `week-09-condicionales_include_y_depuracion` | Condicionales, `include`, `--trace`, `--warn-undefined-variables`, guarda de versión | Makefile modular reutilizable |
 | 10 | `week-10-paralelismo_y_recursion` | `-j`, jobserver, `-O`, `.NOTPARALLEL`, `.WAIT`, `--shuffle`, sub-makes como targets | Monorepo con build paralelo y recursión segura |
-| 11 | `week-11-makefiles_para_proyectos_modernos` | Python + uv, Docker multi-stage no-root, Node.js con `npm ci` | Makefile de microservicio listo para producción |
+| 11 | `week-11-makefiles_para_proyectos_modernos` | Python + uv, Docker multi-stage no-root, Node.js con pnpm | Makefile de microservicio listo para producción |
 | **Fase 4 — Producción** ||||
 | 12 | `week-12-make_como_orquestador_devops` | CI/CD local, git hooks (`core.hooksPath`), `.env`, secrets | Pipeline local completo |
 | 13 | `week-13-seguridad_portabilidad_y_alternativas` | Amenazas, testing de Makefiles, POSIX/BSD make, just/Task/ninja/CMake | Auditoría y endurecimiento de un Makefile real |
 | 14 | `week-14-proyecto_integrador` | Integración de todo lo aprendido | Build system multi-lenguaje con Make |
 
-Versiones del stack (Python, Node, imágenes): `docs/stack-versions.md`. No usar otras.
+Versiones del stack (Python, Node, imágenes): `docs/stack-versions.md`. No usar otras. Node.js siempre con **pnpm** (`pnpm-lock.yaml`, `pnpm install --frozen-lockfile`); nunca npm.
 
 ## Comandos útiles durante el desarrollo del bootcamp
 

@@ -95,6 +95,11 @@ doctor() {
   else
     opcional "node" "no instalado"
   fi
+  if command -v pnpm >/dev/null 2>&1; then
+    comprobar "pnpm" ok "$(pnpm --version)"
+  else
+    opcional "pnpm" "no instalado (Node.js se usa siempre con pnpm)"
+  fi
   if command -v shellcheck >/dev/null 2>&1; then
     comprobar "shellcheck" ok "$(shellcheck --version | awk '/^version:/{print $2}')"
   else

@@ -2,7 +2,7 @@
 
 **Duración estimada:** 2h 30min
 
-**Requisitos:** Python 3.10+, Docker 24+
+**Requisitos:** Python 3.14, Docker Engine 27+ con Compose v2
 
 ## Contexto
 
@@ -36,8 +36,8 @@ starter/
    - `make run` — ejecuta `src/main.py` con el venv local
    - `make build` — `docker build` con `VERSION` y `BUILD_DATE` como `--build-arg`
    - `make docker-run` — `docker run` con variables de `.env`
-   - `make up` — `docker-compose up -d`
-   - `make down` — `docker-compose down`
+   - `make up` — `docker compose up -d`
+   - `make down` — `docker compose down`
    - `make info` — muestra versión, imagen, fecha, entorno activo
    - `make deploy-prod` — pide confirmación antes de ejecutar
    - `make clean` — elimina `.venv/` y cachés Python

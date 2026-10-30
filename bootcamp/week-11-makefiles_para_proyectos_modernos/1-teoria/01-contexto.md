@@ -2,7 +2,7 @@
 
 ## ¿Por qué importa esto?
 
-Cada ecosistema tiene su propio gestor de tareas: `pytest` para Python, `npm run` para Node.js, `docker build` para contenedores. El problema es que cada uno tiene su propia sintaxis, opciones y convenciones. Make resuelve esto siendo la capa de abstracción encima de todos ellos: cualquier desarrollador que clona el repo ejecuta `make test` y funciona, sin importar si el proyecto usa pip, yarn o Dockerfile.
+Cada ecosistema tiene su propio gestor de tareas: `pytest` para Python, `pnpm run` para Node.js, `docker build` para contenedores. El problema es que cada uno tiene su propia sintaxis, opciones y convenciones. Make resuelve esto siendo la capa de abstracción encima de todos ellos: cualquier desarrollador que clona el repo ejecuta `make test` y funciona, sin importar si el proyecto usa pip, pnpm o Dockerfile.
 
 ## Patrón: archivo testigo (sentinel file)
 
@@ -28,17 +28,19 @@ Resultado: `make install` solo reinstala cuando `requirements.txt` cambia. Idén
 | Ecosistema | Sentinel file | Herramienta | Patrón |
 |-----------|---------------|-------------|--------|
 | Python | `.venv/.installed` | pip | depende de `requirements.txt` |
-| Node.js | `node_modules/.package-lock.json` | npm | depende de `package.json` |
+| Node.js | `node_modules/.installed` | ppnpm install --frozen-lockfile | depende de `package.json` y `pnpm-lock.yaml` |
 | Docker | ninguno (imagen en registry) | docker | siempre reconstruye o usa `--cache-from` |
-| docker-compose | ninguno | docker-compose | targets PHONY, orquestación |
+| Compose v2 | ninguno | `docker compose` | targets PHONY, orquestación |
 
 ## Variables de entorno desde `.env`
 
 ```makefile
 # -include (con guion) no falla si .env no existe
 -include .env
-export   # propaga todas las variables al shell de las recetas
+export ENV DATABASE_URL   # solo lo que las recetas necesitan
 ```
+
+Nunca `export` a secas: manda todas las variables, secretos incluidos, a cada proceso. Y `.env` se parsea como Makefile: `$` se expande, las comillas quedan literales y `#` corta el valor.
 
 ## Ejemplo mínimo funcional
 
@@ -51,11 +53,11 @@ Pega esto en un directorio vacío y ejecuta `make info`:
 PYTHON   := python3
 VENV     := .venv
 PIP      := $(VENV)/bin/pip
-PYTEST   := $(VENV)/bin/pytest
+PYTEST   := $(VENV)/bin/python -m pytest
 VERSION  := $(shell git describe --tags --always 2>/dev/null || echo 0.0.0)
 
 -include .env
-export
+export ENV
 
 $(VENV)/.installed: requirements.txt
 	$(PYTHON) -m venv $(VENV)

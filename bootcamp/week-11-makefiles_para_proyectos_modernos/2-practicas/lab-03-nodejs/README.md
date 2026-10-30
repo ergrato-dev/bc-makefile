@@ -2,7 +2,7 @@
 
 **Duración estimada:** 50 minutos
 
-**Requisitos:** Node.js 18+ y npm
+**Requisitos:** Node.js 26 LTS y pnpm
 
 ## Objetivo
 
@@ -10,13 +10,16 @@ Envolver el ciclo de vida de un proyecto Node.js (install, build, test, lint) en
 
 ## Contexto
 
-El patrón de sentinel file para Node.js es diferente al de Python: en lugar de crear un archivo `.installed`, usamos `node_modules/.package-lock.json` (generado automáticamente por `npm install`) como el testigo. Si `package.json` cambia, este archivo es más antiguo y Make reinstala.
+El sentinel file para Node.js es `node_modules/.installed`, igual que en Python. Depende de `package.json` y de `pnpm-lock.yaml`: si cualquiera cambia, Make reinstala.
 
 ```makefile
-node_modules/.package-lock.json: package.json
-	npm install
+node_modules/.installed: package.json pnpm-lock.yaml
+	ppnpm install --frozen-lockfile
+	@mkdir -p $(@D)
 	@touch $@
 ```
+
+Usa `ppnpm install --frozen-lockfile`: instala exactamente lo que dice el lockfile y falla si no coincide con `package.json`. Sin el flag, pnpm puede reescribir el lockfile y cada máquina acabar con versiones distintas. En este bootcamp Node.js se usa siempre con **pnpm**, nunca con npm.
 
 La ventaja: Make usa la fecha de modificación del archivo ya existente — no hay que crear nada extra.
 
@@ -40,11 +43,11 @@ La ventaja: Make usa la fecha de modificación del archivo ya existente — no h
    ```
 
 4. Implementa los 6 TODOs del `Makefile`:
-   - **TODO 1:** target `node_modules/.package-lock.json` con dependencia `package.json`; receta: `npm install && touch $@`
+   - **TODO 1:** target `node_modules/.installed` con dependencias `package.json` y `pnpm-lock.yaml`; receta: `ppnpm install --frozen-lockfile`, `mkdir -p $(@D)` y `touch $@`
    - **TODO 2:** target `install` como alias del sentinel
-   - **TODO 3:** target `build` que dependa de `install` y ejecute `npm run build`
-   - **TODO 4:** target `test` que dependa de `install` y ejecute `npm test`
-   - **TODO 5:** target `lint` que dependa de `install` y ejecute `npm run lint`
+   - **TODO 3:** target `build` que dependa de `install` y ejecute `pnpm run build`
+   - **TODO 4:** target `test` que dependa de `install` y ejecute `pnpm test`
+   - **TODO 5:** target `lint` que dependa de `install` y ejecute `pnpm run lint`
    - **TODO 6:** target `clean` que elimine `node_modules/` y `dist/`
 
 5. Verifica:
@@ -60,11 +63,11 @@ La ventaja: Make usa la fecha de modificación del archivo ya existente — no h
 
 ```
 $ make install
-npm install
-...added XX packages in Xs
+ppnpm install --frozen-lockfile
+...
 
 $ make install   # segunda ejecución
-make: 'node_modules/.package-lock.json' is up to date.
+make: Nothing to be done for 'install'.
 ```
 
 ```
@@ -76,7 +79,7 @@ Todos los tests pasaron.
 
 ```
 $ make build
-npm run build
+pnpm run build
 Compilando...
 $ ls dist/
 index.js
@@ -91,4 +94,4 @@ ls: no se puede acceder a 'node_modules': No existe el archivo o el directorio
 
 ## Reto extra
 
-Agrega un target `dev` que ejecute `npm run dev` (modo watch). Asegúrate de que esté en `.PHONY` y que el proceso pueda interrumpirse con Ctrl+C sin dejar la terminal en mal estado.
+Agrega un target `dev` que ejecute `pnpm run dev` (modo watch). Asegúrate de que esté en `.PHONY` y que el proceso pueda interrumpirse con Ctrl+C sin dejar la terminal en mal estado.

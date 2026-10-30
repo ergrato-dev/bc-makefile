@@ -10,7 +10,7 @@ Centralizar el ciclo de vida de una imagen Docker (build, run, push, clean) en u
 
 ## Contexto
 
-Sin Make, el flujo Docker requiere recordar flags largos: `docker build --build-arg VERSION=$(git describe --tags) -t miusuario/mi-app:1.2.3 -t miusuario/mi-app:latest .`. Un error tipográfico en el nombre del tag puede subir una imagen mal etiquetada al registry.
+Sin Make, el flujo Docker requiere recordar flags largos: `docker build --build-arg VERSION=$(git describe --tags) -t miusuario/mi-app:1.2.3 .`. Un error tipográfico en el nombre del tag puede subir una imagen mal etiquetada al registry.
 
 Con Make, ese flujo se vuelve `make build VERSION=1.2.3` — y la misma lógica se reutiliza en CI.
 
@@ -39,7 +39,7 @@ Puntos clave de este lab:
    ```
 
 4. Implementa los 5 TODOs del `Makefile`:
-   - **TODO 1:** target `build` con `docker build`, usando `--build-arg VERSION` y `--build-arg BUILD_DATE`; etiqueta la imagen como `$(IMAGE_NAME):$(VERSION)` y `$(IMAGE_NAME):latest`
+   - **TODO 1:** target `build` con `docker build`, usando `--build-arg VERSION` y `--build-arg BUILD_DATE`; etiqueta la imagen como `$(IMAGE_NAME):$(VERSION)` (sin `latest`: es mutable y no dice qué código corre)
    - **TODO 2:** target `run` que ejecute el contenedor con `docker run --rm`
    - **TODO 3:** target `push` que etiquete con el registry completo y haga push de ambos tags
    - **TODO 4:** target `info` que use `docker image inspect` para mostrar el tamaño y los labels
@@ -61,7 +61,6 @@ docker build \
   --build-arg VERSION=dev \
   --build-arg BUILD_DATE=2026-06-04T... \
   -t mi-app:dev \
-  -t mi-app:latest \
   .
 ...
 Successfully built XXXXXXXXXX
@@ -84,4 +83,4 @@ Imagen mi-app:dev eliminada.
 
 ## Reto extra
 
-Agrega un target `scan` que ejecute `docker scout cves mi-app:latest` (o `docker scan mi-app:latest` en versiones antiguas) para ver vulnerabilidades conocidas de la imagen.
+Agrega un target `scan` que ejecute `docker scout cves mi-app:$(VERSION)` para ver vulnerabilidades conocidas de la imagen.

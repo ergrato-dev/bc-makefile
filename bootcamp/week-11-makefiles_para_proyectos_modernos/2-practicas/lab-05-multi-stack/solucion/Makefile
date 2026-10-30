@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all install test backend-install backend-test frontend-install frontend-test clean info help
 .DEFAULT_GOAL := help
 
@@ -5,34 +9,36 @@
 PYTHON   := python3
 VENV     := backend/.venv
 PIP      := $(VENV)/bin/pip
-PYTEST   := $(VENV)/bin/pytest
+PYTEST   := $(VENV)/bin/python -m pytest
 
 # ── Frontend Node.js ────────────────────────────────────────────────────────────
-NPM      := npm
+PNPM     := pnpm
 NODE_MOD := frontend/node_modules
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
-COMPOSE  := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE  := docker compose
 
-backend/$(VENV)/.installed: backend/requirements.txt
+$(VENV)/.installed: backend/requirements.txt
 	@echo "[backend] Instalando dependencias..."
 	$(PYTHON) -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r backend/requirements.txt
 	@touch $@
 
-backend-install: backend/$(VENV)/.installed ## Instalar dependencias del backend Python
+backend-install: $(VENV)/.installed ## Instalar dependencias del backend Python
 
 backend-test: backend-install ## Ejecutar tests del backend
 	@echo "[backend] Ejecutando tests..."
 	cd backend && ../$(PYTEST) tests/ -v
 
-frontend/node_modules/.package-lock.json: frontend/package.json
+frontend/node_modules/.installed: frontend/package.json frontend/pnpm-lock.yaml
 	@echo "[frontend] Instalando dependencias..."
-	cd frontend && $(NPM) install
-	@touch frontend/node_modules/.package-lock.json
+	cd frontend && $(PNPM) install --frozen-lockfile
+	@mkdir -p $(@D)
+	@touch $@
 
-frontend-install: frontend/node_modules/.package-lock.json ## Instalar dependencias del frontend Node.js
+frontend-install: frontend/node_modules/.installed ## Instalar dependencias del frontend Node.js
 
 frontend-test: frontend-install ## Ejecutar tests del frontend
 	@echo "[frontend] Ejecutando tests..."

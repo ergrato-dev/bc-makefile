@@ -112,7 +112,7 @@ bootcamp/week-NN-nombre_del_tema/
 | GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Semanas 4-10 (proyectos C) |
 | Python      | **3.14** + uv | Semanas 11-14 |
 | Docker      | Engine 27+ con Compose v2 | Semanas 11-14 |
-| Node.js     | **26 LTS** | Semanas 11-14 |
+| Node.js     | **26 LTS** + pnpm (nunca npm) | Semanas 11-14 |
 | jq          | cualquiera | Autograding |
 | Git         | cualquiera | Control de versiones |
 

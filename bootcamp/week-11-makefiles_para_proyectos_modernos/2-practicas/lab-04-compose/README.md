@@ -1,22 +1,22 @@
 # Lab 04 — docker-compose con Make
 
-**Duración estimada:** 50 minutos
+**Duración estimada:** 60 minutos
 
-**Requisitos:** Docker 24+ con docker compose (o docker-compose v2)
+**Requisitos:** Docker Engine 27+ con Compose v2 (`docker compose version`)
 
 ## Objetivo
 
-Envolver los comandos de docker-compose en targets Make para que el stack local tenga una interfaz consistente independientemente de la versión de compose instalada.
+Envolver los comandos de `docker compose` en targets Make para que el stack local tenga una interfaz única y sin secretos en el repositorio.
 
 ## Contexto
 
-`docker-compose` (v1) y `docker compose` (v2 integrado en Docker) tienen CLIs casi idénticas pero el ejecutable cambia. Make resuelve esto con una variable que detecta cuál está disponible:
+Compose v2 viene integrado en Docker como `docker compose`. El binario antiguo `docker-compose` (v1) está en EOL desde 2023: no lo soportes. Una variable deja el comando en un solo sitio:
 
 ```makefile
-COMPOSE := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+COMPOSE := docker compose
 ```
 
-Resultado: el mismo Makefile funciona en ambos entornos sin cambios.
+La contraseña de Postgres no está en `docker-compose.yml`: se lee de `.env` (ignorado por git) con `${POSTGRES_PASSWORD:?...}`, que hace fallar `compose up` si falta. El puerto se publica en `127.0.0.1`, no en todas las interfaces.
 
 Los targets de orquestación son siempre `.PHONY` — nunca producen archivos — y generalmente no tienen dependencias entre sí (levantar y bajar son operaciones independientes).
 
@@ -27,9 +27,10 @@ Los targets de orquestación son siempre `.PHONY` — nunca producen archivos �
    cd lab-04-compose/starter
    ```
 
-2. Revisa el `docker-compose.yml`:
+2. Revisa el `docker-compose.yml` y crea tu `.env`:
    ```bash
    cat docker-compose.yml
+   cp .env.example .env    # edita la contraseña
    ```
 
 3. Ejecuta `make info` para ver el stack configurado (funciona sin docker):
@@ -58,7 +59,7 @@ Los targets de orquestación son siempre `.PHONY` — nunca producen archivos �
 ```
 $ make info
 Stack:    mi-stack
-Compose:  docker compose  (o docker-compose según versión)
+Compose:  docker compose
 Servicios: web db
 ```
 
@@ -73,8 +74,8 @@ docker compose up -d
 ```
 $ make ps
 NAME                  IMAGE           STATUS
-mi-stack-web-1        nginx:alpine    running
-mi-stack-db-1         postgres:15-alpine  running
+mi-stack-web-1        nginx:1.30-alpine    running
+mi-stack-db-1         postgres:18-alpine   running
 ```
 
 ```

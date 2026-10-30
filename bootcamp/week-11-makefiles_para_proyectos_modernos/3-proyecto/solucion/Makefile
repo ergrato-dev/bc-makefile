@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all install install-dev test lint run build docker-run up down info deploy-prod clean help
 .DEFAULT_GOAL := help
 
@@ -6,7 +10,7 @@ APP_NAME   := notificador
 PYTHON     := python3
 VENV       := .venv
 PIP        := $(VENV)/bin/pip
-PYTEST     := $(VENV)/bin/pytest
+PYTEST     := $(VENV)/bin/python -m pytest
 FLAKE8     := $(VENV)/bin/flake8
 PY         := $(VENV)/bin/python
 
@@ -18,11 +22,14 @@ IMAGE      := $(APP_NAME):$(VERSION)
 FULL_IMAGE := $(REGISTRY)/$(APP_NAME)
 
 # ── Compose ────────────────────────────────────────────────────────────────────
-COMPOSE    := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE    := docker compose
 
 # ── Variables de entorno ────────────────────────────────────────────────────────
+# .env se parsea como Makefile: valores sin `$`, sin comillas y sin `#`.
 -include .env
-export
+# Solo lo que lee la app; nunca `export` a secas.
+export ENV LOG_LEVEL SMTP_HOST SMTP_PORT
 
 # ── Instalación ────────────────────────────────────────────────────────────────
 $(VENV)/.installed: requirements.txt
@@ -57,15 +64,14 @@ build: ## Construir imagen Docker con metadata de versión
 		--build-arg VERSION=$(VERSION) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		-t $(APP_NAME):$(VERSION) \
-		-t $(APP_NAME):latest \
 		.
 	@echo "Imagen: $(IMAGE)"
 
 docker-run: ## Ejecutar servicio en contenedor Docker
-	docker run --rm --env-file .env $(APP_NAME):latest
+	docker run --rm --env-file .env $(IMAGE)
 
 # ── Compose ────────────────────────────────────────────────────────────────────
-up: ## Levantar stack de desarrollo con docker-compose
+up: ## Levantar stack de desarrollo con docker compose
 	$(COMPOSE) up -d
 	@echo "Stack arriba. Logs: make logs"
 
@@ -83,13 +89,14 @@ info: ## Mostrar información del proyecto
 
 # ── Despliegue ─────────────────────────────────────────────────────────────────
 deploy-prod: build ## Desplegar en producción (pide confirmación)
-	@read -p "¿Desplegar $(IMAGE) en PRODUCCIÓN? [y/N] " ans && [ "$$ans" = "y" ]
+	@printf '¿Desplegar $(IMAGE) en PRODUCCIÓN? [y/N] '; read -r ans; [ "$$ans" = "y" ]
 	@echo "Desplegando $(IMAGE) → producción..."
 	$(COMPOSE) up -d
 
 # ── Limpieza ───────────────────────────────────────────────────────────────────
 clean: ## Eliminar venv y cachés de Python
-	@rm -rf $(VENV) __pycache__ src/__pycache__ tests/__pycache__ .pytest_cache
+	$(if $(VENV),,$(error VENV vacía))
+	@rm -rf -- '$(VENV)' __pycache__ src/__pycache__ tests/__pycache__ .pytest_cache
 	@find . -name "*.pyc" -delete
 	@echo "Limpiado."
 

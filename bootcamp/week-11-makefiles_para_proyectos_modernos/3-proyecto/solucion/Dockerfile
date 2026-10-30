@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 ARG VERSION=unknown
 ARG BUILD_DATE=unknown
@@ -16,5 +16,9 @@ COPY src/ ./src/
 
 ENV APP_VERSION=${VERSION}
 ENV ENV=prod
+
+# Nunca como root: si la app se compromete, el atacante no es root en el contenedor
+RUN useradd --system --uid 10001 app
+USER app
 
 CMD ["python", "src/main.py"]

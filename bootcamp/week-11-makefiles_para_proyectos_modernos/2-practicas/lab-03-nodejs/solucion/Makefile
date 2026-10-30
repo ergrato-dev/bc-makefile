@@ -1,25 +1,33 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all install build test lint clean help
 .DEFAULT_GOAL := help
 
-NPM      := npm
+PNPM     := pnpm
 NODE     := node
 SRC_DIR  := src
 DIST_DIR := dist
 
-node_modules/.package-lock.json: package.json
-	$(NPM) install
+# --frozen-lockfile instala exactamente lo que dice pnpm-lock.yaml y falla
+# si no coincide con package.json. El sentinel es nuestro: no dependemos
+# de archivos internos del gestor de paquetes.
+node_modules/.installed: package.json pnpm-lock.yaml
+	$(PNPM) install --frozen-lockfile
+	@mkdir -p $(@D)
 	@touch $@
 
-install: node_modules/.package-lock.json ## Instalar dependencias Node.js
+install: node_modules/.installed ## Instalar dependencias Node.js
 
 build: install ## Compilar el proyecto
-	$(NPM) run build
+	$(PNPM) run build
 
 test: install ## Ejecutar tests
-	$(NPM) test
+	$(PNPM) test
 
 lint: install ## Verificar estilo de código
-	$(NPM) run lint
+	$(PNPM) run lint
 
 clean: ## Eliminar node_modules y dist
 	@rm -rf node_modules $(DIST_DIR)

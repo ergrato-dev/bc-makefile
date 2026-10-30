@@ -5,16 +5,17 @@
 PYTHON   := python3
 VENV     := backend/.venv
 PIP      := $(VENV)/bin/pip
-PYTEST   := $(VENV)/bin/pytest
+PYTEST   := $(VENV)/bin/python -m pytest
 
 # ── Frontend Node.js ────────────────────────────────────────────────────────────
-NPM      := npm
+PNPM     := pnpm
 NODE_MOD := frontend/node_modules
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
-COMPOSE  := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE  := docker compose
 
-# TODO 1: Define el target 'backend/$(VENV)/.installed' con dependencia backend/requirements.txt
+# TODO 1: Define el target '$(VENV)/.installed' con dependencia backend/requirements.txt
 #   Receta: $(PYTHON) -m venv $(VENV) && $(PIP) install -r backend/requirements.txt && touch $@
 #   Antes de instalar, imprime "@echo '[backend] Instalando dependencias...'"
 
@@ -27,10 +28,12 @@ COMPOSE  := $(shell docker compose version > /dev/null 2>&1 && echo "docker comp
 #   cd backend && ../$(PYTEST) tests/ -v
 
 
-# TODO 4: Define el target 'frontend/node_modules/.package-lock.json' con dependencia frontend/package.json
-#   Receta: cd frontend && $(NPM) install && touch .package-lock.json
-#   (npm install no genera .package-lock.json directamente dentro de node_modules/ en todos los sistemas)
-#   Alternativa más robusta: cd frontend && $(NPM) install && touch node_modules/.package-lock.json
+# TODO 4: Define el target 'frontend/node_modules/.installed' con dependencias
+#         frontend/package.json y frontend/pnpm-lock.yaml
+#   Receta: cd frontend && $(PNPM) install --frozen-lockfile
+#           @mkdir -p $(@D)
+#           @touch $@
+#   (el mkdir asegura que node_modules/ exista aunque no haya dependencias)
 
 
 # TODO 5: Define 'frontend-install' como alias del sentinel

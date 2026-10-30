@@ -21,7 +21,7 @@ Al terminar esta semana serás capaz de:
 - GNU Make ≥ 4.x
 - git instalado y configurado
 - bash (los hooks usan bash)
-- Python 3.10+ (labs 03 y 04)
+- Python 3.14 (labs 03 y 04)
 - Opcional: shellcheck, hadolint (lab 04)
 
 ## Tabla de contenidos

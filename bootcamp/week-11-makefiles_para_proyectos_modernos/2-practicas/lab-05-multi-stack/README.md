@@ -2,7 +2,7 @@
 
 **Duración estimada:** 50 minutos
 
-**Requisitos:** Python 3.10+, Node.js 18+, Docker 24+
+**Requisitos:** Python 3.14, Node.js 26 LTS, Docker Engine 27+ con Compose v2
 
 ## Objetivo
 
@@ -14,7 +14,7 @@ En proyectos reales, un equipo puede tener un backend Python y un frontend Node.
 
 ```
 make backend-test     → pytest en backend/
-make frontend-test    → npm test en frontend/
+make frontend-test    → pnpm test en frontend/
 make test             → ambos, en secuencia
 make build            → docker build de todo el stack
 ```
@@ -43,12 +43,12 @@ test: backend-test frontend-test ## Ejecutar todos los tests
    ```
 
 4. Implementa los 8 TODOs del `Makefile`:
-   - **TODO 1:** `backend/$(VENV)/.installed` — sentinel para backend Python
+   - **TODO 1:** `$(VENV)/.installed` (`VENV` ya incluye `backend/`) — sentinel para backend Python
    - **TODO 2:** `backend-install` — alias del sentinel
    - **TODO 3:** `backend-test` — pytest en backend/
-   - **TODO 4:** `frontend/node_modules/.package-lock.json` — sentinel para frontend Node
+   - **TODO 4:** `frontend/node_modules/.installed` — sentinel para frontend Node (`ppnpm install --frozen-lockfile` + `mkdir -p $(@D)` + `touch $@`)
    - **TODO 5:** `frontend-install` — alias del sentinel
-   - **TODO 6:** `frontend-test` — npm test en frontend/
+   - **TODO 6:** `frontend-test` — pnpm test en frontend/
    - **TODO 7:** `install` — depende de `backend-install frontend-install`
    - **TODO 8:** `test` — depende de `backend-test frontend-test`
 

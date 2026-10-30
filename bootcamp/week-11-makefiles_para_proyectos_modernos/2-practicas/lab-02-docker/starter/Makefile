@@ -10,7 +10,7 @@ PORT_HOST   := 8080
 PORT_CONT   := 8080
 
 # TODO 1: Define el target 'build'
-#   Construye la imagen Docker etiquetándola como $(IMAGE_NAME):$(VERSION) y $(IMAGE_NAME):latest
+#   Construye la imagen Docker etiquetándola como $(IMAGE_NAME):$(VERSION)
 #   Inyecta --build-arg VERSION=$(VERSION) y --build-arg BUILD_DATE=$(BUILD_DATE)
 #   Imprime "Imagen: $(IMAGE_NAME):$(VERSION)" al terminar
 
@@ -18,11 +18,12 @@ PORT_CONT   := 8080
 # TODO 2: Define el target 'run'
 #   Ejecuta el contenedor con docker run --rm
 #   Expone el puerto: -p $(PORT_HOST):$(PORT_CONT)
-#   Usa la imagen $(IMAGE_NAME):latest
+#   Usa la imagen $(IMAGE_NAME):$(VERSION) y publica el puerto solo en 127.0.0.1
 
 
 # TODO 3: Define el target 'push'
-#   Etiqueta la imagen local como $(FULL_IMAGE):$(VERSION) y $(FULL_IMAGE):latest
+#   Etiqueta la imagen local como $(FULL_IMAGE):$(VERSION) y publícala.
+#   No publiques `latest`: es mutable y no dice qué código corre.
 #   Hace push de ambos tags al registry
 #   Pista: docker tag ... && docker push ...
 
@@ -35,7 +36,7 @@ PORT_CONT   := 8080
 
 # TODO 5: Define el target 'clean-image'
 #   Elimina la imagen local $(IMAGE_NAME):$(VERSION)
-#   Pista: docker rmi $(IMAGE_NAME):$(VERSION) $(IMAGE_NAME):latest 2>/dev/null || true
+#   Pista: docker rmi $(IMAGE_NAME):$(VERSION) 2>/dev/null || true
 #   Imprime "Imagen $(IMAGE_NAME):$(VERSION) eliminada."
 
 

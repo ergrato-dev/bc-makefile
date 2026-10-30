@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all build run push info clean-image help
 .DEFAULT_GOAL := help
 
@@ -14,18 +18,18 @@ build: ## Construir imagen Docker con metadata de versión
 		--build-arg VERSION=$(VERSION) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		-t $(IMAGE_NAME):$(VERSION) \
-		-t $(IMAGE_NAME):latest \
 		.
 	@echo "Imagen: $(IMAGE_NAME):$(VERSION)"
 
+# 127.0.0.1: el puerto solo es accesible desde tu máquina, no desde la red.
 run: ## Ejecutar contenedor localmente
-	docker run --rm -p $(PORT_HOST):$(PORT_CONT) $(IMAGE_NAME):latest
+	docker run --rm -p 127.0.0.1:$(PORT_HOST):$(PORT_CONT) $(IMAGE_NAME):$(VERSION)
 
+# Solo se publica el tag de versión: `latest` cambia en cada push y no
+# permite saber qué código corre en producción ni volver atrás.
 push: build ## Etiquetar y publicar imagen en registry
 	docker tag $(IMAGE_NAME):$(VERSION) $(FULL_IMAGE):$(VERSION)
-	docker tag $(IMAGE_NAME):latest $(FULL_IMAGE):latest
 	docker push $(FULL_IMAGE):$(VERSION)
-	docker push $(FULL_IMAGE):latest
 	@echo "Publicado: $(FULL_IMAGE):$(VERSION)"
 
 info: ## Mostrar metadata de la imagen local
@@ -35,7 +39,7 @@ info: ## Mostrar metadata de la imagen local
 		|| echo "(imagen no construida — ejecuta make build primero)"
 
 clean-image: ## Eliminar imagen local
-	@docker rmi $(IMAGE_NAME):$(VERSION) $(IMAGE_NAME):latest 2>/dev/null || true
+	@docker rmi $(IMAGE_NAME):$(VERSION) 2>/dev/null || true
 	@echo "Imagen $(IMAGE_NAME):$(VERSION) eliminada."
 
 help: ## Mostrar ayuda

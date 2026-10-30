@@ -4,8 +4,8 @@
 STACK_NAME := mi-stack
 SERVICE    ?= web
 
-# Detecta automáticamente si usar 'docker compose' (v2) o 'docker-compose' (v1)
-COMPOSE := $(shell docker compose version > /dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+# Compose v2 viene integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE := docker compose
 
 # TODO 1: Define el target 'up'
 #   Levanta el stack en modo detached: $(COMPOSE) up -d
