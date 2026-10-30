@@ -69,16 +69,21 @@ $(TEST_RUNNER): $(LIB_OBJS) $(TEST_OBJS)
 # TODO: regla de patrón para módulos de aplicación y librería
 # $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 #   @mkdir -p $(@D)
-#   $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+#   $(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
 
 # TODO: static pattern rule para objetos de test
 # $(TEST_OBJS): $(TST_DIR)/%.o: $(TEST_DIR)/%.c
 #   @mkdir -p $(@D)
-#   $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+#   $(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
+
+# TODO: carga los .d de headers (semana 04):
+#   DEPS := $(patsubst %.o,%.d,$(LIB_OBJS) $(APP_OBJS) $(TEST_OBJS))
+#   -include $(DEPS)
 
 ## clean: elimina el directorio build/
 clean:
-	@rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "[clean] listo"
 
 ## help: muestra esta ayuda

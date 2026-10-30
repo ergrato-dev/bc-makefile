@@ -54,7 +54,8 @@ demo: ## Mostrar targets generados
 	@echo "Reportes: $(foreach s,$(SUITES),$(REPORTS)/$(s).txt)"
 
 clean: ## Limpiar reportes
-	@rm -rf $(REPORTS)/
+	$(if $(REPORTS),,$(error REPORTS vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(REPORTS)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

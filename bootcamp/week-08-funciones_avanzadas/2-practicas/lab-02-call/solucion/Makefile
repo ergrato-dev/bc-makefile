@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all demo check-services clean help
 .DEFAULT_GOAL := help
 
@@ -27,7 +31,8 @@ check-services: ## Verificar todos los servicios
 	@$(foreach svc,$(SERVICES),mkdir -p $(BUILD)/$(svc) && echo "$(svc) OK";)
 
 clean: ## Limpiar build
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

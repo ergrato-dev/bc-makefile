@@ -2,6 +2,10 @@
 # Proyecto Semana 04 — Solución: Build system C multi-archivo
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean help
 
 .DEFAULT_GOAL := help
@@ -20,6 +24,8 @@ APP       := $(BUILD_DIR)/app
 # ── Fuentes y objetos ─────────────────────────────────────────
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+# Un .d por objeto: los escribe gcc con -MMD (headers que incluye cada .c)
+DEPS := $(OBJS:.o=.d)
 
 ## all: compila el proyecto completo
 all: $(APP)
@@ -33,14 +39,19 @@ $(APP): $(OBJS)
 # $<    = el único .c fuente (gcc -c toma un solo fuente)
 # $@    = la ruta del .o de salida
 # $(@D) = el directorio del .o (build/); mkdir -p lo crea si no existe
+# -MMD -MP: genera build/x.d para que cambiar un header recompile lo necesario
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
 	@echo "[cc]   $< → $@"
+
+# Con guion: la primera vez los .d aún no existen
+-include $(DEPS)
 
 ## clean: elimina todos los artefactos de build
 clean:
-	@rm -rf $(BUILD_DIR)
+	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD_DIR)'
 	@echo "[clean] Listo."
 
 ## help: muestra esta ayuda

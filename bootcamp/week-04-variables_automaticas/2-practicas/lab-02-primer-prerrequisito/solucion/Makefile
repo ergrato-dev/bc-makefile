@@ -3,6 +3,10 @@
 # Semana 04: Variables automáticas
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: compilar-main compilar-utils compilar-todos enlazar help
 
 .DEFAULT_GOAL := help

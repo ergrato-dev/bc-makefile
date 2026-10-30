@@ -6,6 +6,10 @@
 # Error 4: receta en report usaba espacios → corregido a TAB
 # Error 5: ci no encadenaba lint→test→build→report en orden → corregido
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: lint test build report ci help
 .DEFAULT_GOAL := help
 

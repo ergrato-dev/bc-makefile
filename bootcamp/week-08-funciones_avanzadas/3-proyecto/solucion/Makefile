@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all info generate clean help
 .DEFAULT_GOAL := help
 
@@ -48,7 +52,8 @@ generate: all ## Compilar y generar build/manifest.mk
 	@cat $(BUILD)/manifest.mk
 
 clean: ## Limpiar todo lo generado
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

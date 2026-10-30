@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: lint lint-python lint-shell lint-docs format-python check-tools help
 .DEFAULT_GOAL := help
 

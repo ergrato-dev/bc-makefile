@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean info count help
 .DEFAULT_GOAL := help
 
@@ -32,7 +36,8 @@ count: ## Muestra estadísticas de fuentes
 	@echo "Total fuentes: $(words $(SRCS))"
 
 clean: ## Elimina archivos de compilación
-	rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

@@ -31,7 +31,8 @@ $(BUILD)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean: ## Elimina archivos de compilación
-	rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

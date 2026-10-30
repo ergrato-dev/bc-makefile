@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean info run help
 .DEFAULT_GOAL := help
 
@@ -33,7 +37,8 @@ run: all ## Ejecutar el binario compilado
 	@$(TARGET)
 
 clean: ## Eliminar artefactos de build
-	rm -rf $(BUILD_DIR)
+	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD_DIR)'
 
 info: ## Mostrar fuentes y objetos calculados
 	@echo "SRCS = $(SRCS)"

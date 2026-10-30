@@ -39,7 +39,8 @@ demo: ## Demostrar el Makefile con los 4 bugs
 	@echo "Reglas generadas para: $(MODULES)"
 
 clean: ## Limpiar
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

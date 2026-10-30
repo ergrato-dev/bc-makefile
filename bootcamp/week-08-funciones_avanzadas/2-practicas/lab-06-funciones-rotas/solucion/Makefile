@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all demo clean help
 .DEFAULT_GOAL := help
 
@@ -31,7 +35,8 @@ demo: ## Demostrar el Makefile corregido
 	@echo "Reglas generadas para: $(MODULES)"
 
 clean: ## Limpiar
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

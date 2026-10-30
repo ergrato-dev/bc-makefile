@@ -63,7 +63,9 @@ ci: ## Ejecutar pipeline completo (lint → test → build → report)
 	@echo "✓ CI OK"
 
 clean: ## Eliminar artefactos
-	@rm -rf $(VENV) $(DIST_DIR) __pycache__ .pytest_cache .coverage
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' '$(DIST_DIR)' __pycache__ .pytest_cache .coverage
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	@echo "Limpiado."
 

@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all test clean help
 
 .DEFAULT_GOAL := help
@@ -20,6 +24,8 @@ TEST_SRCS := $(wildcard $(TEST_DIR)/*.c)
 LIB_OBJS  := $(LIB_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 APP_OBJS  := $(APP_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.c=$(TST_DIR)/%.o)
+# .d de headers generados por -MMD -MP (semana 04)
+DEPS      := $(patsubst %.o,%.d,$(LIB_OBJS) $(APP_OBJS) $(TEST_OBJS))
 
 APP         := $(BUILD)/app
 TEST_RUNNER := $(BUILD)/test_runner
@@ -39,15 +45,18 @@ $(TEST_RUNNER): $(LIB_OBJS) $(TEST_OBJS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
 
 $(TEST_OBJS): $(TST_DIR)/%.o: $(TEST_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
+
+-include $(DEPS)
 
 ## clean: elimina el directorio build/
 clean:
-	@rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "[clean] listo"
 
 ## help: muestra esta ayuda

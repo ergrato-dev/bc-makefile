@@ -60,7 +60,8 @@ report: ## Muestra estadísticas del proyecto usando funciones de texto
 	@echo "(implementa los TODOs de report)"
 
 clean: ## Elimina archivos generados
-	rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

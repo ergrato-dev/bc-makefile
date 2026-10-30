@@ -39,7 +39,8 @@ all: $(ALL_OBJS) ## Compilar todos los plugins
 demo: info ## Demostrar el build system
 
 clean: ## Limpiar build
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

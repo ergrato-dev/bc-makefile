@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all install test lint clean help
 .DEFAULT_GOAL := help
 
@@ -23,7 +27,10 @@ lint: install ## Verificar estilo con flake8
 	$(FLAKE8) $(SRC_DIR) --max-line-length=100
 
 clean: ## Eliminar venv y cachés de Python
-	@rm -rf $(VENV) __pycache__ $(SRC_DIR)/__pycache__ $(TESTS_DIR)/__pycache__ .pytest_cache
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	$(if $(SRC_DIR),,$(error SRC_DIR vacía: rm -rf no se ejecuta))
+	$(if $(TESTS_DIR),,$(error TESTS_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' __pycache__ '$(SRC_DIR)/__pycache__' '$(TESTS_DIR)/__pycache__' .pytest_cache
 	@find . -name "*.pyc" -delete
 	@echo "Limpiado."
 

@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all build clean manifest report help
 .DEFAULT_GOAL := help
 
@@ -40,7 +44,8 @@ report: ## Muestra estadísticas del proyecto usando funciones de texto
 	@echo "Total objetos:   $(words $(OBJS))"
 
 clean: ## Elimina archivos generados
-	rm -rf $(BUILD)
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

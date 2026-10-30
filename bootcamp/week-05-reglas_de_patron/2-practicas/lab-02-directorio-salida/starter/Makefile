@@ -45,7 +45,8 @@ $(APP): $(OBJS)
 
 ## clean: elimina el directorio build/
 clean:
-	@rm -rf $(BUILD_DIR)
+	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD_DIR)'
 
 ## help: muestra esta ayuda
 help:

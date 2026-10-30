@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean help
 .DEFAULT_GOAL := help
 
@@ -37,7 +41,9 @@ build-frontend: $(DIST_DIR)/frontend.out ## Construir frontend (Node.js)
 all: build-backend build-frontend ## Construir backend y frontend (paralelizable con -j)
 
 clean: ## Eliminar artefactos y stamps
-	rm -rf $(DIST_DIR) $(STAMPS_DIR)
+	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+	$(if $(STAMPS_DIR),,$(error STAMPS_DIR vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(DIST_DIR)' '$(STAMPS_DIR)'
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

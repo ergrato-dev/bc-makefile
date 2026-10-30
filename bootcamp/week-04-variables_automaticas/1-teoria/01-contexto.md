@@ -69,6 +69,22 @@ SALIDA := artefacto-$@.zip
 
 `SALIDA` quedará como `artefacto-.zip`. Las variables automáticas no tienen valor fuera de las recetas.
 
+## Headers: que Make los vea
+
+`build/main.o: main.c` no sabe que `main.c` incluye `calc.h`. Si cambias el header, Make no recompila y el binario queda con código viejo. No escribas esas dependencias a mano: pídeselas al compilador.
+
+```makefile
+DEPS := $(OBJS:.o=.d)
+
+$(BUILD)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+-include $(DEPS)
+```
+
+`-MMD` hace que gcc escriba `build/main.d` con los headers que incluye `main.c`; `-include` lo carga sin fallar la primera vez, cuando aún no existe. `-MP` añade una regla vacía por header, así borrar uno no rompe el build. La semana 06 profundiza en esto.
+
 ---
 
 Listo. Ve al [lab-01](../2-practicas/lab-01-target-nombre/README.md) y ponlo en práctica.

@@ -49,7 +49,8 @@ check-monitor: ## Verificar servicio monitor
 check-services: check-api check-worker check-monitor ## Verificar todos los servicios
 
 clean: ## Limpiar build
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

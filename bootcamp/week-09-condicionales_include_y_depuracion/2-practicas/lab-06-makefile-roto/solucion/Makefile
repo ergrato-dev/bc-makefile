@@ -7,6 +7,10 @@
 # FIX 5: deploy eliminado de las dependencias de ci (ciclo roto)
 # FIX 6: lint ya no depende de 'check-syntax'; implementa la lógica directamente
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: ci build test lint deploy help
 .DEFAULT_GOAL := help
 

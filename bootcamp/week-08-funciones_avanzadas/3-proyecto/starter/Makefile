@@ -51,7 +51,8 @@ generate: all ## Compilar y generar build/manifest.mk
 	@echo "Manifest generado: $(BUILD)/manifest.mk"
 
 clean: ## Limpiar todo lo generado
-	@rm -rf $(BUILD)/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

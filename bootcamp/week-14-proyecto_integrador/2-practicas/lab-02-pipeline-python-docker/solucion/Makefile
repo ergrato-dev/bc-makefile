@@ -47,7 +47,8 @@ endif
 ci: lint test build-image ## Ejecutar pipeline completo: lint → test → build-image
 
 clean: ## Eliminar artefactos
-	rm -rf .stamps/ '$(VENV)' __pycache__ .pytest_cache
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	rm -rf -- .stamps/ '$(VENV)' __pycache__ .pytest_cache
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

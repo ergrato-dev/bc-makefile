@@ -3,6 +3,10 @@
 # Semana 04: Variables automáticas
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: reporte-html reporte-pdf reporte-csv reporte-json help
 
 .DEFAULT_GOAL := help

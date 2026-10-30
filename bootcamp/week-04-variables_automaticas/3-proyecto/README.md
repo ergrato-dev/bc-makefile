@@ -70,6 +70,7 @@ producto(3, 4) = 12
 | `APP` | `:=` | `$(BUILD_DIR)/app` | Ruta del binario final |
 | `SRCS` | `:=` | `$(wildcard $(SRC_DIR)/*.c)` | Todos los fuentes |
 | `OBJS` | `:=` | derivado de SRCS | Todos los objetos en BUILD_DIR |
+| `DEPS` | `:=` | `$(OBJS:.o=.d)` | Dependencias de headers que genera `-MMD -MP` |
 
 ## Reglas requeridas en las recetas
 
@@ -93,7 +94,8 @@ make all
 make clean
 make all CC=clang
 make all CFLAGS="-O2 -std=c11"
-touch src/greet.c && make all  # solo recompila greet.o
+touch src/greet.c && make all     # solo recompila greet.o
+touch include/calc.h && make all  # recompila calc.o y main.o (los que lo incluyen)
 ```
 
 ## Rúbrica del proyecto (30 pts)
@@ -102,7 +104,7 @@ touch src/greet.c && make all  # solo recompila greet.o
 |----------|-----|
 | `make all` desde cero produce el binario y lo ejecuta correctamente | 8 |
 | Regla `$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c` usa `$@`, `$<`, `$(@D)` | 8 |
-| Rebuild incremental: modificar un `.c` recompila solo ese objeto | 5 |
+| Rebuild incremental: modificar un `.c` o un header recompila solo los objetos afectados (`-MMD -MP`) | 5 |
 | `make clean` + `make all` produce el mismo binario correcto | 5 |
 | `make help` documenta todos los targets | 4 |
 

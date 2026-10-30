@@ -34,7 +34,8 @@ build-frontend: ## Construir frontend (Node.js)
 # (ya existen en el starter — no los borres)
 
 clean: ## Eliminar artefactos y stamps
-	rm -rf $(DIST_DIR)
+	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(DIST_DIR)'
 	# TODO: también eliminar el directorio .stamps/
 
 help: ## Mostrar ayuda

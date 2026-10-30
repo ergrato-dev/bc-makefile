@@ -30,7 +30,8 @@ lint: install ## Verificar estilo de código
 	$(PNPM) run lint
 
 clean: ## Eliminar node_modules y dist
-	@rm -rf node_modules $(DIST_DIR)
+	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
+	@rm -rf -- node_modules '$(DIST_DIR)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda

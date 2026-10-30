@@ -64,6 +64,7 @@ make test
 
 # Cambio de compilador
 make clean && make all CC=clang
+touch include/math_ops.h && make all   # recompila solo los objetos que lo incluyen
 
 # Build limpio desde cero
 make clean

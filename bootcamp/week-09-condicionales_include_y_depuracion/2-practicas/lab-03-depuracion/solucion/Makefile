@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: build validate debug-vars debug-deps debug-all help
 .DEFAULT_GOAL := help
 

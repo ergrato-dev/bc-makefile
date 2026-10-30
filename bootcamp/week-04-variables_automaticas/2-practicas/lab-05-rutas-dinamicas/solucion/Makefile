@@ -3,6 +3,10 @@
 # Semana 04: Variables automáticas
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all limpiar help
 
 .DEFAULT_GOAL := help
@@ -33,7 +37,8 @@ $(DIST)/datos/%.csv:
 
 ## limpiar: elimina el directorio de artefactos completo
 limpiar:
-	@rm -rf $(DIST)
+	$(if $(DIST),,$(error DIST vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(DIST)'
 	@echo "[limpiar] Listo."
 
 ## help: muestra esta ayuda

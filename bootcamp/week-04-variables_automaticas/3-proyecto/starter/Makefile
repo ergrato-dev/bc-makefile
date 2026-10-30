@@ -26,6 +26,7 @@
 # TODO: define SRCS con := usando $(wildcard $(SRC_DIR)/*.c)
 # TODO: define OBJS derivando desde SRCS:
 #       OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+# TODO: define DEPS := $(OBJS:.o=.d)  (un .d de dependencias por objeto)
 
 ## all: compila el proyecto completo
 all: $(APP)
@@ -39,12 +40,16 @@ $(APP): $(OBJS)
 # Esta regla compila CUALQUIER .c en src/ a su .o en build/
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	# TODO: crea el directorio con @mkdir -p $(@D)
-	# TODO: compila con $(CC) $(CFLAGS) -I$(INC_DIR) usando $< para la fuente y $@ para el objeto
+	# TODO: compila con $(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) usando $< para la fuente y $@ para el objeto
 	# TODO: imprime "[cc]   $< → $@"
 
+# TODO: carga los .d con -include $(DEPS)  (el guion evita el error la primera vez)
+
+# TODO: en 'clean', guarda + borrado seguro (semana 03). Receta:
+#   $(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+#   @rm -rf -- '$(BUILD_DIR)'
 ## clean: elimina todos los artefactos de build
 clean:
-	# TODO: @rm -rf $(BUILD_DIR)
 	@echo "[clean] Listo."
 
 ## help: muestra esta ayuda
