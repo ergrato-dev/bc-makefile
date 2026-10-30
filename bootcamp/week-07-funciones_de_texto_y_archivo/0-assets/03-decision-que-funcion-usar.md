@@ -7,7 +7,7 @@ flowchart TD
     B -->|No, tengo una lista| D{¿Quiero cambiar\nla forma de las palabras?}
 
     D -->|Sí, con comodín %| E["$(patsubst from,to,text)\n\nEjemplo:\n$(patsubst %.c,%.o,$(SRCS))"]
-    D -->|Sí, sustitución literal| F["$(subst from,to,text)\n\nEjemplo:\n$(subst src,build,$(SRCS))"]
+    D -->|Sí, sustitución literal| F["$(subst from,to,text)\n\nEjemplo:\n$(subst -,_,$(NAMES))\nnunca para rutas"]
     D -->|Sí, agregar prefijo| G["$(addprefix pre,names)\n\nEjemplo:\n$(addprefix -I,$(DIRS))"]
     D -->|Sí, agregar sufijo| H["$(addsuffix suf,names)\n\nEjemplo:\n$(addsuffix /,$(DIRS))"]
     D -->|No| I{¿Quiero seleccionar\nun subconjunto?}

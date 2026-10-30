@@ -14,6 +14,9 @@ PLUGINS     := $(notdir $(PLUGIN_DIRS))
 ALL_OBJS    := $(foreach p,$(PLUGINS),$(BUILD)/$(p).o)
 
 define PLUGIN_RULE
+.PHONY: plugin-$(1)
+plugin-$(1): $(BUILD)/$(1).o
+
 $(BUILD)/$(1).o: plugins/$(1)/plugin.c
 	@mkdir -p $(BUILD)
 	$(CC) $(CFLAGS) -c $$< -o $$@
@@ -38,5 +41,6 @@ clean: ## Limpiar build
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

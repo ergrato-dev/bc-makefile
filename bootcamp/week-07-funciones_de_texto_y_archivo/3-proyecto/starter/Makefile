@@ -3,7 +3,7 @@
 #   .SHELLFLAGS := -eu -o pipefail -c
 #   .DELETE_ON_ERROR:
 
-.PHONY: all build clean manifest report help
+.PHONY: all build clean manifest report objs help
 .DEFAULT_GOAL := help
 
 CC    := gcc
@@ -29,10 +29,19 @@ OBJS :=
 # Tip: $(sort $(dir $(MODULE_SRCS)))
 MODULE_DIRS :=
 
+# TODO: Nombres de módulo sin directorio ni barra: auth config logger
+# Ojo: $(notdir modules/auth/) devuelve vacío. Quita antes la / final con patsubst.
+MODULES :=
+
 # TODO: Agrega flags -I para cada directorio de módulo a CFLAGS
 CFLAGS := -Wall -Wextra -std=c11
 
 TARGET := $(BUILD)/sistema
+
+# Módulo pedido en 'make objs MODULE=...'
+MODULE ?=
+# TODO: normaliza MODULE con $(strip) para tolerar 'MODULE= logger '
+MOD := $(MODULE)
 
 # --- Targets ---
 
@@ -60,9 +69,17 @@ report: ## Muestra estadísticas del proyecto usando funciones de texto
 	# TODO: Muestra conteo de fuentes core (notdir para listar nombres)
 	# TODO: Muestra conteo de fuentes de módulos
 	# TODO: Muestra MODULE_DIRS
+	# TODO: Muestra MODULES en una línea que empiece por 'Módulos:'
 	# TODO: Muestra nombre del target sin directorio ni extensión
 	# TODO: Muestra total de objetos
 	@echo "(implementa los TODOs de report)"
+
+# TODO: 'objs' imprime solo los objetos de $(MOD), filtrando OBJS.
+# Si $(MOD) no está en MODULES, debe fallar con $(error) diciendo que no existe
+# y listando los módulos disponibles.
+objs: ## Lista los objetos de un módulo (MODULE=auth)
+	@echo "objs no implementado"
+	@exit 1
 
 # TODO: en 'clean', guarda + borrado seguro (semana 03). Receta:
 #   $(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
@@ -71,5 +88,6 @@ clean: ## Elimina archivos generados
 	@echo "clean no implementado"
 
 help: ## Muestra esta ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

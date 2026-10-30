@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all demo clean help
+.PHONY: all demo list clean help
 .DEFAULT_GOAL := help
 
 BUILD   := build
@@ -28,11 +28,20 @@ $(foreach m,$(MODULES),$(eval $(call COMPILE_RULE,$(m))))
 # FIX 4: --short para hash corto y fallback para directorios sin git
 GIT_HASH := $(shell git rev-parse --short HEAD 2>/dev/null || echo sin-git)
 
+# FIX 5: cada iteración termina en ';' y el foreach produce tres comandos
+list: ## Listar módulos, uno por línea
+	@$(foreach m,$(MODULES),echo "  - $(m)";)
+
+# FIX 6: ':=' ejecuta $(shell) una sola vez, al leer el Makefile
+BUILD_ID := $(shell date +%s%N)
+
 demo: ## Demostrar el Makefile corregido
 	@echo "OBJS:     $(OBJS)"
 	$(call deploy_info,api,8080)
 	@echo "Git hash: $(GIT_HASH)"
 	@echo "Reglas generadas para: $(MODULES)"
+	@echo "Artefacto: app-$(BUILD_ID).tar"
+	@echo "Manifest:  app-$(BUILD_ID).tar"
 
 clean: ## Limpiar
 	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
@@ -40,5 +49,6 @@ clean: ## Limpiar
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

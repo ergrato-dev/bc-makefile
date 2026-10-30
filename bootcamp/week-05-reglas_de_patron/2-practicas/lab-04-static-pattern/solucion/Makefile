@@ -1,3 +1,8 @@
+# ============================================================
+# Lab 04 — Static pattern rules (SOLUCIÓN)
+# Semana 05: Reglas de patrón
+# ============================================================
+
 SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
@@ -6,41 +11,50 @@ SHELL       := bash
 
 .DEFAULT_GOAL := help
 
-CC     := gcc
-CFLAGS := -Wall -std=c11
+# ── Compilador ────────────────────────────────────────────────
+CC         := gcc
+CFLAGS     := -Wall -std=c11
+LIB_CFLAGS := -fPIC
+AR         := ar
 
+# ── Rutas ─────────────────────────────────────────────────────
 INC_DIR := include
+BUILD   := build
 
+# ── Listas de fuentes separadas ───────────────────────────────
 LIB_SRCS := src/math_ops.c src/string_ops.c
 APP_SRCS := src/main.c
 
-LIB_OBJS := $(LIB_SRCS:src/%.c=build/lib/%.o)
-APP_OBJS := $(APP_SRCS:src/%.c=build/main/%.o)
+LIB_OBJS := $(LIB_SRCS:src/%.c=$(BUILD)/lib/%.o)
+APP_OBJS := $(APP_SRCS:src/%.c=$(BUILD)/main/%.o)
 
-APP := build/calculator
+LIB := $(BUILD)/libops.a
+APP := $(BUILD)/calculator
 
-## all: compila y enlaza la aplicación completa
-all: $(APP)
+# ── Targets ───────────────────────────────────────────────────
+all: $(APP) ## Compila la librería y la aplicación
 
-$(APP): $(LIB_OBJS) $(APP_OBJS)
+$(APP): $(APP_OBJS) $(LIB)
 	$(CC) $^ -o $@
 
-$(LIB_OBJS): build/lib/%.o: src/%.c
+$(LIB): $(LIB_OBJS)
+	$(AR) rcs $@ $^
+
+# Solo los objetos de LIB_OBJS, con -fPIC
+$(LIB_OBJS): $(BUILD)/lib/%.o: src/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(LIB_CFLAGS) -I$(INC_DIR) -c $< -o $@
+
+# Solo los objetos de APP_OBJS, sin -fPIC
+$(APP_OBJS): $(BUILD)/main/%.o: src/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
-$(APP_OBJS): build/main/%.o: src/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+clean: ## Elimina build/
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
-## clean: elimina build/
-clean:
-	@rm -rf build
-	@echo "[clean] listo"
-
-## help: muestra esta ayuda
-help:
-	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

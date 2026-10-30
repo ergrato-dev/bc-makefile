@@ -36,7 +36,7 @@ explicar por qué Make elige, o no elige, cada regla.
 | 2 | Pides `make build/obj/nope.o` y no existe `src/nope.c`. Make responde `No rule to make target 'build/obj/nope.o'` en lugar de quejarse del `.c`. ¿Por qué? |
 | 3 | Con la static pattern rule `$(TEST_OBJS): build/test/%.o: tests/%.c`, si falta el `.c` el error es `No rule to make target 'tests/x.c', needed by 'build/test/x.o'`. ¿Por qué el mensaje es más útil que el de la pregunta 2? |
 | 4 | En `$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c`, ¿cuánto vale el stem para `build/obj/net/http.o`, y por qué la misma regla sirve para subdirectorios sin tocarla? |
-| 5 | En el lab 05, `debug.o: debug.c` con receta anula la regla de patrón. ¿Por qué `debug.o: config.h` **sin** receta no la anula? |
+| 5 | En el lab 05, `debug.o: debug.c` con receta anula la regla de patrón. ¿Por qué `normal.o: config.h` **sin** receta no la anula? |
 | 6 | Borras tu `%.o: %.c` y `make main.o` sigue compilando con `cc -c -o main.o main.c`. ¿De dónde sale esa regla, y por qué `make -r` la hace desaparecer? |
 | 7 | Si un Makefile tiene `%.o: %.c` y `build/%.o: src/%.c`, y existen `build/a.c` y `src/a.c`, Make usa la segunda para `build/a.o` aunque esté escrita después. ¿Por qué? |
 | 8 | `LIB_OBJS` excluye `main.o`, y tanto `build/app` como `build/test_runner` se enlazan con `LIB_OBJS`. ¿Qué pasaría si `main.o` estuviera en esa lista? |
@@ -68,7 +68,7 @@ prerrequisito pasa a ser `src/net/http.c`, y `mkdir -p $(@D)` crea
 que no baja a subdirectorios.
 
 **5.** Make busca una regla implícita para todo target que no tenga receta.
-`debug.o: config.h` solo añade un prerrequisito; el target sigue sin receta y
+`normal.o: config.h` solo añade un prerrequisito; el target sigue sin receta y
 la regla de patrón se aplica igual, ahora con `config.h` como prerrequisito
 extra. Una regla explícita con receta deja a Make sin nada que buscar.
 
@@ -107,12 +107,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — `%.o: %.c`](2-practicas/lab-01-patron-basico/README.md) | `make app` compila los tres módulos con una sola regla de patrón; ningún `.o` tiene regla explícita | 10 |
-| [02 — Directorio de salida](2-practicas/lab-02-directorio-salida/README.md) | `make all` crea `build/main.o`, `build/utils.o` y `build/app`; el `mkdir` usa `$(@D)`; `clean` borra `build/` | 10 |
-| [03 — Múltiples patrones](2-practicas/lab-03-multiples-patrones/README.md) | `process` y `backup` crean sus tres archivos con dos reglas de patrón; `make alpha.processed` funciona aislado | 10 |
-| [04 — Static pattern](2-practicas/lab-04-static-pattern/README.md) | Objetos en `build/lib/` y `build/main/` con static pattern rules; `./build/calculator` imprime el resultado esperado | 10 |
-| [05 — Prioridad](2-practicas/lab-05-prioridad/README.md) | `make debug.o` usa la regla explícita y `make main.o` la de patrón; `./app` imprime ambos mensajes | 10 |
-| [06 — Patrones rotos](2-practicas/lab-06-patrones-rotos/README.md) | Los cinco bugs corregidos; `make all-bugs` completa sin errores | 10 |
+| [01 — `%.o: %.c`](2-practicas/lab-01-patron-basico/README.md) | `make all` compila los tres módulos con una sola regla de patrón; `touch math.c` recompila un solo objeto; `make extra.o` sin `extra.c` falla con `No rule to make target` | 10 |
+| [02 — Directorio de salida](2-practicas/lab-02-directorio-salida/README.md) | `make all` crea `build/main.o`, `build/utils.o` y `build/app`; `make build/net/ping.o` muestra `stem=net/ping`; `clean` con guarda | 10 |
+| [03 — Múltiples patrones](2-practicas/lab-03-multiples-patrones/README.md) | `process` y `backup` con dos reglas de patrón; `delta.processed` usa la regla `.txt`; `make zeta.summary` encadena y borra el intermedio | 10 |
+| [04 — Static pattern](2-practicas/lab-04-static-pattern/README.md) | Objetos en `build/lib/` (con `-fPIC`) y `build/main/`; `build/libops.a` enlazada; `make build/lib/main.o` falla | 10 |
+| [05 — Prioridad](2-practicas/lab-05-prioridad/README.md) | Receta explícita para `debug.o`; `normal.o: config.h` sin receta; `test_%.o` gana por stem más corto; `MAKEFLAGS += -r` hace fallar `make main` | 10 |
+| [06 — Patrones rotos](2-practicas/lab-06-patrones-rotos/README.md) | Los seis bugs corregidos con su causa por escrito; `make clean && make all-bugs` sin avisos ni archivo `bug-5` | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué regla eligió Make y por qué; 8 si se cumplen todos; 7 si falla
@@ -128,17 +128,19 @@ Lo ejecuta `./scripts/verificar-semana.sh 05`. Es binario: pasa o no pasa.
 
 | Comprobación | Puntos |
 |---|:--:|
-| `binario-funciona` — `make all` desde cero produce `build/app` y el binario imprime el resultado correcto | 6 |
+| `binario-funciona` — `make all` desde cero produce `build/app` y el binario imprime el resultado correcto | 5 |
 | `objetos-en-build-obj` — cada `src/*.c` produce su objeto en `build/obj/` | 4 |
-| `modulo-nuevo-sin-tocar-makefile` — un `.c` nuevo en `src/` se compila sin tocar el Makefile | 6 |
+| `modulo-nuevo-sin-tocar-makefile` — un `.c` nuevo en `src/` se compila sin tocar el Makefile | 5 |
 | `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no rehace nada | 4 |
-| `incremental-un-objeto` — tocar un `.c` recompila solo ese objeto | 5 |
-| `header-recompila` — tocar `include/math_ops.h` recompila exactamente los dos objetos de la app que lo incluyen | 6 |
-| `test-pasa` — `make test` compila el runner y los tests pasan | 5 |
-| `test-objeto-en-build-test` — el objeto del runner se genera en `build/test/` | 4 |
+| `incremental-un-objeto` — tocar un `.c` recompila solo ese objeto | 4 |
+| `header-recompila` — tocar `include/math_ops.h` recompila exactamente los dos objetos de la app que lo incluyen | 5 |
+| `test-pasa` — `make test` compila el runner y los tests pasan | 4 |
+| `test-objeto-en-build-test` — el objeto del runner se genera en `build/test/` | 3 |
+| `asm-por-modulo` — `make asm` genera un `.s` por cada `src/*.c` en `build/asm/` | 4 |
+| `sin-reglas-implicitas` — las reglas implícitas de serie están desactivadas: un `.c` suelto no se compila solo | 4 |
 | `cc-desde-cli` — `CC` se puede cambiar desde la línea de comandos | 3 |
-| `clean-borra-build` — `make clean` elimina `build/` por completo | 4 |
-| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacía | 5 |
+| `clean-borra-build` — `make clean` elimina `build/` por completo | 3 |
+| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacía | 4 |
 | `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 4 |
 | `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 4 |
 | **Total** | **60** |
@@ -152,9 +154,9 @@ Lo que el autograding no puede ver.
 | **Cero nombres de módulo en reglas** | Ninguna regla menciona `math_ops`, `string_ops` ni `io`; solo `main.c` aparece, en `APP_SRCS` | Un nombre de módulo en una lista de variables | 10 |
 | **Static pattern solo donde aporta** | `TEST_OBJS` con static pattern rule; los módulos de `src/` con la regla de patrón genérica | Static pattern también para `src/` sin motivo | 8 |
 | **Reglas explícitas solo para binarios** | `build/app` y `build/test_runner` son las únicas reglas explícitas, con `$^` y `$@` | Alguna ruta escrita a mano en una receta | 6 |
-| **`.PHONY` completo** | `all`, `test`, `clean` y `help` declarados | Falta uno | 6 |
+| **`.PHONY` completo** | `all`, `test`, `asm`, `clean` y `help` declarados | Falta uno | 6 |
 | **Orden y secciones** | Preámbulo, compilador, directorios, fuentes, objetos, binarios, reglas, utilidades | Variables dispersas | 6 |
-| **`help` útil** | `make` sin argumentos lista todos los targets con descripción | Falta alguno | 4 |
+| **`help` útil** | `make` sin argumentos lista todos los targets con descripción (`target: ## …` y el `grep`/`awk` estándar) | Falta alguno | 4 |
 | **Total** | | | **40** |
 
 ### Penalizaciones
@@ -173,7 +175,7 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 05` con las 13 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 05` con las 15 comprobaciones en verde
 - [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `build/`)
 
 ---

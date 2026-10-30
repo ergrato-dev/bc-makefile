@@ -7,17 +7,17 @@ graph TD
     A --> D["$(eval)"]
     A --> E["$(shell)"]
 
-    B --> B1["Itera una lista\ny expande texto"]
-    B --> B2["Resultado: string\nconcatenado"]
+    B --> B1["Itera una lista<br/>y expande texto"]
+    B --> B2["Resultado: string<br/>concatenado"]
 
-    C --> C1["Llama función\ndefinida por usuario"]
+    C --> C1["Llama función<br/>definida por usuario"]
     C --> C2["Args: $1 $2 $3..."]
 
-    D --> D1["Parsea texto como\nsintaxis Makefile"]
-    D --> D2["Crea reglas y vars\nen tiempo de carga"]
+    D --> D1["Parsea texto como<br/>sintaxis Makefile"]
+    D --> D2["Crea reglas y vars<br/>en tiempo de carga"]
 
-    E --> E1["Ejecuta comando\nen el shell"]
-    E --> E2["Captura stdout\ncomo string"]
+    E --> E1["Ejecuta comando<br/>en el shell"]
+    E --> E2["Captura stdout<br/>como string"]
 
     B -->|"genera texto"| D
     C -->|"produce texto"| D

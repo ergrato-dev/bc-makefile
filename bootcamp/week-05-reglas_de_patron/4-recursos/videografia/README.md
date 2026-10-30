@@ -2,7 +2,9 @@
 
 | Título | Canal | Duración | Enlace |
 |--------|-------|----------|--------|
-| Makefiles — Pattern Rules & Wildcards | Fireship | 8 min | https://www.youtube.com/watch?v=aw9wHbFTnAQ |
-| GNU Make Tutorial — Pattern Rules Explained | Engineer Man | 12 min | https://www.youtube.com/watch?v=E5A7A8RQHPU |
-| Makefile Tutorial: Pattern Rules and Variables | CS50 | 15 min | https://www.youtube.com/watch?v=_r7i5X0rXJk |
-| Building C Projects with Make — Static Pattern Rules | Jacob Sorber | 18 min | https://www.youtube.com/watch?v=G3WrlznKAbk |
+| Makefiles: 95% of what you need to know | Gabriel Parmer | 62 min | https://www.youtube.com/watch?v=DtGrdB8wQ_8 |
+| C Programming: Makefiles | Barry Brown | 44 min | https://www.youtube.com/watch?v=GExnnTaBELk |
+| Using make and writing Makefile (in C++ or C) | ProgrammingKnowledge | 21 min | https://www.youtube.com/watch?v=aw9wHbFTnAQ |
+| How to Create a Simple Makefile — Introduction to Makefiles | Paul Programming | 9 min | https://www.youtube.com/watch?v=_r7i5X0rXJk |
+
+> No hemos encontrado vídeos en español de calidad específicos sobre reglas de patrón. Los cuatro son en inglés y tratan Makefiles para C en general; complementa con el manual (webgrafía) para la parte de reglas de patrón.

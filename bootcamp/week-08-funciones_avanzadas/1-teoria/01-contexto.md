@@ -30,9 +30,13 @@ Cadena de expansión: `$(call)` convierte `$1→main` y `$$<→$<`. Luego `$(eva
 
 ## Ejemplo mínimo funcional
 
-Pega esto en un directorio vacío y ejecuta `make demo`:
+Pega esto en un directorio vacío y ejecuta `make demo` (después prueba `make info-auth`, un target que no escribiste):
 
 ```makefile
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: demo
 .DEFAULT_GOAL := demo
 
@@ -64,6 +68,7 @@ demo:
 - `$(shell ...)` se ejecuta en tiempo de evaluación del Makefile, no al correr la receta. Si el Makefile se re-evalúa, el shell se vuelve a llamar.
 - `$(eval ...)` solo crea reglas y variables — no puede hacer bifurcaciones como un lenguaje de programación.
 - Cuando el comando de `$(shell)` puede fallar (ej. no hay repo git), agrega un fallback: `$(shell git ... 2>/dev/null || echo sin-git)`.
+- `$(file)`, `$(value)`, `$(let)`, `$(intcmp)` y el coste real de `$(shell)` están en [02-file-value-let-intcmp.md](02-file-value-let-intcmp.md).
 
 ---
 

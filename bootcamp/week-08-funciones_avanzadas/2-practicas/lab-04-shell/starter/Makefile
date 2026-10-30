@@ -1,4 +1,4 @@
-.PHONY: all info version clean help
+.PHONY: all info version stamps version-mk clean help
 .DEFAULT_GOAL := help
 
 BUILD := build
@@ -23,6 +23,11 @@ NUM_CPUS := 0
 # Pista: $(MAKE) --version | head -1
 MAKE_VERSION_STR := UNKNOWN
 
+# TODO 6: Define dos marcas de tiempo con nanosegundos (date +%s%N):
+#   STAMP_LAZY con '=' y STAMP_NOW con ':='. Mismo comando, distinto operador.
+STAMP_LAZY = 0
+STAMP_NOW := 0
+
 info: ## Mostrar toda la información del entorno
 	@echo "=== Build Info ==="
 	@echo "Git Hash:     $(GIT_HASH)"
@@ -39,11 +44,29 @@ version: ## Generar build/version.txt con los metadatos
 	@echo "Generado: $(BUILD)/version.txt"
 	@cat $(BUILD)/version.txt
 
+stamps: ## Comparar = y := con $(shell date)
+	@echo "Con =  : $(STAMP_LAZY) $(STAMP_LAZY)"
+	@echo "Con := : $(STAMP_NOW) $(STAMP_NOW)"
+
+$(BUILD):
+	@mkdir -p $@
+
+# TODO 7: Escribe build/version.mk con $(file), sin printf ni echo:
+#   primera línea con $(file >$@,GIT_HASH := $(GIT_HASH)), las siguientes con $(file >>$@,...)
+#   para BUILD_DATE y OS_NAME. Deja el @echo final.
+$(BUILD)/version.mk: | $(BUILD)
+	@echo "Generado: $@"
+
+# TODO 8: Lee el archivo con $(file <$(BUILD)/version.mk) y muéstralo en una línea con $(strip ...)
+version-mk: $(BUILD)/version.mk ## Escribir build/version.mk con $(file) y leerlo
+	@echo "Leído: TODO"
+
 clean: ## Limpiar build
 	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
 	@rm -rf -- '$(BUILD)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

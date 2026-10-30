@@ -2,7 +2,9 @@
 
 | Título | Canal | Duración | Enlace |
 |--------|-------|----------|--------|
-| Make Tutorial — Automatic Variables and Functions | Yotam Mann | 18 min | https://www.youtube.com/watch?v=GExnnTaBELk |
-| GNU Make — Wildcard and Pattern Rules | Engineer Man | 12 min | https://www.youtube.com/watch?v=aw9wHbFrf38 |
-| Makefile Tutorial Beyond the Basics | Jacob Sorber | 22 min | https://www.youtube.com/watch?v=_r7i5X0rXJk |
-| Make — Functions for String Substitution | cs01 | 15 min | https://www.youtube.com/watch?v=DtToBsA5dYc |
+| Make - 3.9 - Essentials - Wildcards, Shells, Catch-All Rules | Steel Foundations | 11:53 | https://www.youtube.com/watch?v=F7Vq8lSHzLw |
+| Curso Makefile #11 - Wildcard e manipular extensões de arquivos (en portugués) | Geofisicando | 11:42 | https://www.youtube.com/watch?v=bAGY4W6PBlc |
+| Makefiles: 95% of what you need to know | Gabriel Parmer | 1:01:53 | https://www.youtube.com/watch?v=DtGrdB8wQ_8 |
+
+> No encontramos un vídeo en español centrado en las funciones de texto de Make.
+> El de Geofisicando está en portugués, pero se sigue bien con el código en pantalla.

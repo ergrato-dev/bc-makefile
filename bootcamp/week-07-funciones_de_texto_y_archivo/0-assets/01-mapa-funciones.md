@@ -34,8 +34,12 @@ graph TD
 
     F --> F1["$(sort list)"]
     F --> F2["$(words list)"]
+    F --> F3["$(word n,list)"]
+    F --> F4["$(strip text)"]
     F1 --> F1a["Ordena + deduplica"]
     F2 --> F2a["Cuenta palabras"]
+    F3 --> F3a["Palabra n, desde 1"]
+    F4 --> F4a["Quita espacios sobrantes"]
 ```
 
-Las funciones se agrupan en cuatro categorías según su propósito: descubrimiento (en disco), transformación (cambio de forma), filtrado (selección de subconjuntos) y manipulación de rutas (extracción de partes del path). En la práctica siempre se combinan: `wildcard` descubre, `patsubst` transforma, `filter` refina.
+Las funciones se agrupan según su propósito: descubrimiento (en disco), transformación (cambio de forma), filtrado (selección de subconjuntos), manipulación de rutas (extracción de partes del path) y utilidades sobre listas (ordenar, contar, limpiar espacios). En la práctica siempre se combinan: `wildcard` descubre, `patsubst` transforma, `filter` refina.

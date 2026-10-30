@@ -41,7 +41,7 @@ explicar por qué Make se comporta así.
 | 7 | `$(shell printf 'a\nb\n')` devuelve `a b`. ¿Qué hace `$(shell)` con los saltos de línea, y qué consecuencia tiene si quieres leer un archivo línea por línea? |
 | 8 | En `@$(foreach svc,$(SERVICES),echo $(svc);)`, ¿por qué hace falta el `;` final dentro del `foreach`? ¿Qué imprime sin él? |
 | 9 | La lista de servicios sale de `find ... \| sort`. ¿Por qué el `sort`, si `find` ya devuelve los directorios? |
-| 10 | La plantilla declara `.PHONY: $(1)` para cada servicio. ¿Qué pasa con `make api` si alguien crea un archivo llamado `api` en la raíz del proyecto y la plantilla no lo declara? |
+| 10 | Con `build/` ya creado, `make -n generate` no ejecuta ninguna receta y sin embargo `build/manifest.mk` aparece reescrito. Desde cero, el mismo comando falla con `open: build/manifest.mk: No such file or directory`. ¿Por qué ocurren las dos cosas? |
 
 <details>
 <summary><strong>Respuestas</strong></summary>
@@ -99,10 +99,13 @@ orden de compilación, la salida de `info` y el `BUILT_SERVICES` del manifest
 cambiarían de un equipo a otro, y un manifest que cambia sin cambios reales
 genera ruido en cada diff.
 
-**10.** Sin `.PHONY`, `api` es un target de archivo. Si existe un archivo
-`api` más nuevo que `build/api`, Make lo da por actualizado y responde
-`'api' is up to date` sin compilar nada. Con `.PHONY: api` Make no busca
-ningún archivo con ese nombre y siempre evalúa sus prerrequisitos.
+**10.** `$(file ...)` actúa al **expandirse**, no al ejecutarse, y `-n`
+también expande las recetas (lo necesita para imprimirlas). Por eso escribe
+el manifest aunque no se ejecute nada. Desde cero, `-n` no ejecuta el
+`mkdir` que crearía `build/`, y Make expande la receta entera antes de su
+primera línea: `$(file)` intenta abrir un archivo en un directorio que no
+existe. Es la misma razón por la que el directorio va como prerrequisito
+order-only y no como `mkdir` en la receta de `generate`.
 
 </details>
 
@@ -115,12 +118,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — `foreach`](2-practicas/lab-01-foreach/README.md) | `make demo` imprime las 9 combinaciones de `DEPLOY_MATRIX`; `make dirs` crea los tres directorios; `make report` lista los 3 entornos | 10 |
-| [02 — `call`](2-practicas/lab-02-call/README.md) | `make demo` muestra URL y ruta de build por servicio; `make check-services` imprime 3 `OK`; la lógica está en bloques `define` sin repetición | 10 |
-| [03 — `eval`](2-practicas/lab-03-eval/README.md) | `make all` ejecuta las 4 suites y `reports/` contiene los 4 reportes; `make demo` lista los `run-*` generados | 10 |
-| [04 — `shell`](2-practicas/lab-04-shell/README.md) | `make info` muestra hash, fecha, OS, CPUs y versión de Make sin ningún `UNKNOWN`; `make version` genera `build/version.txt` | 10 |
-| [05 — Combinadas](2-practicas/lab-05-combinadas/README.md) | `make info` descubre los 3 plugins; `make all` compila los tres objetos con reglas generadas | 10 |
-| [06 — Funciones rotas](2-practicas/lab-06-funciones-rotas/README.md) | Los 4 bugs corregidos; `make demo` produce exactamente la salida esperada con un hash corto no vacío | 10 |
+| [01 — `foreach`](2-practicas/lab-01-foreach/README.md) | `make demo` imprime las 9 combinaciones de `DEPLOY_MATRIX` y 6 con `ENVS="dev qa"`; `make dirs` y `make report` funcionan; `make configs` crea un `config.env` por entorno | 10 |
+| [02 — `call`](2-practicas/lab-02-call/README.md) | `make demo` muestra URL y ruta de build por servicio; `make check-services` imprime 3 `OK`; `make urls` usa `$(PORT_$1)`; explicas la salida de `make space-trap` | 10 |
+| [03 — `eval`](2-practicas/lab-03-eval/README.md) | `make all` ejecuta las 4 suites y `reports/` contiene los 4 reportes; `make show-rule` muestra plantilla cruda y regla generada; `make all SUITES="unit smoke"` ejecuta `smoke` | 10 |
+| [04 — `shell`](2-practicas/lab-04-shell/README.md) | `make info` sin ningún `UNKNOWN`; `make version` genera `build/version.txt`; `make stamps` distingue `=` de `:=`; `make version-mk` escribe con `$(file)` un Makefile legible por Make | 10 |
+| [05 — Combinadas](2-practicas/lab-05-combinadas/README.md) | `make info` descubre los 3 plugins; `make all` compila los tres objetos y es incremental; `make plugin-encrypt` compila solo ese objeto | 10 |
+| [06 — Funciones rotas](2-practicas/lab-06-funciones-rotas/README.md) | Los 6 bugs corregidos; `make demo` con hash corto e IDs idénticos; `make list` en tres líneas; `make -p` muestra `gcc -c $< -o $@` | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras cuándo se expande cada función que usaste; 8 si se cumplen todos;
@@ -136,18 +139,20 @@ Lo ejecuta `./scripts/verificar-semana.sh 08`. Es binario: pasa o no pasa.
 
 | Comprobación | Puntos |
 |---|:--:|
-| `servicios-descubiertos` — `make info` lista los servicios de `services/`, ordenados | 5 |
-| `binarios-foreach` — `make info` muestra un binario en `build/` por servicio | 4 |
+| `servicios-descubiertos` — `make info` lista los servicios de `services/`, ordenados | 4 |
+| `binarios-foreach` — `make info` muestra un binario en `build/` por servicio | 3 |
 | `metadato-os` — `make info` muestra el sistema operativo obtenido con `$(shell)` | 3 |
 | `metadato-git` — `make info` muestra el hash corto de git o `sin-git` | 3 |
-| `all-compila-todos` — `make all` desde cero compila los tres servicios y cada binario arranca | 7 |
-| `target-por-servicio` — `make api` compila solo `build/api`, con un target generado por `$(eval)` | 5 |
-| `servicio-nuevo-sin-editar` — un directorio nuevo en `services/` se compila sin editar el Makefile | 7 |
-| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no recompila ningún servicio | 4 |
+| `all-compila-todos` — `make all` desde cero compila los tres servicios y cada binario arranca | 6 |
+| `target-por-servicio` — `make api` compila solo `build/api`, con un target generado por `$(eval)` | 4 |
+| `run-por-servicio` — `make run-worker` compila y ejecuta solo `build/worker`, con un target generado por la plantilla | 4 |
+| `servicio-nuevo-sin-editar` — un directorio nuevo en `services/` se compila sin editar el Makefile | 6 |
+| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no recompila ningún servicio | 3 |
 | `manifest-servicios` — `make generate` escribe `BUILT_SERVICES` con los tres servicios | 4 |
-| `manifest-incluible` — `build/manifest.mk` es un Makefile válido que define `OS_NAME` | 4 |
+| `manifest-incluible` — `build/manifest.mk` es un Makefile válido que define `OS_NAME` | 3 |
+| `manifest-bin-por-servicio` — `build/manifest.mk` define `BIN_<servicio>` para cada servicio descubierto | 4 |
 | `clean-borra-build` — `make clean` elimina `build/` por completo | 4 |
-| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacío | 5 |
+| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacío | 4 |
 | `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 3 |
 | `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 2 |
 | **Total** | **60** |
@@ -160,7 +165,7 @@ Lo que el autograding no puede ver.
 |---|---|---|:--:|
 | **Una sola plantilla** | Toda la lógica por servicio vive en `SERVICE_RULE`; ninguna regla escrita a mano para un servicio concreto | Algún target auxiliar repetido | 10 |
 | **`$` frente a `$$` justificado** | Un comentario en la plantilla explica qué se expande en `call` y qué en la receta | Uso correcto sin explicar | 8 |
-| **`$(shell)` con respaldo** | Cada `$(shell)` que puede fallar tiene un valor de respaldo visible y se evalúa con `:=` | Alguno sin respaldo | 6 |
+| **`$(shell)` con respaldo** | Cada `$(shell)` que puede fallar tiene un valor de respaldo visible, se evalúa con `:=` y ninguno recibe variables de la línea de comandos | Alguno sin respaldo | 6 |
 | **`.PHONY` completo** | Todos los targets que no producen archivo, incluidos los generados, están declarados | Falta uno | 6 |
 | **`help` útil** | `make` sin argumentos lista todos los targets con descripción | Falta alguno | 5 |
 | **Orden y secciones** | Preámbulo, descubrimiento, metadatos, plantillas, instanciación, targets | Variables dispersas | 5 |
@@ -173,6 +178,7 @@ Lo que el autograding no puede ver.
 | `rm -rf` sobre una variable sin guarda de vacío | **−15 pts**. Un `BUILD` vacío por un typo no puede borrar el directorio equivocado |
 | Servicios listados a mano en el Makefile | −10 pts. Es justo el problema que resuelve el proyecto |
 | `build/`, binarios o `manifest.mk` comiteados | −10 pts |
+| `manifest.mk` escrito con `printf`/`echo` en lugar de `$(file)` | −5 pts |
 | `make` sin argumentos compila en lugar de mostrar la ayuda | −5 pts |
 
 ---
@@ -182,7 +188,7 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 08` con las 14 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 08` con las 16 comprobaciones en verde
 - [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `build/`)
 
 ---

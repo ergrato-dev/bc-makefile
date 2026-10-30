@@ -2,7 +2,7 @@
 
 | Título | Formato | Descripción | Enlace |
 |--------|---------|-------------|--------|
-| GNU Make Manual — Functions for Transforming Text | HTML/PDF | Capítulo completo de funciones: `foreach`, `call`, `eval`, `shell` y más | https://www.gnu.org/software/make/manual/html_node/Functions.html |
-| GNU Make Manual — The `eval` Function | HTML | Sección específica de `$(eval)` con ejemplos de generación dinámica de reglas | https://www.gnu.org/software/make/manual/html_node/Eval-Function.html |
-| GNU Make Manual — The `call` Function | HTML | Sección específica de `$(call)` y funciones parametrizadas | https://www.gnu.org/software/make/manual/html_node/Call-Function.html |
-| Recursive Make Considered Harmful (Miller, 1997) | PDF | Paper clásico sobre por qué el `make` recursivo es problemático — alternativa: `$(eval)` para Makefiles modulares | https://aegis.sourceforge.net/auug97.pdf |
+| GNU Make Manual (una sola página) | HTML | Manual oficial completo; el capítulo 8 cubre `foreach`, `call`, `eval`, `value`, `file`, `let`, `intcmp` y `shell` | https://www.gnu.org/software/make/manual/make.html |
+| Managing Projects with GNU Make, 3.ª ed. — Capítulo 4: *Functions* | PDF | Capítulo de funciones del libro de O'Reilly, publicado con licencia abierta (GNU FDL) | https://www.oreilly.com/openbook/make3/book/ch04.pdf |
+| Managing Projects with GNU Make, 3.ª ed. (libro abierto) | PDF por capítulos | Índice del libro completo; el capítulo 12 (*Debugging Makefiles*) depura funciones y reglas generadas | https://www.oreilly.com/openbook/make3/book/index.csp |
+| Recursive Make Considered Harmful (Miller, 1997) | PDF | Paper clásico sobre los problemas del make recursivo; motiva los Makefiles únicos que generan reglas con `$(eval)` | https://aegis.sourceforge.net/auug97.pdf |

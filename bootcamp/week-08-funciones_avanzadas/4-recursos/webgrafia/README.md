@@ -2,8 +2,8 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make Manual: Functions](https://www.gnu.org/software/make/manual/html_node/Functions.html) | Referencia oficial completa de todas las funciones de Make, incluyendo `foreach`, `call`, `eval` y `shell` |
-| [GNU Make Manual: The `eval` Function](https://www.gnu.org/software/make/manual/html_node/Eval-Function.html) | Documentación oficial de `$(eval)` con el ejemplo canónico de generación dinámica de reglas |
-| [Auto-Generating Makefile Rules with $(eval)](https://make.mad-scientist.net/the-eval-function/) | Artículo de Paul Smith (mantenedor de GNU Make) explicando `$(eval)` con casos de uso reales |
-| [Makefile call and eval tricks](https://www.oreilly.com/library/view/managing-projects-with/0596006101/) | Managing Projects with GNU Make (O'Reilly) — capítulo sobre funciones avanzadas disponible en preview |
-| [Practical Makefiles, by example](http://nuclear.mutantstargoat.com/articles/make/) | Guía práctica con sección sobre meta-programación Make |
+| [GNU Make Manual: Functions](https://www.gnu.org/software/make/manual/html_node/Functions.html) | Índice oficial de todas las funciones; desde aquí se llega a `foreach`, `call`, `value`, `eval` y `shell` |
+| [GNU Make Manual: The `file` Function](https://www.gnu.org/software/make/manual/html_node/File-Function.html) | Sintaxis de `$(file op archivo[,texto])` con `>`, `>>` y `<`, y cuándo se evalúa |
+| [GNU Make Manual: The `let` Function](https://www.gnu.org/software/make/manual/html_node/Let-Function.html) | Variables de ámbito local con `$(let ...)` (Make 4.4+) |
+| [GNU Make Manual: Functions for Conditionals](https://www.gnu.org/software/make/manual/html_node/Conditional-Functions.html) | `$(if)`, `$(or)`, `$(and)` e `$(intcmp)` (Make 4.4+) para comparar enteros |
+| [Metaprogramming Make VI — The eval Function](https://make.mad-scientist.net/the-eval-function/) | Artículo de Paul Smith, mantenedor de GNU Make, sobre `$(eval)` y los niveles de escape con `$$` |

@@ -11,8 +11,9 @@
 | Instanciación dinámica | Proceso de generar reglas Make en tiempo de carga con `$(eval)` + `$(call)` | `$(foreach m,$(MODULES),$(eval $(call RULE,$(m))))` |
 | Doble dólar (`$$`) | Escapa un `$` dentro de un bloque `define` para que sobreviva la expansión de `$(call)` | `$$<` dentro del define → `$<` en la regla real |
 | Fallback de shell | Valor alternativo si el comando de `$(shell)` falla o devuelve vacío | `$(shell git ... 2>/dev/null \|\| echo sin-git)` |
-| Iteración de receta | Uso de `$(foreach)` dentro de una receta para ejecutar comandos en bucle | `@$(foreach d,$(DIRS),mkdir -p $(d);)` |
-| `$(MAKE)` | Variable especial que contiene el path del ejecutable Make actual | `$(shell $(MAKE) --version)` |
-| Metadatos de build | Información del entorno capturada en tiempo de build (fecha, git hash, OS) | `BUILD_DATE := $(shell date +%Y-%m-%d)` |
-| `$1`, `$2`, `$3` | Referencias a argumentos dentro de un `define` usado con `$(call)` | `@echo "[$1] puerto: $2"` |
 | Meta-Makefile | Makefile que genera sus propias reglas dinámicamente, sin listas hardcodeadas | `$(foreach svc,$(SERVICES),$(eval $(call SERVICE_RULE,$(svc))))` |
+| `$(file >ruta,texto)` | Escribe (`>`) o añade (`>>`) texto a un archivo sin lanzar un shell; `$(file <ruta)` lo lee | `$(file >$@,OS_NAME := $(OS_NAME))` |
+| `$(value VAR)` | Devuelve el texto de una variable sin expandirlo, útil para ver una plantilla cruda | `$(info $(value SERVICE_RULE))` |
+| `$(let vars,lista,texto)` | (Make 4.4+) Asigna palabras de una lista a variables locales dentro de `texto` | `$(let first rest,$(SERVICES),$(first))` |
+| `$(intcmp a,b,menor,igual,mayor)` | (Make 4.4+) Compara dos enteros y devuelve la rama correspondiente | `$(intcmp $(JOBS),8,ok,ok,demasiados)` |
+| Fase de lectura | Momento en que Make lee el Makefile: ejecuta los `:=` con `$(shell)` y los `$(eval)`, incluso con `make -n` | `GIT_HASH := $(shell git rev-parse --short HEAD)` |

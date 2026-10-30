@@ -4,83 +4,68 @@
 
 Un Makefile con fuentes hardcodeadas es deuda técnica inmediata: cada archivo nuevo exige editar el Makefile a mano. Las funciones de texto de Make resuelven esto — descubren, transforman y filtran listas de archivos dinámicamente. Con tres líneas reemplazas un bloque de 30.
 
-Esta semana dominas `$(wildcard)`, `$(patsubst)`, `$(filter)`, `$(dir)`, `$(notdir)` y las funciones que convierten un Makefile frágil en un sistema robusto que se adapta solo.
+Esta semana dominas `$(wildcard)`, `$(patsubst)`, `$(filter)`, `$(dir)`, `$(notdir)`, `$(strip)`, `$(words)` y las funciones que convierten un Makefile frágil en un sistema que se adapta solo.
 
 ## Objetivos de aprendizaje
 
-Al terminar esta semana serás capaz de:
+Al terminar esta semana, podrás:
 
 - Usar `$(wildcard)` para descubrir archivos automáticamente sin listas hardcodeadas
 - Transformar listas de archivos con `$(patsubst)` y `$(subst)`
 - Filtrar subconjuntos de listas con `$(filter)` y `$(filter-out)`
 - Manipular rutas con `$(dir)`, `$(notdir)`, `$(basename)` y `$(suffix)`
 - Agregar prefijos y sufijos con `$(addprefix)` y `$(addsuffix)`
+- Contar, seleccionar y limpiar listas con `$(sort)`, `$(words)`, `$(word)` y `$(strip)`
+- Validar argumentos de línea de comandos con `$(filter)` y `$(error)`
 - Combinar múltiples funciones para construir un build system auto-configurable
 
 ## Prerrequisitos
 
-- Semana 01: targets, dependencias, recetas, `.PHONY`
-- Semana 02: variables (`=`, `:=`, `?=`, `+=`), override CLI
-- Semana 04: variables automáticas (`$@`, `$<`, `$^`, `$*`)
-- Semana 05: pattern rules (`%.o: %.c`), static pattern rules
-- GNU Make ≥ 4.x y GCC instalado
+- Semanas 01–06 completadas; en especial la 03 (preámbulo estricto, guardas de `rm -rf`) y la 05 (reglas de patrón)
+- GNU Make ≥ 4.3 (`make --version`; en macOS `gmake`)
+- `gcc` instalado — requerido para los labs 01 y 05 y el proyecto (`gcc --version`)
 
-## Tabla de contenidos
+## Contenido
 
-| Sección | Contenido | Tiempo |
-|---------|-----------|--------|
-| [1-teoria](./1-teoria/01-contexto.md) | Referencia rápida de funciones | 30 min |
-| [lab-01-wildcard](./2-practicas/lab-01-wildcard/README.md) | Descubrimiento automático de archivos | 50 min |
-| [lab-02-patsubst](./2-practicas/lab-02-patsubst/README.md) | Transformación de listas con patsubst | 50 min |
-| [lab-03-filter](./2-practicas/lab-03-filter/README.md) | Filtrado con filter y filter-out | 50 min |
-| [lab-04-rutas](./2-practicas/lab-04-rutas/README.md) | Manipulación de rutas y extensiones | 50 min |
-| [lab-05-combinadas](./2-practicas/lab-05-combinadas/README.md) | Build system auto-configurable | 50 min |
-| [lab-06-funciones-rotas](./2-practicas/lab-06-funciones-rotas/README.md) | Depuración de funciones incorrectas | 50 min |
-| [3-proyecto](./3-proyecto/README.md) | Generador automático de reglas | 2h 30min |
-| **Total** | | **8h** |
+| # | Tipo | Tema | Tiempo |
+|---|------|------|--------|
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) · [02-trampas-y-utilidades.md](1-teoria/02-trampas-y-utilidades.md) | 45 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-wildcard](2-practicas/lab-01-wildcard/README.md) | 60 min |
+| 2 | Lab | [lab-02-patsubst](2-practicas/lab-02-patsubst/README.md) | 60 min |
+| 3 | Lab | [lab-03-filter](2-practicas/lab-03-filter/README.md) | 60 min |
+| 4 | Lab | [lab-04-rutas](2-practicas/lab-04-rutas/README.md) | 60 min |
+| 5 | Lab | [lab-05-combinadas](2-practicas/lab-05-combinadas/README.md) | 60 min |
+| 6 | Lab | [lab-06-funciones-rotas](2-practicas/lab-06-funciones-rotas/README.md) | 60 min |
+| — | Proyecto | [Build multi-módulo auto-configurable](3-proyecto/README.md) | 3 h |
+
+**Total: 10 horas**
+
+Apoyo: [diagramas](0-assets/) · [recursos](4-recursos/) · [glosario](5-glosario/README.md)
 
 ## Distribución del tiempo
 
 ```
-30 min  ████░░░░░░░░░░░░░░░░  Teoría
-300 min ████████████████████  Labs (6 × 50 min)
-150 min ████████████░░░░░░░░  Proyecto
+[45 min] Leer 1-teoria/ (01-contexto y 02-trampas-y-utilidades)
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — $(wildcard): descubrir fuentes, guarda de lista vacía, prueba de existencia
+[60 min] lab-02 — $(patsubst), $(VAR:a=b) y $(subst): dónde rompe subst
+[60 min] lab-03 — $(filter)/$(filter-out) y filter como prueba de pertenencia
+[60 min] lab-04 — dir, notdir, basename, suffix, addprefix y sus casos límite
+[60 min] lab-05 — build auto-configurable con subdirectorios
+[60 min] lab-06 — depurar seis bugs, incluidos espacios invisibles y $(strip)
+[3 h]    Proyecto: build multi-módulo con report, manifest y objs MODULE=...
 ```
 
 ## Verificación de completitud
 
-Desde la raíz del repositorio, el autograding del proyecto
-(ver [rúbrica](./rubrica-evaluacion.md)):
+Desde la raíz del repositorio:
 
 ```bash
 ./scripts/verificar-semana.sh 07
 ```
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
-
-```bash
-# Lab 01 — wildcard
-cd 2-practicas/lab-01-wildcard/solucion && make list-sources
-
-# Lab 02 — patsubst
-cd 2-practicas/lab-02-patsubst/solucion && make demo
-
-# Lab 03 — filter
-cd 2-practicas/lab-03-filter/solucion && make demo
-
-# Lab 04 — rutas
-cd 2-practicas/lab-04-rutas/solucion && make demo
-
-# Lab 05 — combinadas
-cd 2-practicas/lab-05-combinadas/solucion && make all
-
-# Lab 06 — rotas
-cd 2-practicas/lab-06-funciones-rotas/solucion && make demo
-
-# Proyecto
-cd 3-proyecto/solucion && make report
-cd 3-proyecto/solucion && make all
-```
+Comprueba tu proyecto (`3-proyecto/starter/`) contra las 17 comprobaciones de [`checks.json`](checks.json). Cada fallo trae una pista con el lab y el paso donde se arregla.
 
 ## 🔗 Navegación
 

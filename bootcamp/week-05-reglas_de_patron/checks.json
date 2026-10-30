@@ -59,11 +59,25 @@
       "pista": "2-practicas/lab-04-static-pattern/README.md, paso 3"
     },
     {
+      "id": "asm-por-modulo",
+      "descripcion": "make asm genera un .s por cada src/*.c en build/asm/",
+      "cmd": "{make} -C {proyecto} asm >/dev/null 2>&1; ls {proyecto}/build/asm/ 2>/dev/null | grep -c '[.]s$'",
+      "assert": "stdout~^4$",
+      "pista": "2-practicas/lab-03-multiples-patrones/README.md, pasos 3 y 4"
+    },
+    {
+      "id": "sin-reglas-implicitas",
+      "descripcion": "Las reglas implícitas de serie están desactivadas: un .c suelto no se compila solo",
+      "cmd": "echo 'int main(void) { return 0; }' > {proyecto}/suelto.c; {make} -C {proyecto} suelto >/dev/null 2>&1; r=$?; rm -f {proyecto}/suelto.c {proyecto}/suelto; exit $r",
+      "assert": "exit!=0",
+      "pista": "2-practicas/lab-05-prioridad/README.md, paso 6"
+    },
+    {
       "id": "cc-desde-cli",
       "descripcion": "CC se puede cambiar desde la línea de comandos",
       "cmd": "{make} -C {proyecto} -n -B all CC=clang",
       "assert": "stdout~(^|[[:space:]])clang .*-c ",
-      "pista": "3-proyecto/README.md, sección Entregables, punto 3"
+      "pista": "3-proyecto/README.md, sección Entregables, punto 4"
     },
     {
       "id": "clean-borra-build",

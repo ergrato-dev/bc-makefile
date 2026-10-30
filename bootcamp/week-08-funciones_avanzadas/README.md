@@ -2,85 +2,71 @@
 
 ## Descripción
 
-Con las funciones de la semana anterior descubres y transformas archivos. Con las funciones de esta semana *programas* Make: iteras sobre listas, defines funciones reutilizables, generas reglas en tiempo de ejecución y consultas el sistema operativo. Cuatro herramientas que convierten un Makefile en un meta-programa.
-
-Esta semana dominas `$(foreach)`, `$(call)`, `$(eval)` y `$(shell)` — las funciones que separan un Makefile avanzado de uno profesional.
+Con las funciones de la semana anterior descubres y transformas archivos. Con las de esta semana *programas* Make: iteras sobre listas, defines funciones reutilizables, generas reglas en la fase de lectura, consultas el sistema y escribes archivos sin lanzar un shell. Son las herramientas que convierten un Makefile en un meta-programa, y también las que más fácilmente lo vuelven lento o inseguro.
 
 ## Objetivos de aprendizaje
 
 Al terminar esta semana serás capaz de:
 
-- Iterar sobre listas con `$(foreach)` para generar texto repetitivo sin copy-paste
+- Iterar sobre listas con `$(foreach)` para generar texto y comandos sin copy-paste
 - Definir funciones Make reutilizables con `define...endef` y llamarlas con `$(call)`
-- Generar reglas y variables dinámicamente en tiempo de evaluación con `$(eval)`
-- Capturar la salida de comandos de shell con `$(shell)` para integrar información del sistema
-- Combinar las cuatro funciones para construir un Meta-Makefile que genera sus propias reglas
+- Generar reglas y variables dinámicamente con `$(eval)` y depurarlas con `$(value)` e `$(info)`
+- Capturar la salida de comandos con `$(shell)` sabiendo cuándo se ejecuta, cuánto cuesta y qué riesgo tiene
+- Escribir y leer archivos sin shell con `$(file)`
+- Reconocer `$(let)` y `$(intcmp)` (Make 4.4+) y escribir su alternativa para Make 4.3
+- Combinar todo en un Meta-Makefile que genera sus propias reglas y su manifest
 
 ## Prerrequisitos
 
 - Semana 01: targets, dependencias, recetas, `.PHONY`
 - Semana 02: variables (`=`, `:=`, `?=`, `+=`), override CLI
+- Semana 03: preámbulo estricto y guardas de `rm -rf`
 - Semana 04: variables automáticas (`$@`, `$<`, `$^`, `$*`)
 - Semana 05: pattern rules (`%.o: %.c`), static pattern rules
+- Semana 06: prerrequisitos order-only
 - Semana 07: `$(wildcard)`, `$(patsubst)`, `$(filter)`, `$(dir)`, `$(notdir)`
-- GNU Make ≥ 4.x y GCC instalado
+- GNU Make ≥ 4.3 (`make --version`; en macOS `gmake`) y `gcc`
 
-## Tabla de contenidos
+## Contenido
 
-| Sección | Contenido | Tiempo |
-|---------|-----------|--------|
-| [1-teoria](./1-teoria/01-contexto.md) | Referencia rápida de funciones avanzadas | 30 min |
-| [lab-01-foreach](./2-practicas/lab-01-foreach/README.md) | Iteración con foreach | 50 min |
-| [lab-02-call](./2-practicas/lab-02-call/README.md) | Funciones reutilizables con call | 50 min |
-| [lab-03-eval](./2-practicas/lab-03-eval/README.md) | Generación dinámica de reglas con eval | 50 min |
-| [lab-04-shell](./2-practicas/lab-04-shell/README.md) | Integración con el shell | 50 min |
-| [lab-05-combinadas](./2-practicas/lab-05-combinadas/README.md) | Meta-build system con las 4 funciones | 50 min |
-| [lab-06-funciones-rotas](./2-practicas/lab-06-funciones-rotas/README.md) | Depuración de funciones avanzadas | 50 min |
-| [3-proyecto](./3-proyecto/README.md) | Meta-Makefile: reglas que se generan solas | 2h 30min |
-| **Total** | | **8h** |
+| # | Tipo | Tema | Tiempo |
+|---|------|------|--------|
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) — `foreach`, `call`, `eval`, `shell` | 25 min |
+| — | Teoría | [02-file-value-let-intcmp.md](1-teoria/02-file-value-let-intcmp.md) — `file`, `value`, `let`, `intcmp`, coste de `shell` | 20 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-foreach](2-practicas/lab-01-foreach/) | 60 min |
+| 2 | Lab | [lab-02-call](2-practicas/lab-02-call/) | 60 min |
+| 3 | Lab | [lab-03-eval](2-practicas/lab-03-eval/) | 60 min |
+| 4 | Lab | [lab-04-shell](2-practicas/lab-04-shell/) | 60 min |
+| 5 | Lab | [lab-05-combinadas](2-practicas/lab-05-combinadas/) | 60 min |
+| 6 | Lab | [lab-06-funciones-rotas](2-practicas/lab-06-funciones-rotas/) | 60 min |
+| — | Proyecto | [Orquestador de microservicios auto-configurable](3-proyecto/) | 3 h |
+
+**Total: 10 horas**
 
 ## Distribución del tiempo
 
 ```
-30 min  ████░░░░░░░░░░░░░░░░  Teoría
-300 min ████████████████████  Labs (6 × 50 min)
-150 min ████████████░░░░░░░░  Proyecto
+[45 min] Leer 1-teoria/ (01-contexto + 02-file-value-let-intcmp)
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — foreach: listas, directorios y configs por entorno
+[60 min] lab-02 — call: funciones, nombres calculados y la trampa del espacio
+[60 min] lab-03 — eval: reglas generadas, depuración con $(value) e $(info)
+[60 min] lab-04 — shell: metadatos, = frente a :=, $(file) sin shell
+[60 min] lab-05 — combinadas: build de plugins auto-descubiertos
+[60 min] lab-06 — depurar seis errores en funciones avanzadas
+[3 h]    Proyecto: orquestador de microservicios con manifest generado
 ```
 
 ## Verificación de completitud
 
-Desde la raíz del repositorio, el autograding del proyecto
-(ver [rúbrica](./rubrica-evaluacion.md)):
+Desde la raíz del repositorio:
 
 ```bash
 ./scripts/verificar-semana.sh 08
 ```
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
-
-```bash
-# Lab 01 — foreach
-cd 2-practicas/lab-01-foreach/solucion && make demo
-
-# Lab 02 — call
-cd 2-practicas/lab-02-call/solucion && make demo
-
-# Lab 03 — eval
-cd 2-practicas/lab-03-eval/solucion && make demo
-
-# Lab 04 — shell
-cd 2-practicas/lab-04-shell/solucion && make info
-
-# Lab 05 — combinadas
-cd 2-practicas/lab-05-combinadas/solucion && make info
-
-# Lab 06 — rotas
-cd 2-practicas/lab-06-funciones-rotas/solucion && make demo
-
-# Proyecto
-cd 3-proyecto/solucion && make info
-cd 3-proyecto/solucion && make generate
-```
+Comprueba tu `3-proyecto/starter/` contra las 16 comprobaciones de [checks.json](checks.json) (ver la [rúbrica](rubrica-evaluacion.md)). Para validar la solución de referencia: `ENTREGA=solucion ./scripts/verificar-semana.sh 08`.
 
 ## 🔗 Navegación
 

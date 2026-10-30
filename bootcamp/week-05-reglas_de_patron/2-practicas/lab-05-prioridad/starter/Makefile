@@ -1,13 +1,16 @@
 # ============================================================
-# Lab 05 — Prioridad: regla explícita vs regla de patrón
+# Lab 05 — Cómo elige Make una regla
 # Semana 05: Reglas de patrón
 # ============================================================
-# Instrucciones:
-#   1. Observa la regla de patrón %.o: %.c ya definida
-#   2. Agrega una regla EXPLÍCITA para debug.o con -g -DDEBUG
-#   3. Verifica que make main.o usa el patrón y make debug.o usa la explícita
-#   4. Completa 'all' para enlazar main.o, normal.o y debug.o
+# Sigue los pasos del README en orden; cada TODO dice su paso.
 # ============================================================
+
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
+# TODO (paso 6): desactiva las reglas implícitas de serie
+#   MAKEFLAGS += -r
 
 .PHONY: all clean help
 
@@ -19,29 +22,30 @@ CFLAGS := -Wall -std=c11
 OBJS := main.o normal.o debug.o
 APP  := app
 
-## all: compila la aplicación
-all: $(APP)
+all: $(APP) ## Compila la aplicación
 
 $(APP): $(OBJS)
 	$(CC) $^ -o $@
 
-# Regla de patrón genérica — aplica a main.o y normal.o
+# Regla de patrón general: ya está escrita
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "[patrón] $@ compilado"
+	@echo "[patrón %] $@ stem=$*"
 
-# TODO: agrega una regla EXPLÍCITA para debug.o
-#       Debe compilar con: $(CC) $(CFLAGS) -g -DDEBUG -c $< -o $@
-#       Y mostrar: @echo "[debug mode] $@ compilado con -g -DDEBUG"
-#       IMPORTANTE: la regla explícita tiene prioridad sobre el patrón
+# TODO (paso 4): regla de patrón test_%.o: test_%.c
+#   Receta: $(CC) $(CFLAGS) -DTEST -c $< -o $@
+#           @echo "[patrón test_%] $@ stem=$*"
 
-## clean: elimina objetos y binario
-clean:
-	@rm -f $(OBJS) $(APP)
+# TODO (paso 2): regla EXPLÍCITA debug.o: debug.c
+#   Receta: $(CC) $(CFLAGS) -g -DDEBUG -c $< -o $@
+#           @echo "[explícita] $@ compilado con -g -DDEBUG"
 
-## help: muestra esta ayuda
-help:
-	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+# TODO (paso 3): normal.o depende de config.h (una línea, SIN receta)
+
+clean: ## Elimina objetos y binarios
+	rm -f -- *.o $(APP) main
+
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

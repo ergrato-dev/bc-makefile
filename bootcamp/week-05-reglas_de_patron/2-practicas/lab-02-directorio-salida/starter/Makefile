@@ -9,6 +9,10 @@
 #   4. Verifica con: make all && ./build/app
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean help
 
 .DEFAULT_GOAL := help
@@ -27,30 +31,24 @@ SRCS := $(SRC_DIR)/main.c $(SRC_DIR)/utils.c
 # TODO: define OBJS transformando cada src/%.c en build/%.o
 #       Pista: $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 OBJS :=
-
-APP := $(BUILD_DIR)/app
+APP  := $(BUILD_DIR)/app
 
 # ── Targets ───────────────────────────────────────────────────
+all: $(APP) ## Compila la aplicación completa
 
-## all: compila la aplicación completa
-all: $(APP)
-
-## $(APP): enlaza todos los objetos
+# TODO: receta que enlace $^ y genere $@ con $(CC)
 $(APP): $(OBJS)
-	# TODO: enlaza $^ y genera $@ con $(CC)
 
-# TODO: escribe la regla de patrón build/%.o: src/%.c
-#       - usa @mkdir -p $(@D) para crear el directorio
-#       - compila con $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+# TODO: regla de patrón $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c con tres líneas:
+#         @mkdir -p $(@D)
+#         @echo "[cc] stem=$* dir=$(@D)"
+#         $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
-## clean: elimina el directorio build/
-clean:
+clean: ## Elimina el directorio build/
 	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
-	@rm -rf -- '$(BUILD_DIR)'
+	rm -rf -- '$(BUILD_DIR)'
 
-## help: muestra esta ayuda
-help:
-	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

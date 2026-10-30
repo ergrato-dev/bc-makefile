@@ -1,6 +1,6 @@
 # Proyecto Semana 08 — Orquestador de Microservicios Auto-Configurable
 
-**Duración estimada:** 2 horas 30 minutos
+⏱ Duración estimada: 3 h
 
 ## Contexto
 
@@ -29,8 +29,9 @@ starter/
 1. `make info` — muestra servicios auto-descubiertos y metadatos del sistema
 2. `make all` — compila todos los servicios usando reglas generadas por `$(eval)`
 3. `make <servicio>` (ej. `make api`) — compila un servicio individual, target generado dinámicamente
-4. `make generate` — compila todo y genera `build/manifest.mk` con variables Make
-5. `make clean` — elimina todo lo generado en `build/`
+4. `make run-<servicio>` (ej. `make run-worker`) — compila si hace falta y ejecuta ese servicio, también generado por la plantilla
+5. `make generate` — compila todo y escribe `build/manifest.mk` **con `$(file)`**, sin `printf` ni `echo`, incluyendo una línea `BIN_<servicio>` por servicio
+6. `make clean` — elimina todo lo generado en `build/`, con guarda de variable vacía
 
 ## Variables requeridas en el Makefile
 
@@ -44,18 +45,21 @@ starter/
 
 ## Plantilla requerida
 
+Punto de partida; te falta añadir el target `run-$(1)` (entregable 4):
+
 ```makefile
 define SERVICE_RULE
 .PHONY: $(1)
 
 $(1): $(BUILD)/$(1)
 
-$(BUILD)/$(1): services/$(1)/main.c
-	@mkdir -p $(BUILD)
+$(BUILD)/$(1): services/$(1)/main.c | $(BUILD)
 	$(CC) $(CFLAGS) $$< -o $$@
 	@echo "Compilado: $$@"
 endef
 ```
+
+El directorio `$(BUILD)` es un prerrequisito *order-only* (semana 06): la regla `$(BUILD): ; @mkdir -p $@` ya está en el starter. `generate` también lo necesita, porque Make expande `$(file ...)` antes de ejecutar la primera línea de la receta (ver [02-file-value-let-intcmp.md](../1-teoria/02-file-value-let-intcmp.md)).
 
 ## Comandos de verificación
 
@@ -71,6 +75,9 @@ make all
 # Compilar individual (target generado dinámicamente)
 make api
 make worker
+
+# Compilar y ejecutar un servicio
+make run-worker
 
 # Generar manifest
 make generate
@@ -113,14 +120,33 @@ Compilado: build/worker
   worker: build/worker
 ```
 
+## Salida esperada de `make run-worker`
+
+```
+gcc -Wall -Wextra -std=c11 services/worker/main.c -o build/worker
+Compilado: build/worker
+./build/worker
+[worker] servicio iniciado
+```
+
 ## Contenido esperado de `build/manifest.mk`
 
 ```makefile
+# Generado automáticamente — no editar
 BUILT_SERVICES := api monitor worker
 BUILD_DATE := 2026-06-04T14:30:00
 GIT_HASH := a1b2c3d
 OS_NAME := Linux
-# Generado automáticamente — no editar
+BIN_api := build/api
+BIN_monitor := build/monitor
+BIN_worker := build/worker
+```
+
+Compruébalo leyéndolo como Makefile:
+
+```bash
+make -s -f build/manifest.mk --eval 'x: ; @echo $(BIN_worker)' x
+# build/worker
 ```
 
 ## ✅ Requisitos verificables
@@ -135,10 +161,12 @@ Los comprueba `./scripts/verificar-semana.sh 08` desde la raíz del repositorio
 - [ ] make info muestra el hash corto de git o sin-git
 - [ ] make all desde cero compila los tres servicios y cada binario arranca
 - [ ] make api compila solo build/api, con un target generado por $(eval)
+- [ ] make run-worker compila y ejecuta solo build/worker, con un target generado por la plantilla
 - [ ] Un directorio nuevo en services/ se compila sin editar el Makefile
 - [ ] Una segunda ejecución de make all no recompila ningún servicio
 - [ ] make generate escribe BUILT_SERVICES := api monitor worker en build/manifest.mk
 - [ ] build/manifest.mk es un Makefile válido que define OS_NAME
+- [ ] build/manifest.mk define BIN_<servicio> para cada servicio descubierto
 - [ ] make clean elimina build/ por completo
 - [ ] make clean se niega a borrar si BUILD está vacío
 - [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail

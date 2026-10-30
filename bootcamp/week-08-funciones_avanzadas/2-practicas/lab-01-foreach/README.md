@@ -1,6 +1,6 @@
 # Lab 01 — foreach
 
-**Duración estimada:** 50 minutos
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -36,12 +36,13 @@ dirs:
    make help
    ```
 
-3. Implementa los 5 TODOs del `Makefile`:
+3. Implementa los 6 TODOs del `Makefile`:
    - **TODO 1:** `DEPLOY_DIRS` con `$(foreach env,$(ENVS),deploy/$(env))`
    - **TODO 2:** `ENV_FLAGS` con `$(foreach env,$(ENVS),-DENV_$(env))`
    - **TODO 3:** `DEPLOY_MATRIX` con `$(foreach)` anidado sobre `$(REGIONS)` y `$(ENVS)`
    - **TODO 4:** receta de `dirs` usando `$(foreach)` para crear cada directorio
    - **TODO 5:** receta de `report` usando `$(foreach)` para imprimir cada entorno
+   - **TODO 6:** receta de `configs` que crea `deploy/<env>/config.env` con `ENV=<env>` para cada entorno
 
 4. Verifica cada target:
    ```bash
@@ -50,6 +51,30 @@ dirs:
    make report
    make clean
    ```
+
+5. Comprueba que la lista manda, no el Makefile. Sin editar nada, cambia los entornos desde la línea de comandos:
+   ```bash
+   make demo ENVS="dev qa"
+   ```
+   Debes ver:
+   ```
+   DEPLOY_DIRS:   deploy/dev deploy/qa
+   ENV_FLAGS:     -DENV_dev -DENV_qa
+   DEPLOY_MATRIX: us-east-dev us-east-qa eu-west-dev eu-west-qa ap-south-dev ap-south-qa
+   Combinaciones: 6
+   ```
+
+6. Genera un archivo de configuración por entorno (TODO 6) y mira qué línea de shell construye `$(foreach)`:
+   ```bash
+   make configs
+   cat deploy/staging/config.env
+   make -n configs | head -1
+   ```
+   Debes ver `ENV=staging` y, con `-n`, **una sola línea** con tres comandos separados por `;`:
+   ```
+   mkdir -p deploy/dev && echo "ENV=dev" > deploy/dev/config.env; mkdir -p deploy/staging && ...
+   ```
+   Quita el `;` final del `foreach`, repite `make -n configs` y explica por qué el resultado ya no son tres comandos. Vuelve a ponerlo y termina con `make clean`.
 
 ## Criterios de éxito
 
@@ -77,6 +102,10 @@ $ make report
   - prod → deploy/prod
 Total: 3 entornos
 ```
+
+- [ ] `make demo ENVS="dev qa"` imprime `Combinaciones: 6` sin editar el Makefile
+- [ ] `make configs` crea `deploy/dev/config.env`, `deploy/staging/config.env` y `deploy/prod/config.env`, y el de staging contiene `ENV=staging`
+- [ ] `make clean` elimina `deploy/`
 
 ## Reto extra
 

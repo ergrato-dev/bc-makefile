@@ -2,8 +2,8 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make Manual: Pattern Rules](https://www.gnu.org/software/make/manual/html_node/Pattern-Rules.html) | Referencia oficial completa de reglas de patrón, incluyendo encadenamiento y prioridades |
-| [GNU Make Manual: Static Pattern Rules](https://www.gnu.org/software/make/manual/html_node/Static-Usage.html) | Referencia oficial de static pattern rules con comparación frente a pattern rules genéricas |
-| [GNU Make Manual: Implicit Rules](https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html) | Lista de reglas implícitas internas de Make; útil para entender qué ya existe sin declararlo |
-| [Makefile Tutorial — Pattern Rules](https://makefiletutorial.com/#pattern-rules) | Tutorial visual con ejemplos interactivos y casos de error frecuentes |
-| [Peter Miller: Recursive Make Considered Harmful](https://aegis.sourceforge.net/auug97.pdf) | Artículo clásico que explica por qué las pattern rules planas escalan mejor que los Makefiles recursivos |
+| [GNU Make Manual: Pattern Rules](https://www.gnu.org/software/make/manual/html_node/Pattern-Rules.html) | Referencia oficial de reglas de patrón: sintaxis, variables automáticas y redefinición |
+| [GNU Make Manual: How Patterns Match](https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html) | Cómo se calcula el stem y por qué gana la regla de stem más corto |
+| [GNU Make Manual: Syntax of Static Pattern Rules](https://www.gnu.org/software/make/manual/html_node/Static-Usage.html) | Sintaxis de las static pattern rules y el aviso `doesn't match the target pattern` |
+| [GNU Make Manual: Catalogue of Built-In Rules](https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html) | Las reglas implícitas de serie que `-r` elimina |
+| [Makefile Tutorial — Pattern Rules](https://makefiletutorial.com/#pattern-rules) | Tutorial con ejemplos de reglas de patrón y static pattern rules |

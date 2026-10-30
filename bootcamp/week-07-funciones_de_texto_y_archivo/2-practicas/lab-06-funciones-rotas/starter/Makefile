@@ -1,3 +1,8 @@
+# ============================================================
+# Lab 06 — funciones rotas (6 bugs)
+# Semana 07: Funciones de texto y archivo
+# ============================================================
+
 .PHONY: demo help
 .DEFAULT_GOAL := help
 
@@ -20,12 +25,24 @@ NO_UTILS := $(filter-out utils,$(SRCS))
 # Esperado: -Iinclude
 INC_FLAGS := $(addprefix -I,$(SRCS))
 
+# BUG 5: espacio tras la coma en subst - parte cada nombre en dos palabras
+# Esperado: src/main.d src/parser.d src/utils.d (3 palabras)
+DEPS := $(subst .c, .d,$(SRCS))
+
+# BUG 6: el comentario al final de la línea deja espacios en el valor
+# Esperado: out/app
+OUT_DIR := out    # directorio de salida
+BIN     := $(OUT_DIR)/app
+
 demo: ## Muestra las transformaciones (con bugs — corrígelos)
 	@echo "OBJS:      $(OBJS)"
 	@echo "C_SRCS:    $(C_SRCS)"
 	@echo "NO_UTILS:  $(NO_UTILS)"
 	@echo "INC_FLAGS: $(INC_FLAGS)"
+	@echo "DEPS:      $(DEPS) ($(words $(DEPS)) palabras)"
+	@echo "BIN:       [$(BIN)]"
 
 help: ## Muestra esta ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

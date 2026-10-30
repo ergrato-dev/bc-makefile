@@ -113,12 +113,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — `wildcard`](2-practicas/lab-01-wildcard/README.md) | `make list-sources` muestra 3 fuentes descubiertas; tras crear `src/logger.c` muestra 4 sin editar el Makefile | 10 |
-| [02 — `patsubst`](2-practicas/lab-02-patsubst/README.md) | `make demo` imprime `OBJS`, `TEST_BINS` y `RELEASE_SRCS` exactamente como en el README | 10 |
-| [03 — `filter`](2-practicas/lab-03-filter/README.md) | Los 5 subconjuntos de `make demo` coinciden con la salida esperada; ninguno contiene palabras de más | 10 |
-| [04 — Rutas](2-practicas/lab-04-rutas/README.md) | Las 6 líneas de `make demo` (`dir`, `notdir`, `basename`, `suffix`, `-I`, backups) coinciden exactamente | 10 |
-| [05 — Combinadas](2-practicas/lab-05-combinadas/README.md) | `make info` muestra las 4 variables; `./build/pipeline` ejecuta los tres módulos; `src/reporter.c` entra en el build sin editar el Makefile | 10 |
-| [06 — Funciones rotas](2-practicas/lab-06-funciones-rotas/README.md) | Los 4 bugs corregidos; `make demo` produce exactamente la salida esperada | 10 |
+| [01 — `wildcard`](2-practicas/lab-01-wildcard/README.md) | `make list-sources` descubre 3 fuentes ordenadas y `Logger = ausente`; con `SRC_DIR=vacio` falla con la guarda; tras crear `src/logger.c` muestra 4 y `presente` sin editar el Makefile | 10 |
+| [02 — `patsubst`](2-practicas/lab-02-patsubst/README.md) | `make demo` imprime `OBJS`, `TEST_BINS`, `RELEASE_SRCS` y `OBJS_REF` como en el README; `make trampas` muestra `release/releasemap.c` frente a `release/srcmap.c` | 10 |
+| [03 — `filter`](2-practicas/lab-03-filter/README.md) | Los 5 subconjuntos de `make demo` coinciden; `make pick DIR=include` lista 2 cabeceras y `make pick DIR=lib` falla listando los directorios | 10 |
+| [04 — Rutas](2-practicas/lab-04-rutas/README.md) | Las líneas de `make demo` coinciden; `make modules` da `auth tls logger`; las 4 líneas de `make edge` coinciden y sabes explicarlas | 10 |
+| [05 — Combinadas](2-practicas/lab-05-combinadas/README.md) | `make info` muestra las 5 variables; `./build/pipeline` ejecuta los tres módulos; `src/net/http.c` se compila en `build/net/` con `OBJ_DIRS` como prerrequisito order-only | 10 |
+| [06 — Funciones rotas](2-practicas/lab-06-funciones-rotas/README.md) | Los 6 bugs corregidos; `make demo` produce la salida esperada, también con `OUT_DIR='  out  '` | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué devuelve cada función que usaste; 8 si se cumplen todos; 7 si
@@ -134,19 +134,23 @@ Lo ejecuta `./scripts/verificar-semana.sh 07`. Es binario: pasa o no pasa.
 
 | Comprobación | Puntos |
 |---|:--:|
-| `binario-funciona` — `make all` desde cero produce `build/sistema` y el binario inicia los tres módulos | 7 |
-| `objetos-espejo` — los objetos conservan la estructura de directorios de las fuentes dentro de `build/` | 5 |
-| `include-por-modulo` — cada directorio de módulo llega al compilador como flag `-I` | 5 |
-| `modulo-nuevo-sin-editar` — un `.c` nuevo en `modules/logger/` se compila sin editar el Makefile | 7 |
-| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no rehace nada | 4 |
-| `report-core` — `make report` cuenta las fuentes core y las lista sin directorio | 4 |
-| `report-directorios` — `make report` muestra los directorios de módulo ordenados y sin repetir | 4 |
-| `report-objetos` — `make report` cuenta 5 objetos con `$(words)` | 3 |
-| `manifest-una-por-linea` — `make manifest` escribe las 5 fuentes, una por línea | 5 |
-| `clean-borra-build` — `make clean` elimina `build/` por completo | 4 |
-| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacío | 6 |
-| `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 3 |
-| `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 3 |
+| `binario-funciona` — `make all` desde cero produce `build/sistema` y el binario inicia los tres módulos | 6 |
+| `objetos-espejo` — los objetos conservan la estructura de directorios de las fuentes dentro de `build/` | 4 |
+| `include-por-modulo` — cada directorio de módulo llega al compilador como flag `-I` | 4 |
+| `modulo-nuevo-sin-editar` — un `.c` nuevo en `modules/logger/` se compila sin editar el Makefile | 6 |
+| `segunda-pasada-sin-trabajo` — una segunda ejecución de `make all` no rehace nada | 3 |
+| `report-core` — `make report` cuenta las fuentes core y las lista sin directorio | 3 |
+| `report-directorios` — `make report` muestra los directorios de módulo ordenados y sin repetir | 3 |
+| `report-objetos` — `make report` cuenta 5 objetos con `$(words)` | 2 |
+| `manifest-una-por-linea` — `make manifest` escribe las 5 fuentes, una por línea | 4 |
+| `report-modulos` — `make report` lista los nombres de módulo sin directorio ni barra final | 3 |
+| `objs-de-modulo` — `make objs MODULE=logger` lista solo los objetos de ese módulo | 4 |
+| `objs-modulo-con-espacios` — `make objs` normaliza con `$(strip)` los espacios alrededor de `MODULE` | 3 |
+| `objs-modulo-inexistente` — `make objs` con un módulo inexistente falla listando los disponibles | 3 |
+| `clean-borra-build` — `make clean` elimina `build/` por completo | 3 |
+| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD` está vacío | 5 |
+| `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 2 |
+| `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 2 |
 | **Total** | **60** |
 
 ### Calidad — 40 puntos
@@ -156,7 +160,7 @@ Lo que el autograding no puede ver.
 | Criterio | Excelente | Suficiente | Puntos |
 |---|---|---|:--:|
 | **Cero listas a mano** | Ninguna fuente, objeto ni directorio escrito literalmente: todo sale de `$(wildcard)` y funciones | Un nombre literal en un mensaje `@echo` | 10 |
-| **La función adecuada** | `patsubst` para extensiones, `sort` para deduplicar, `notdir` solo para mostrar | Algún `subst` donde iba `patsubst` | 8 |
+| **La función adecuada** | `patsubst` para extensiones, `sort` para deduplicar, `notdir` solo para mostrar, `strip` sobre valores que llegan de fuera | Algún `subst` donde iba `patsubst` | 8 |
 | **`.PHONY` completo** | Todos los targets que no producen archivo están declarados | Falta uno | 6 |
 | **`help` útil** | `make` sin argumentos lista todos los targets con descripción | Falta alguno | 6 |
 | **Variables comentadas** | Cada variable derivada indica con un ejemplo qué valor produce | Comentarios genéricos | 5 |
@@ -179,7 +183,7 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 07` con las 13 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 07` con las 17 comprobaciones en verde
 - [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `build/`)
 
 ---

@@ -66,6 +66,34 @@
       "pista": "3-proyecto/README.md, entregable 3"
     },
     {
+      "id": "report-modulos",
+      "descripcion": "make report lista los nombres de módulo sin directorio ni barra final",
+      "cmd": "{make} -C {proyecto} report",
+      "assert": "stdout~^Módulos: +auth config logger *$",
+      "pista": "2-practicas/lab-04-rutas/README.md, paso 10"
+    },
+    {
+      "id": "objs-de-modulo",
+      "descripcion": "make objs MODULE=logger lista solo los objetos de ese módulo",
+      "cmd": "{make} -s -C {proyecto} objs MODULE=logger",
+      "assert": "stdout~^build/modules/logger/logger.o *$",
+      "pista": "2-practicas/lab-03-filter/README.md, paso 9"
+    },
+    {
+      "id": "objs-modulo-con-espacios",
+      "descripcion": "make objs normaliza con $(strip) los espacios alrededor de MODULE",
+      "cmd": "{make} -s -C {proyecto} objs 'MODULE= logger '",
+      "assert": "stdout~^build/modules/logger/logger.o *$",
+      "pista": "1-teoria/02-trampas-y-utilidades.md, sección strip"
+    },
+    {
+      "id": "objs-modulo-inexistente",
+      "descripcion": "make objs con un módulo inexistente falla listando los módulos disponibles",
+      "cmd": "{make} -C {proyecto} objs MODULE=nope",
+      "assert": "stdout~nope.*no existe.*auth config logger",
+      "pista": "2-practicas/lab-03-filter/README.md, paso 10"
+    },
+    {
       "id": "clean-borra-build",
       "descripcion": "make clean elimina build/ por completo",
       "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",

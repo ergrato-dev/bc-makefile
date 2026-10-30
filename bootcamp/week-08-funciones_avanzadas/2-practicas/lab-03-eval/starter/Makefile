@@ -1,4 +1,4 @@
-.PHONY: all demo clean help
+.PHONY: all demo show-rule clean help
 .DEFAULT_GOAL := help
 
 SUITES  := unit integration e2e performance
@@ -53,11 +53,18 @@ demo: ## Mostrar targets generados
 	@echo "Targets: $(foreach s,$(SUITES),run-$(s))"
 	@echo "Reportes: $(foreach s,$(SUITES),$(REPORTS)/$(s).txt)"
 
+# TODO 4: Haz que show-rule imprima, con $(info), primero la plantilla sin expandir
+# ($(value TEST_SUITE_RULE)) y después el texto que recibe $(eval) para la suite unit
+# ($(call TEST_SUITE_RULE,unit)). Termina la receta con @: para que no ejecute nada más.
+show-rule: ## Mostrar la plantilla cruda y la regla generada para unit
+	@echo "TODO: implementa show-rule"
+
 clean: ## Limpiar reportes
 	$(if $(REPORTS),,$(error REPORTS vacía: rm -rf no se ejecuta))
 	@rm -rf -- '$(REPORTS)'
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

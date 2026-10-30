@@ -2,6 +2,6 @@
 
 | Título | Formato | Descripción | Enlace |
 |--------|---------|-------------|--------|
-| GNU Make Manual — Pattern Rules | HTML/PDF | Capítulo oficial sobre reglas de patrón implícitas y explícitas, static pattern rules y encadenamiento | https://www.gnu.org/software/make/manual/html_node/Pattern-Rules.html |
-| GNU Make Manual — Static Pattern Rules | HTML | Sección dedicada a static pattern rules con ejemplos comparativos | https://www.gnu.org/software/make/manual/html_node/Static-Usage.html |
-| Managing Projects with GNU Make (3rd ed.) | HTML | Capítulo 2 y 3: reglas de patrón en proyectos reales, libro bajo licencia libre | https://www.oreilly.com/library/view/managing-projects-with/0596006101/ |
+| GNU Make Manual | HTML/PDF | Manual oficial completo; ver "Static Pattern Rules" y el capítulo "Using Implicit Rules" | https://www.gnu.org/software/make/manual/ |
+| GNU Make Manual (PDF) | PDF | El mismo manual en un único PDF para leer sin conexión | https://www.gnu.org/software/make/manual/make.pdf |
+| Managing Projects with GNU Make, 3.ª ed. (Robert Mecklenburg) | PDF | Libro de O'Reilly publicado bajo GNU FDL; el capítulo 2 cubre reglas de patrón, static pattern rules y la base de datos de reglas implícitas | https://www.oreilly.com/openbook/make3/book/index.csp |

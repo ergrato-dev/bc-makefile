@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all demo dirs report clean help
+.PHONY: all demo dirs report configs clean help
 .DEFAULT_GOAL := help
 
 ENVS    := dev staging prod
@@ -27,10 +27,15 @@ report: ## Imprimir reporte de entornos
 	@$(foreach env,$(ENVS),echo "  - $(env) → deploy/$(env)";)
 	@echo "Total: $(words $(ENVS)) entornos"
 
+configs: ## Crear deploy/<env>/config.env para cada entorno
+	@$(foreach env,$(ENVS),mkdir -p deploy/$(env) && echo "ENV=$(env)" > deploy/$(env)/config.env;)
+	@echo "Configs: $(foreach env,$(ENVS),deploy/$(env)/config.env)"
+
 clean: ## Eliminar directorios de deploy
 	@rm -rf deploy/
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

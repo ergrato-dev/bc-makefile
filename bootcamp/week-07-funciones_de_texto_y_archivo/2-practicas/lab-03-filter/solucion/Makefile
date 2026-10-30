@@ -1,8 +1,13 @@
+# ============================================================
+# Lab 03 — filter (SOLUCIÓN)
+# Semana 07: Funciones de texto y archivo
+# ============================================================
+
 SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: demo help
+.PHONY: demo pick help
 .DEFAULT_GOAL := help
 
 ALL_FILES := src/main.c src/utils.c include/utils.h include/types.h \
@@ -14,6 +19,11 @@ OBJECTS     := $(filter %.o,$(ALL_FILES))
 NO_DOCS     := $(filter-out docs/%,$(ALL_FILES))
 SRC_AND_INC := $(filter src/% include/%,$(ALL_FILES))
 
+# build docs include src  (directorios de primer nivel, sin repetir)
+DIRS := $(sort $(patsubst %/,%,$(dir $(ALL_FILES))))
+# Directorio pedido en 'make pick DIR=...'
+DIR ?=
+
 demo: ## Muestra el resultado de los filtros
 	@echo "Todos:      $(ALL_FILES)"
 	@echo ".c:         $(C_SRCS)"
@@ -22,6 +32,11 @@ demo: ## Muestra el resultado de los filtros
 	@echo "Sin docs:   $(NO_DOCS)"
 	@echo "src+inc:    $(SRC_AND_INC)"
 
+pick: ## Lista los archivos de un directorio (DIR=include)
+	$(if $(filter $(DIR),$(DIRS)),,$(error Directorio '$(DIR)' no existe; disponibles: $(DIRS)))
+	@echo "$(filter $(DIR)/%,$(ALL_FILES))"
+
 help: ## Muestra esta ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

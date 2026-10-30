@@ -21,6 +21,8 @@ ALL_OBJS :=
 # - La regla de compilación: $(BUILD)/$(1).o: plugins/$(1)/plugin.c
 # - La receta: $(CC) $(CFLAGS) -c $$< -o $$@
 # Recuerda: usa $$< y $$@ (doble dólar) para variables automáticas
+# TODO 6: Añade a la misma plantilla un target phony plugin-$(1) que dependa de
+# $(BUILD)/$(1).o, para compilar un solo plugin con 'make plugin-<nombre>'
 # define PLUGIN_RULE
 # endef
 
@@ -44,5 +46,6 @@ clean: ## Limpiar build
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

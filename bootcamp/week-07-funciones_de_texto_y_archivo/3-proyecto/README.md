@@ -1,6 +1,6 @@
 # Proyecto Semana 07 — Sistema de Build Multi-Módulo Auto-Configurable
 
-**Duración estimada:** 2 horas 30 minutos
+**Duración estimada:** 3 horas
 
 ## Contexto
 
@@ -30,8 +30,10 @@ starter/
 1. `Makefile` con todas las variables generadas por funciones de texto, sin ninguna lista hardcodeada
 2. `make all` compila el binario `build/sistema`
 3. `make manifest` genera `build/manifest.txt` con la lista de todas las fuentes
-4. `make report` imprime estadísticas del proyecto usando funciones de texto
-5. `make clean` elimina todo lo generado
+4. `make report` imprime estadísticas del proyecto usando funciones de texto, incluida la lista de módulos (`Módulos: auth config logger`)
+5. `make objs MODULE=<nombre>` imprime solo los objetos de ese módulo; tolera espacios alrededor del nombre (`'MODULE= logger '`) y, si el módulo no existe, falla con un `$(error)` que lista los disponibles
+6. `make clean` elimina todo lo generado, con guarda de variable vacía
+7. Preámbulo estricto de la semana 03 (`SHELL`, `.SHELLFLAGS`, `.DELETE_ON_ERROR`)
 
 ## Variables requeridas en el Makefile
 
@@ -42,7 +44,13 @@ starter/
 | `ALL_SRCS` | `$(CORE_SRCS) $(MODULE_SRCS)` | todas las fuentes |
 | `OBJS` | `$(patsubst %.c,$(BUILD)/%.o,$(ALL_SRCS))` | objetos con estructura de directorios |
 | `MODULE_DIRS` | `$(sort $(dir $(MODULE_SRCS)))` | directorios únicos de módulos |
+| `MODULES` | `$(notdir $(patsubst %/,%,$(MODULE_DIRS)))` | `auth config logger` |
 | `CFLAGS` | `+= $(addprefix -I,$(MODULE_DIRS))` | flags -I para cada módulo |
+| `MOD` | `$(strip $(MODULE))` | el módulo pedido, sin espacios |
+
+> `$(notdir modules/auth/)` devuelve una cadena vacía: para `notdir` todo lo
+> que hay hasta la última `/` es directorio. Por eso `MODULES` quita primero la
+> barra final (lab-04, paso 10).
 
 ## Comandos de verificación
 
@@ -55,6 +63,11 @@ make report
 # Compilar
 make all
 ./build/sistema
+
+# Objetos de un módulo
+make objs MODULE=logger
+make objs 'MODULE= logger '   # misma salida
+make objs MODULE=nope         # debe fallar listando los módulos
 
 # Generar manifest
 make manifest
@@ -75,8 +88,19 @@ make clean && make all
 Fuentes core:    2 archivos (app.c main.c)
 Fuentes módulos: 3 archivos
 Directorios:     modules/auth/ modules/config/ modules/logger/
+Módulos:         auth config logger
 Target:          sistema
 Total objetos:   5
+```
+
+## Salida esperada de `make objs`
+
+```
+$ make -s objs MODULE=logger
+build/modules/logger/logger.o
+
+$ make objs MODULE=nope
+Makefile:NN: *** Módulo 'nope' no existe; disponibles: auth config logger.  Stop.
 ```
 
 ## Salida esperada de `make all`
@@ -106,6 +130,10 @@ Los comprueba `./scripts/verificar-semana.sh 07` desde la raíz del repositorio
 - [ ] make report muestra los directorios de módulo ordenados y sin repetir
 - [ ] make report cuenta 5 objetos con $(words)
 - [ ] make manifest escribe build/manifest.txt con las 5 fuentes, una por línea
+- [ ] make report lista los nombres de módulo sin directorio ni barra final
+- [ ] make objs MODULE=logger lista solo los objetos de ese módulo
+- [ ] make objs normaliza con $(strip) los espacios alrededor de MODULE
+- [ ] make objs con un módulo inexistente falla listando los módulos disponibles
 - [ ] make clean elimina build/ por completo
 - [ ] make clean se niega a borrar si BUILD está vacío
 - [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail

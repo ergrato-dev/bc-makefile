@@ -1,3 +1,8 @@
+# ============================================================
+# Lab 01 — Regla de patrón %.o: %.c (SOLUCIÓN)
+# Semana 05: Reglas de patrón
+# ============================================================
+
 SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
@@ -6,30 +11,30 @@ SHELL       := bash
 
 .DEFAULT_GOAL := help
 
+# ── Compilador ────────────────────────────────────────────────
 CC     := gcc
 CFLAGS := -Wall -std=c11
 
+# ── Fuentes y objetos ─────────────────────────────────────────
 SRCS := main.c math.c greet.c
 OBJS := $(SRCS:.c=.o)
 APP  := app
 
-## all: compila la aplicación completa
-all: $(APP)
+# ── Targets ───────────────────────────────────────────────────
+all: $(APP) ## Compila la aplicación completa
 
-## app: enlaza todos los objetos en el binario
 $(APP): $(OBJS)
 	$(CC) $^ -o $@
 
+# Una sola regla para todos los .o: $* es el stem, $< el .c, $@ el .o
 %.o: %.c
+	@echo "[cc] stem=$*"
 	$(CC) $(CFLAGS) -c $< -o $@
 
-## clean: elimina objetos y binario
-clean:
-	@rm -f $(OBJS) $(APP)
+clean: ## Elimina objetos y binario
+	rm -f -- $(OBJS) $(APP)
 
-## help: muestra esta ayuda
-help:
-	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

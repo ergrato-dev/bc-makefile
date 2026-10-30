@@ -1,6 +1,6 @@
 # Lab 03 — eval
 
-**Duración estimada:** 50 minutos
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -39,6 +39,7 @@ Nota: dentro del bloque `define`, `$(SUITES)` y `$(REPORTS)` se expanden cuando 
    - **TODO 1:** Define la plantilla `TEST_SUITE_RULE` que genera un target `run-$(1)` y escribe el reporte en `$(REPORTS)/$(1).txt`
    - **TODO 2:** Usa `$(foreach) + $(eval) + $(call)` para instanciar la plantilla
    - **TODO 3:** Elimina los 4 bloques `run-*` hardcodeados y reemplaza `all` para usar `$(foreach)`
+   - **TODO 4:** Implementa `show-rule` con `$(info)`, `$(value)` y `$(call)` para ver lo que recibe `$(eval)`
 
 4. Verifica:
    ```bash
@@ -48,6 +49,39 @@ Nota: dentro del bloque `define`, `$(SUITES)` y `$(REPORTS)` se expanden cuando 
    make demo
    ls reports/
    ```
+
+5. Mira el texto que recibe `$(eval)` (TODO 4). Cuando una regla generada no hace lo que esperas, este es el primer paso de depuración:
+   ```bash
+   make show-rule
+   ```
+   Debes ver la plantilla con `$(1)` y `$(REPORTS)` intactos, y después la regla ya instanciada:
+   ```
+   --- plantilla cruda ---
+   .PHONY: run-$(1)
+
+   run-$(1):
+   	@mkdir -p $(REPORTS)
+   ...
+   --- regla generada para unit ---
+   .PHONY: run-unit
+
+   run-unit:
+   	@mkdir -p reports
+   	@echo "[unit] Ejecutando suite unit..."
+   ...
+   ```
+   `$(value)` devuelve la variable sin expandir; `$(call)` hace la primera expansión. Lo que ves en la segunda mitad es exactamente lo que `$(eval)` parsea como Makefile.
+
+6. Añade una suite sin escribir una regla. Desde la línea de comandos:
+   ```bash
+   make all SUITES="unit smoke"
+   make run-smoke
+   ```
+   Debes ver que el primer comando ejecuta `unit` y `smoke`, y que el segundo falla:
+   ```
+   make: *** No rule to make target 'run-smoke'.  Stop.
+   ```
+   La regla `run-smoke` solo existe si `smoke` está en `SUITES` cuando Make **lee** el Makefile: `$(eval)` genera reglas en la fase de lectura, no al ejecutar. Termina con `make clean`.
 
 ## Criterios de éxito
 
@@ -74,6 +108,9 @@ Reportes: reports/unit.txt reports/integration.txt reports/e2e.txt reports/perfo
 $ ls reports/
 e2e.txt  integration.txt  performance.txt  unit.txt
 ```
+
+- [ ] `make show-rule` muestra la plantilla cruda y la regla generada para `unit`
+- [ ] `make all SUITES="unit smoke"` ejecuta la suite `smoke` sin añadir ninguna regla al Makefile
 
 ## Reto extra
 

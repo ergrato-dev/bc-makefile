@@ -45,6 +45,13 @@
       "pista": "3-proyecto/README.md, plantilla requerida"
     },
     {
+      "id": "run-por-servicio",
+      "descripcion": "make run-worker compila y ejecuta solo build/worker, con un target generado por la plantilla",
+      "cmd": "rm -rf -- {proyecto}/build; {make} -C {proyecto} run-worker 2>&1 | grep '^[[]worker[]] servicio iniciado' >/dev/null && test ! -e {proyecto}/build/api",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, Entregables, punto 4; TODO 4 del starter"
+    },
+    {
       "id": "servicio-nuevo-sin-editar",
       "descripcion": "Un directorio nuevo en services/ se compila sin editar el Makefile",
       "cmd": "d={proyecto}/services/cache; trap 'rm -rf -- $d {proyecto}/build/cache' EXIT; mkdir -p $d && echo 'int main(void) { return 0; }' > $d/main.c && {make} -C {proyecto} all >/dev/null 2>&1 && test -x {proyecto}/build/cache",
@@ -71,6 +78,13 @@
       "cmd": "{make} -C {proyecto} generate >/dev/null 2>&1; {make} -s -f {proyecto}/build/manifest.mk --eval 'x: ; @echo os=$(OS_NAME)' x",
       "assert": "stdout~^os=[[:alnum:]]+$",
       "pista": "3-proyecto/README.md, contenido esperado de build/manifest.mk; TODO 6"
+    },
+    {
+      "id": "manifest-bin-por-servicio",
+      "descripcion": "build/manifest.mk define BIN_<servicio> para cada servicio descubierto",
+      "cmd": "{make} -C {proyecto} generate >/dev/null 2>&1; {make} -s -f {proyecto}/build/manifest.mk --eval 'x: ; @echo $(BIN_api) $(BIN_monitor) $(BIN_worker)' x",
+      "assert": "stdout~^build/api build/monitor build/worker$",
+      "pista": "1-teoria/02-file-value-let-intcmp.md; 2-practicas/lab-04-shell/README.md, paso 6; TODO 6 del starter"
     },
     {
       "id": "clean-borra-build",

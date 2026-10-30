@@ -12,7 +12,8 @@ Al terminar esta semana, podrás:
 - Usar reglas de patrón con prefijos de directorio (`build/%.o: src/%.c`)
 - Distinguir entre reglas de patrón genéricas y static pattern rules
 - Aplicar static pattern rules para restringir un patrón a un subconjunto específico de targets
-- Entender la jerarquía de prioridad: regla explícita > static pattern > regla de patrón > regla implícita
+- Predecir qué regla elige Make: receta explícita, stem más corto, orden del Makefile y reglas de serie
+- Desactivar las reglas implícitas de serie con `-r` / `MAKEFLAGS += -r` e inspeccionarlas con `make -p`
 - Depurar errores comunes en reglas de patrón (`No rule to make target`)
 - Construir un Makefile que compile cualquier proyecto C multi-módulo sin mencionar archivos por nombre
 
@@ -21,59 +22,50 @@ Al terminar esta semana, podrás:
 - Semana 01 completada: targets, dependencias, `.PHONY`, target `help`
 - Semana 02 completada: variables `=`, `:=`, `?=`, `+=`
 - Semana 04 completada: variables automáticas `$@`, `$<`, `$^`, `$*`, `$(@D)`
-- GNU Make ≥ 4.x instalado (`make --version`)
-- `gcc` instalado — requerido para labs 01, 02 y proyecto semanal (`gcc --version`)
+- GNU Make ≥ 4.3 instalado (`make --version`; en macOS `gmake`)
+- `gcc` y `ar` instalados — requeridos para los labs 01, 02, 04, 05 y el proyecto (`gcc --version`)
 
 ## Contenido
 
 | # | Tipo | Tema | Tiempo |
 |---|------|------|--------|
-| — | Contexto | [01-contexto.md](1-teoria/01-contexto.md) | 30 min |
-| 1 | Lab | [lab-01-patron-basico](2-practicas/lab-01-patron-basico/) | 50 min |
-| 2 | Lab | [lab-02-directorio-salida](2-practicas/lab-02-directorio-salida/) | 50 min |
-| 3 | Lab | [lab-03-multiples-patrones](2-practicas/lab-03-multiples-patrones/) | 50 min |
-| 4 | Lab | [lab-04-static-pattern](2-practicas/lab-04-static-pattern/) | 50 min |
-| 5 | Lab | [lab-05-prioridad](2-practicas/lab-05-prioridad/) | 50 min |
-| 6 | Lab | [lab-06-patrones-rotos](2-practicas/lab-06-patrones-rotos/) | 50 min |
-| — | Proyecto | [Compilador genérico para proyectos C](3-proyecto/) | 2h 30min |
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) · [02-reglas-implicitas.md](1-teoria/02-reglas-implicitas.md) | 45 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-patron-basico](2-practicas/lab-01-patron-basico/) | 60 min |
+| 2 | Lab | [lab-02-directorio-salida](2-practicas/lab-02-directorio-salida/) | 60 min |
+| 3 | Lab | [lab-03-multiples-patrones](2-practicas/lab-03-multiples-patrones/) | 60 min |
+| 4 | Lab | [lab-04-static-pattern](2-practicas/lab-04-static-pattern/) | 60 min |
+| 5 | Lab | [lab-05-prioridad](2-practicas/lab-05-prioridad/) | 60 min |
+| 6 | Lab | [lab-06-patrones-rotos](2-practicas/lab-06-patrones-rotos/) | 60 min |
+| — | Proyecto | [Compilador genérico para proyectos C](3-proyecto/) | 3 h |
 
-**Total: 8 horas**
+**Total: 10 horas**
+
+Apoyo: [diagramas](0-assets/) · [recursos](4-recursos/) · [glosario](5-glosario/README.md)
 
 ## Distribución del tiempo
 
 ```
-[30 min] Leer 1-teoria/01-contexto.md
-[50 min] lab-01 — %.o: %.c: la mecánica del stem
-[50 min] lab-02 — build/%.o: src/%.c: patrón con directorios
-[50 min] lab-03 — múltiples reglas de patrón para distintas extensiones
-[50 min] lab-04 — static pattern rules: restringir el patrón a targets específicos
-[50 min] lab-05 — prioridad: cuándo la regla explícita gana al patrón
-[50 min] lab-06 — depurar cinco errores en reglas de patrón
-[2h 30] Proyecto: compilador genérico C con pattern rules
+[45 min] Leer 1-teoria/ (01-contexto y 02-reglas-implicitas)
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — %.o: %.c: la mecánica del stem y la incrementalidad
+[60 min] lab-02 — build/%.o: src/%.c: patrón con directorios y subdirectorios
+[60 min] lab-03 — varias reglas de patrón: prerrequisito, orden y encadenamiento
+[60 min] lab-04 — static pattern rules: flags por grupo y librería estática
+[60 min] lab-05 — cómo elige Make una regla y MAKEFLAGS += -r
+[60 min] lab-06 — depurar seis errores en reglas de patrón
+[3 h]    Proyecto: compilador genérico C con pattern rules, tests y ensamblador
 ```
 
 ## Verificación de completitud
 
-Desde la raíz del repositorio, `./scripts/verificar-semana.sh 05` comprueba tu proyecto (`3-proyecto/starter/`) contra los requisitos verificables de la semana.
-
-Al terminar la semana, estos comandos deben funcionar sin errores:
+Desde la raíz del repositorio:
 
 ```bash
-cd 3-proyecto/solucion
-make help
-make all
-make clean
-make all CC=clang
-make test
+./scripts/verificar-semana.sh 05
 ```
 
-El binario `build/app` debe ejecutarse y producir:
-
-```
-suma(3, 4) = 7
-producto(3, 4) = 12
-potencia(2, 8) = 256
-```
+Comprueba tu proyecto (`3-proyecto/starter/`) contra las 15 comprobaciones de [`checks.json`](checks.json). Cada fallo trae una pista con el lab y el paso donde se arregla.
 
 ## 🔗 Navegación
 

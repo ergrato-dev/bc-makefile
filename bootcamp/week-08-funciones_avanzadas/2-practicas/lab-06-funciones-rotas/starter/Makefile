@@ -1,4 +1,4 @@
-.PHONY: all demo clean help
+.PHONY: all demo list clean help
 .DEFAULT_GOAL := help
 
 BUILD   := build
@@ -32,11 +32,22 @@ $(foreach m,$(MODULES),$(eval $(call COMPILE_RULE,$(m))))
 # Síntoma: vacío si no hay repo git, o hash completo de 40 chars
 GIT_HASH := $(shell git rev-parse HEAD)
 
-demo: ## Demostrar el Makefile con los 4 bugs
+# BUG 5: el foreach de la receta no separa los comandos con ';'
+# Síntoma: make list imprime una sola línea en lugar de tres
+list: ## Listar módulos, uno por línea
+	@$(foreach m,$(MODULES),echo "  - $(m)")
+
+# BUG 6: BUILD_ID usa '=' con $(shell)
+# Síntoma: el artefacto y el manifest de un mismo build muestran IDs distintos
+BUILD_ID = $(shell date +%s%N)
+
+demo: ## Demostrar el Makefile con los 6 bugs
 	@echo "OBJS:     $(OBJS)"
 	$(call deploy_info,8080,api)
 	@echo "Git hash: $(GIT_HASH)"
 	@echo "Reglas generadas para: $(MODULES)"
+	@echo "Artefacto: app-$(BUILD_ID).tar"
+	@echo "Manifest:  app-$(BUILD_ID).tar"
 
 clean: ## Limpiar
 	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
@@ -44,5 +55,6 @@ clean: ## Limpiar
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

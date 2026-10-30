@@ -8,14 +8,18 @@ Eres el primer ingeniero de build en una startup que acaba de decidir escribir s
 - Los objetos se generen en `build/obj/` y el binario en `build/`
 - Exista un target `test` que compila y ejecuta un runner de pruebas mínimas
 - El build soporte compilación con `gcc` o `clang` via `make CC=clang`
+- El equipo de rendimiento pueda revisar el ensamblador de cada módulo con `make asm`
+- Ninguna regla implícita de serie compile nada a tus espaldas
 
-Este proyecto integra las tres técnicas de la semana: regla de patrón con directorios, static pattern rule para los tests, y regla explícita para el binario final.
+Este proyecto integra las técnicas de la semana: dos reglas de patrón con directorios (`.c → .o` y `.c → .s`), static pattern rule para los tests, reglas explícitas solo para los binarios y `MAKEFLAGS += -r`.
+
+⏱ Duración estimada: 3 h (1 h para `all` + `clean`, 45 min para `test`, 30 min para `asm`, 45 min para dependencias de headers, `-r` y pruebas de incrementalidad).
 
 ## Estructura del proyecto
 
 ```
 3-proyecto/starter/
-├── Makefile            ← tu trabajo
+├── Makefile            ← tu trabajo (preámbulo, -r, patrones, test, asm)
 ├── src/
 │   ├── main.c
 │   ├── math_ops.c
@@ -46,11 +50,15 @@ Este proyecto integra las tres técnicas de la semana: regla de patrón con dire
    Todos los tests pasaron.
    ```
 
-3. **Makefile** con:
+3. **`build/asm/*.s`** — `make asm` genera un archivo de ensamblador por cada `src/*.c` (`gcc -S`), con una segunda regla de patrón `build/asm/%.s: src/%.c`.
+
+4. **Makefile** con:
    - Regla de patrón `build/obj/%.o: src/%.c` para módulos de aplicación
+   - Regla de patrón `build/asm/%.s: src/%.c` para el ensamblador
    - Static pattern rule para `$(TEST_OBJS): build/test/%.o: tests/%.c`
+   - `MAKEFLAGS += -r`: sin reglas implícitas de serie
    - Variables `CC`, `CFLAGS`, `BUILD`, `SRC_DIR`, `INC_DIR`
-   - Targets: `all`, `test`, `clean`, `help`
+   - Targets: `all`, `test`, `asm`, `clean`, `help` (con el `grep`/`awk` estándar)
    - Dependencias de headers con `-MMD -MP` y `-include` de los `.d` (semana 04)
    - Preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y `clean` con guarda de variable vacía (semana 03)
 
@@ -63,6 +71,12 @@ make all
 
 # Tests
 make test
+
+# Ensamblador: un .s por módulo
+make asm && ls build/asm/
+
+# Sin reglas implícitas: esto debe fallar con "No rule to make target 'suelto'"
+echo 'int main(void) { return 0; }' > suelto.c && make suelto; rm -f suelto.c
 
 # Cambio de compilador
 make clean && make all CC=clang
@@ -87,6 +101,8 @@ Los comprueba `./scripts/verificar-semana.sh 05` desde la raíz del repositorio
 - [ ] Tocar include/math_ops.h recompila exactamente los dos objetos de la app que lo incluyen
 - [ ] make test compila el runner y termina con Todos los tests pasaron.
 - [ ] El objeto del runner de tests se genera en build/test/
+- [ ] make asm genera un .s por cada src/*.c en build/asm/
+- [ ] Las reglas implícitas de serie están desactivadas: un .c suelto no se compila solo
 - [ ] CC se puede cambiar desde la línea de comandos
 - [ ] make clean elimina build/ por completo
 - [ ] make clean se niega a borrar si BUILD está vacía

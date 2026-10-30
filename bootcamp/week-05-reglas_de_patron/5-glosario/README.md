@@ -2,17 +2,18 @@
 
 | Término | Definición en una línea | Ejemplo en Makefile |
 |---------|------------------------|---------------------|
-| Regla de patrón | Regla que usa `%` como comodín para coincidir con múltiples targets | `%.o: %.c` |
-| Stem | La parte del nombre de archivo que captura el `%` en una regla de patrón | En `%.o: %.c`, para `main.o` el stem es `main` |
-| Static pattern rule | Regla de patrón que solo aplica a una lista explícita de targets | `$(OBJS): %.o: %.c` |
-| Regla implícita | Regla de patrón predefinida dentro de Make (ej. `%.o: %.c` con `$(CC)`) | Funciona sin declararla; se anula definiéndola explícitamente |
-| Prefijo de directorio | Texto fijo antes de `%` en el target o prerrequisito de un patrón | `build/%.o: src/%.c` |
-| Prioridad de reglas | Orden en que Make elige: explícita > static pattern > patrón > implícita | `debug.o: debug.c` anula `%.o: %.c` para ese target |
-| `%.ext1: %.ext2` | Patrón que transforma archivos de una extensión a otra usando el mismo stem | `%.html: %.md` |
-| Encadenamiento de patrones | Make aplica dos patrones en cadena cuando ninguno llega al prerrequisito final | `%.o` ← `%.c` ← `%.y` (generado por yacc) |
-| `$(SRCS:.c=.o)` | Sustitución de sufijo para derivar la lista de objetos de la lista de fuentes | `OBJS := $(SRCS:.c=.o)` |
-| `$(filter-out ...)` | Función que excluye elementos de una lista; útil para separar `main.c` de módulos | `LIB := $(filter-out main.c, $(SRCS))` |
-| `$(wildcard ...)` | Función que expande un patrón glob al conjunto de archivos existentes | `SRCS := $(wildcard src/*.c)` |
-| `No rule to make target` | Error de Make cuando ninguna regla (explícita, estática, patrón) produce el target pedido | Suele indicar stem incorrecto o prerrequisito inexistente |
-| Target patrón | La parte izquierda de una regla de patrón; contiene exactamente un `%` | `build/%.o` en `build/%.o: src/%.c` |
-| Prerrequisito patrón | La parte derecha de una regla de patrón; el `%` se reemplaza por el stem del target | `src/%.c` en `build/%.o: src/%.c` |
+| Regla de patrón | Regla cuyo target contiene un `%`; es una plantilla que Make instancia para cada target que casa | `%.o: %.c` |
+| Stem | La parte del nombre que casa con `%`; puede contener barras | Para `build/net/ping.o` en `build/%.o`, el stem es `net/ping` |
+| `$*` | Variable automática con el stem de la regla que se está ejecutando | `@echo "stem=$*"` |
+| Prefijo de directorio | Texto fijo antes del `%` en el target o el prerrequisito de un patrón | `build/%.o: src/%.c` |
+| Static pattern rule | Regla con lista explícita de targets y un patrón; genera una regla explícita por target | `$(LIB_OBJS): build/lib/%.o: src/%.c` |
+| Sustitución con patrón | Referencia que transforma cada palabra de una lista usando `%` | `OBJS := $(SRCS:src/%.c=build/%.o)` |
+| Regla implícita de serie | Regla de patrón que GNU Make trae de fábrica y aplica sin que la escribas | `%: %.c` compila `hola` desde `hola.c` |
+| Regla de sufijo | Sintaxis antigua de una regla de patrón, basada en `.SUFFIXES` | `.c.o:` equivale a `%.o: %.c` |
+| `-r` / `--no-builtin-rules` | Opción que elimina las reglas implícitas de serie y los sufijos | `make -r all` |
+| `-R` / `--no-builtin-variables` | Opción que elimina además variables como `CC` y `CFLAGS`; implica `-r` | `make -R all CC=gcc` |
+| `MAKEFLAGS += -r` | Activa `-r` desde el propio Makefile, sin depender de quien lo ejecute | `MAKEFLAGS += -r` tras el preámbulo |
+| `make -p` | Vuelca la base de datos de Make: variables, reglas propias y de serie | `make -p -f /dev/null \| grep -A2 '^%: %.sh'` |
+| Stem más corto | Criterio de desempate entre reglas de patrón aplicables: gana la más específica | `test_%.o` gana a `%.o` para `test_normal.o` |
+| Encadenamiento | Make aplica dos reglas de patrón seguidas cuando falta un archivo intermedio | `.raw → .processed → .summary` |
+| Archivo intermedio | Archivo creado por un encadenamiento que el Makefile no menciona; Make lo borra al terminar | `rm zeta.processed` tras `make zeta.summary` |

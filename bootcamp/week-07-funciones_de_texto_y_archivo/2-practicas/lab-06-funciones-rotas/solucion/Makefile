@@ -1,3 +1,8 @@
+# ============================================================
+# Lab 06 — funciones rotas (SOLUCIÓN)
+# Semana 07: Funciones de texto y archivo
+# ============================================================
+
 SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
@@ -20,12 +25,23 @@ NO_UTILS := $(filter-out %utils.c,$(SRCS))
 # FIX 4: addprefix sobre INC_DIRS, no sobre las fuentes
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
+# FIX 5: sin espacios tras las comas; y patsubst, que solo toca el final .c
+DEPS := $(patsubst %.c,%.d,$(SRCS))
+
+# FIX 6: el comentario va en su propia línea; strip protege de valores externos
+# directorio de salida
+OUT_DIR := out
+BIN     := $(strip $(OUT_DIR))/app
+
 demo: ## Muestra las transformaciones corregidas
 	@echo "OBJS:      $(OBJS)"
 	@echo "C_SRCS:    $(C_SRCS)"
 	@echo "NO_UTILS:  $(NO_UTILS)"
 	@echo "INC_FLAGS: $(INC_FLAGS)"
+	@echo "DEPS:      $(DEPS) ($(words $(DEPS)) palabras)"
+	@echo "BIN:       [$(BIN)]"
 
 help: ## Muestra esta ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
