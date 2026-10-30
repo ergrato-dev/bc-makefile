@@ -1,32 +1,27 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: hooks-install hooks-uninstall hooks-status check help
 .DEFAULT_GOAL := help
 
 HOOKS_SRC  := hooks
-HOOKS_DST  := .git/hooks
 HOOK_FILES := pre-commit pre-push
 
-hooks-install: ## Instalar git hooks del proyecto
-	@for hook in $(HOOK_FILES); do \
-		cp $(HOOKS_SRC)/$$hook $(HOOKS_DST)/$$hook; \
-		chmod +x $(HOOKS_DST)/$$hook; \
-	done
-	@echo "✓ Hooks instalados en $(HOOKS_DST)/"
+hooks-install: ## Activar los git hooks de hooks/
+	chmod +x $(addprefix $(HOOKS_SRC)/,$(HOOK_FILES))
+	git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
+	@echo "✓ Hooks activos desde $(CURDIR)/$(HOOKS_SRC)"
 
-hooks-uninstall: ## Desinstalar git hooks
-	@for hook in $(HOOK_FILES); do \
-		rm -f $(HOOKS_DST)/$$hook; \
-	done
+hooks-uninstall: ## Desactivar los git hooks
+	-git config --unset core.hooksPath
 	@echo "✓ Hooks desinstalados"
 
-hooks-status: ## Ver estado de los hooks instalados
+hooks-status: ## Ver estado de los hooks
 	@echo "Estado de git hooks:"
-	@for hook in $(HOOK_FILES); do \
-		if [ -f "$(HOOKS_DST)/$$hook" ]; then \
-			echo "  ✓ $$hook instalado"; \
-		else \
-			echo "  ✗ $$hook NO instalado"; \
-		fi; \
-	done
+	@echo "  core.hooksPath: $$(git config --get core.hooksPath || echo '(no configurado)')"
+	@$(foreach hook,$(HOOK_FILES), \
+		if [ -x "$(HOOKS_SRC)/$(hook)" ]; then echo "  ✓ $(hook) ejecutable"; else echo "  ✗ $(hook) NO ejecutable"; fi;)
 
 check: ## Ejecutar checks de calidad (invocado por los hooks)
 	@echo "==> Verificando trailing whitespace ..."

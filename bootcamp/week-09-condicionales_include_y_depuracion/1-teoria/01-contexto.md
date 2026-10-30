@@ -61,13 +61,17 @@ all: $(MODULES)
 $(MODULES):
 	$(MAKE) -C $@ build
 
-clean:
-	@for mod in $(MODULES); do $(MAKE) -C $$mod clean; done
+clean: $(addsuffix /clean,$(MODULES))
 
-.PHONY: all clean $(MODULES)
+$(addsuffix /clean,$(MODULES)):
+	$(MAKE) -C $(@D) clean
+
+.PHONY: all clean $(MODULES) $(addsuffix /clean,$(MODULES))
 ```
 
-`$(MAKE) -C directorio` ejecuta el Makefile del subdirectorio. Las variables del padre no pasan automáticamente — usa `export` o pásalas en la línea de comando: `$(MAKE) -C api ENV=$(ENV)`.
+`$(MAKE) -C directorio` ejecuta el Makefile del subdirectorio. Cada subdirectorio es un target: si uno falla, Make se detiene. Nunca uses `for mod in ...; do $(MAKE) -C $$mod; done`: el bucle devuelve el código del último módulo y se traga los fallos anteriores (semana 10 lo profundiza).
+
+Qué llega al sub-make: las variables de la línea de comandos (`make ENV=prod`) y las del entorno pasan solas vía `MAKEFLAGS`; las definidas dentro del Makefile padre no, salvo que las exportes con `export VAR` o las pases explícitamente: `$(MAKE) -C api ENV=$(ENV)`.
 
 ## Depuración
 

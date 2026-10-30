@@ -1,27 +1,25 @@
 .PHONY: hooks-install hooks-uninstall hooks-status check help
 .DEFAULT_GOAL := help
 
-HOOKS_SRC := hooks
-HOOKS_DST := .git/hooks
+HOOKS_SRC  := hooks
 HOOK_FILES := pre-commit pre-push
+
+# TODO: modo estricto (SHELL, .SHELLFLAGS con pipefail, .DELETE_ON_ERROR)
 
 # TODO: implementar hooks-install
 # Debe:
-#   1. Para cada hook en HOOK_FILES: copiar $(HOOKS_SRC)/$$hook → $(HOOKS_DST)/$$hook
-#   2. Hacer chmod +x en cada hook instalado
-#   3. Imprimir: ✓ Hooks instalados en $(HOOKS_DST)/
-hooks-install: ## Instalar git hooks del proyecto
+#   1. chmod +x a cada hook de $(HOOKS_SRC)
+#   2. git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
+#   3. Imprimir: ✓ Hooks activos desde <ruta>
+hooks-install: ## Activar los git hooks de hooks/
 
-# TODO: implementar hooks-uninstall
-# Debe eliminar $(HOOKS_DST)/pre-commit y $(HOOKS_DST)/pre-push
+# TODO: implementar hooks-uninstall con git config --unset core.hooksPath
 # Imprimir: ✓ Hooks desinstalados
-hooks-uninstall: ## Desinstalar git hooks
+hooks-uninstall: ## Desactivar los git hooks
 
 # TODO: implementar hooks-status
-# Para cada hook en HOOK_FILES:
-#   - Si $(HOOKS_DST)/$$hook existe: imprimir "  ✓ $$hook instalado"
-#   - Si no existe: imprimir "  ✗ $$hook NO instalado"
-hooks-status: ## Ver estado de los hooks instalados
+# Mostrar core.hooksPath y, para cada hook, si es ejecutable
+hooks-status: ## Ver estado de los hooks
 
 # TODO: implementar check
 # Debe ejecutar al menos:

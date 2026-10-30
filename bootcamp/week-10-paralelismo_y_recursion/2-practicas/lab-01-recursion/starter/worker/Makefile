@@ -1,6 +1,7 @@
 .PHONY: build clean test help
 .DEFAULT_GOAL := help
 
+FAIL   ?=
 MODULE := worker
 
 build: ## Compilar módulo worker
@@ -9,7 +10,8 @@ build: ## Compilar módulo worker
 clean: ## Limpiar módulo worker
 	@echo "[$(MODULE)] clean"
 
-test: ## Testear módulo worker
+test: ## Testear módulo worker (FAIL=worker simula un fallo)
+	@if [ "$(FAIL)" = "$(MODULE)" ]; then echo "[$(MODULE)] test FALLÓ"; exit 1; fi
 	@echo "[$(MODULE)] test"
 
 help: ## Mostrar ayuda

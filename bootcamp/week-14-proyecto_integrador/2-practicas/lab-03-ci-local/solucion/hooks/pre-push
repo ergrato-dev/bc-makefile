@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Hook pre-push: ejecuta make check y make test
+# Hook pre-push: ejecuta make check
 # No modifiques este archivo — la lógica vive en el Makefile
-set -e
-make check
+set -euo pipefail
+# Git ejecuta los hooks desde la raíz del repo: se llama al Makefile por ruta.
+exec make -C "$(dirname "$0")/.." check

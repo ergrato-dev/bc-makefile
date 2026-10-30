@@ -2,38 +2,36 @@
 .DEFAULT_GOAL := help
 
 SERVICES := backend frontend infra
+GOALS    := build ci test deploy clean lint
 ENV      ?= development
+CONFIRM  ?=
 
-# TODO: implementar target all
-# Debe ejecutar $(MAKE) -C $$svc build para cada servicio en SERVICES
+# TODO: modo estricto (SHELL, .SHELLFLAGS con pipefail, .DELETE_ON_ERROR)
+
+# TODO: define SERVICE_TARGETS (backend/build ... infra/lint) con $(foreach)
+# y una regla única que ejecute:
+#   $(MAKE) -C $(@D) $(@F) ENV=$(ENV) CONFIRM=$(CONFIRM)
+# NO uses un bucle for: se traga los fallos de todos los servicios menos el último.
+
+# TODO: all, ci, test, deploy y clean solo con prerrequisitos
 all: ## Construir todos los servicios
 
-# TODO: implementar target ci
-# Debe ejecutar $(MAKE) -C $$svc ci para cada servicio en SERVICES
 ci: ## Ejecutar pipeline CI en todos los servicios
 
-# TODO: implementar target test
-# Debe ejecutar $(MAKE) -C $$svc test para cada servicio en SERVICES
 test: ## Ejecutar tests en todos los servicios
 
-# TODO: implementar target deploy
-# Debe pasar ENV y CONFIRM a cada submake: $(MAKE) -C $$svc deploy ENV=$(ENV) CONFIRM=$(CONFIRM)
 deploy: ## Desplegar todos los servicios
 
-# TODO: implementar target clean
-# Debe ejecutar $(MAKE) -C $$svc clean para cada servicio en SERVICES
 clean: ## Limpiar artefactos de todos los servicios
 
-# TODO: implementar hooks-install
-# Copiar hooks/* a .git/hooks/ con chmod +x
-# Imprimir: ✓ Hooks instalados en .git/hooks/
+# TODO: implementar hooks-install con `git config core.hooksPath '$(CURDIR)/hooks'`
+# Imprimir: ✓ Hooks activos desde <ruta>/hooks
 hooks-install: ## Instalar git hooks
 
-# TODO: implementar hooks-uninstall
+# TODO: implementar hooks-uninstall con `git config --unset core.hooksPath`
 hooks-uninstall: ## Desinstalar git hooks
 
-# TODO: implementar check (invocado por los hooks)
-# Ejecutar lint en todos los servicios
+# TODO: check depende de <servicio>/lint para cada servicio
 check: ## Ejecutar checks rápidos (invocado por hooks)
 
 help: ## Mostrar ayuda

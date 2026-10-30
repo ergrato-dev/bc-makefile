@@ -1,6 +1,6 @@
 # Lab 03 — CI Local con Git Hooks Gestionados por Make
 
-**Duración estimada:** 50 min
+**Duración estimada:** 60 min
 
 ## Objetivo
 
@@ -8,11 +8,13 @@ Implementar git hooks `pre-commit` y `pre-push` que se instalan, actualizan y de
 
 ## Contexto
 
-El problema de los git hooks tradicionales: `.git/hooks/` no se versiona. Si un nuevo miembro clona el repo, no tiene los hooks. La solución es versionar los scripts en un directorio `hooks/` del proyecto e instalarlos con `make hooks-install`. El flujo es:
+Repaso de la semana 12: los hooks se versionan en `hooks/` y git los lee de ahí con `core.hooksPath`. Aquí el foco es el **CI local**: el hook no tiene lógica propia, solo llama a `make check`, así que el mismo target corre en tu máquina y en el pipeline.
 
 ```
-hooks/pre-commit  →  make hooks-install  →  .git/hooks/pre-commit
+git commit  →  hooks/pre-commit  →  make -C <proyecto> check
 ```
+
+`git commit --no-verify` salta el hook. Por eso `make check` tiene que correr también en CI.
 
 El hook invoca `make check` (no tiene lógica propia), así que la lógica vive en el Makefile y puede evolucionar sin reinstalar los hooks.
 
@@ -21,7 +23,7 @@ El hook invoca `make check` (no tiene lógica propia), así que la lógica vive 
 1. Copia el starter:
    ```bash
    cp -r starter/ mi-lab-03 && cd mi-lab-03
-   git init  # necesario para tener .git/hooks/
+   git init
    ```
 
 2. Revisa los scripts de hook en `hooks/`:
@@ -33,9 +35,8 @@ El hook invoca `make check` (no tiene lógica propia), así que la lógica vive 
 3. Implementa `hooks-install`:
    ```bash
    make hooks-install
-   # Debe copiar hooks/ a .git/hooks/ con chmod +x
-   # Debe imprimir: ✓ Hooks instalados en .git/hooks/
-   ls -la .git/hooks/pre-commit  # debe existir y ser ejecutable
+   # Debe imprimir: ✓ Hooks activos desde <ruta>/hooks
+   git config --get core.hooksPath   # la ruta de hooks/
    ```
 
 4. Implementa el target `check` que el hook invoca:
@@ -54,24 +55,24 @@ El hook invoca `make check` (no tiene lógica propia), así que la lógica vive 
 6. Implementa `hooks-uninstall`:
    ```bash
    make hooks-uninstall
-   # Elimina .git/hooks/pre-commit y .git/hooks/pre-push
+   git config --get core.hooksPath   # ya no devuelve nada
    ```
 
 7. Implementa `hooks-status`:
    ```bash
    make hooks-status
-   # Lista qué hooks están instalados y cuáles no
+   # Muestra core.hooksPath y si cada hook es ejecutable
    ```
 
 ## Criterios de éxito
 
-- [ ] `make hooks-install` copia los hooks y los hace ejecutables
+- [ ] `make hooks-install` configura `core.hooksPath` y deja los hooks ejecutables
 - [ ] `make check` ejecuta sin errores con el código del starter
 - [ ] Al hacer `git commit`, el hook pre-commit ejecuta `make check` automáticamente
 - [ ] Si `make check` falla, el commit es abortado
-- [ ] `make hooks-uninstall` elimina los hooks
+- [ ] `make hooks-uninstall` elimina `core.hooksPath`
 - [ ] `make hooks-status` muestra el estado de cada hook
 
 ## Reto extra
 
-Agrega un target `hooks-update` que reinstale los hooks si la versión en `hooks/` es más nueva que la instalada en `.git/hooks/`, usando timestamps de archivos como dependencia Make.
+Haz que `pre-push` ejecute `make ci` en lugar de `make check`, y mide con `time` cuánto tarda. Si pasa de 30 segundos, decide qué checks mover solo a CI.

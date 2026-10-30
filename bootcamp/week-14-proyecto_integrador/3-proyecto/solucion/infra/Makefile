@@ -5,6 +5,7 @@ APP_NAME := infra
 VERSION  := 1.0.0
 
 include ../shared-mk/build.mk
+include ../shared-mk/test.mk
 include ../shared-mk/deploy.mk
 include ../shared-mk/ci.mk
 

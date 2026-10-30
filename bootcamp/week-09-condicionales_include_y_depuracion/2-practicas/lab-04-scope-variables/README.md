@@ -1,4 +1,4 @@
-# Lab 05 — Scope de Variables en Make Recursivo
+# Lab 04 — Scope de Variables en Make Recursivo
 
 **Duración estimada:** 50 min
 
@@ -20,7 +20,7 @@ Esto es intencional: cada submake debe ser autónomo. Pero a veces necesitas pro
 
 1. Copia el starter:
    ```bash
-   cp -r starter/ mi-lab-05 && cd mi-lab-05
+   cp -r starter/ mi-lab-04 && cd mi-lab-04
    ```
 
 2. Ejecuta sin configuración y observa qué variables llegan al submake:

@@ -1,4 +1,4 @@
-# Lab 04 — Depuración de Makefiles
+# Lab 03 — Depuración de Makefiles
 
 **Duración estimada:** 50 min
 
@@ -22,7 +22,7 @@ Make toma decisiones silenciosamente: reconstruye un target o no basándose en t
 
 1. Copia el starter:
    ```bash
-   cp -r starter/ mi-lab-04 && cd mi-lab-04
+   cp -r starter/ mi-lab-03 && cd mi-lab-03
    ```
 
 2. Ejecuta el dry-run y observa qué comandos se ejecutarían:

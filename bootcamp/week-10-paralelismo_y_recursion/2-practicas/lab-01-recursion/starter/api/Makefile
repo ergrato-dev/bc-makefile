@@ -1,6 +1,7 @@
 .PHONY: build clean test help
 .DEFAULT_GOAL := help
 
+FAIL   ?=
 MODULE := api
 
 build: ## Compilar módulo api
@@ -9,7 +10,8 @@ build: ## Compilar módulo api
 clean: ## Limpiar módulo api
 	@echo "[$(MODULE)] clean"
 
-test: ## Testear módulo api
+test: ## Testear módulo api (FAIL=api simula un fallo)
+	@if [ "$(FAIL)" = "$(MODULE)" ]; then echo "[$(MODULE)] test FALLÓ"; exit 1; fi
 	@echo "[$(MODULE)] test"
 
 help: ## Mostrar ayuda

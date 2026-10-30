@@ -53,16 +53,16 @@ Tu tarea es construir el build system definitivo de esta plataforma:
 5. `shared-mk/ci.mk` — `ci` y `lint` que encadenan las etapas del pipeline
 6. `backend/Makefile` — define `APP_NAME`, `IMAGE_NAME`, importa todos los módulos
 7. `frontend/Makefile` — define `APP_NAME`, `IMAGE_NAME`, importa todos los módulos
-8. `infra/Makefile` — define `APP_NAME`, importa `deploy.mk` y `ci.mk`
-9. `Makefile` raíz — orquesta con `$(MAKE) -C` para `all`, `ci`, `test`, `deploy`, `clean`
-10. `hooks/pre-commit` y `hooks/pre-push` + target `hooks-install` en el Makefile raíz
+8. `infra/Makefile` — define `APP_NAME`, importa `build.mk`, `test.mk`, `deploy.mk` y `ci.mk` (`ci` depende de `test`)
+9. `Makefile` raíz — modo estricto y un target phony por servicio y meta (`backend/ci`, `infra/test`...) que llama a `$(MAKE) -C`; sin bucles `for`
+10. `hooks/pre-commit` y `hooks/pre-push` versionados + `hooks-install` con `git config core.hooksPath`
 
 ## Comandos de verificación
 
 ```bash
 # Pipeline completo desde la raíz
 make ci
-# Esperado: lint + test + build-image de backend, frontend e infra en orden
+# Esperado: lint + test + build de backend, frontend e infra en orden
 
 # Build de todos los servicios
 make all
@@ -87,11 +87,17 @@ make -C frontend build-image
 
 # Git hooks
 make hooks-install
-# Esperado: ✓ Hooks instalados en .git/hooks/
+# Esperado: ✓ Hooks activos desde <ruta>/hooks
+# Ojo: `git commit --no-verify` salta los hooks. Son ayuda, no control:
+# el control real es `make ci` en el pipeline.
 
 # Paralelo
 make -j3 all
 # Esperado: los tres servicios se construyen en paralelo
+
+# Un fallo en cualquier servicio detiene el pipeline
+make ENV=production deploy; echo "exit=$?"
+# Esperado: exit=2 (no 0)
 ```
 
 ## Rúbrica del proyecto (30 pts)
@@ -101,7 +107,7 @@ make -j3 all
 | `make ci` desde raíz ejecuta el pipeline completo de los 3 servicios | 10 |
 | Los módulos `shared-mk/*.mk` son importables sin modificación en cualquier proyecto nuevo | 8 |
 | `make ENV=production CONFIRM=yes deploy` funciona; sin `CONFIRM=yes` falla con error claro | 7 |
-| `make hooks-install` instala hooks funcionales; pre-commit aborta commit si `make check` falla | 5 |
+| `make hooks-install` activa los hooks con `core.hooksPath`; pre-commit aborta el commit si `make check` falla | 5 |
 
 ## Instrucciones de entrega
 

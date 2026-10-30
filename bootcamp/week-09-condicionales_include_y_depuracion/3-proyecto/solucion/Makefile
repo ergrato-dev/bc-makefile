@@ -1,28 +1,29 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all clean test deploy help
 .DEFAULT_GOAL := help
 
 MODULES := api worker frontend
+GOALS   := build clean test deploy
 ENV     ?= development
 
-all: ## Construir todos los módulos
-	@for mod in $(MODULES); do \
-		$(MAKE) -C $$mod build; \
-	done
+# Un target phony por módulo y meta (api/build, worker/test...): un fallo en
+# cualquier módulo detiene el build. Un bucle for se lo tragaría.
+MODULE_TARGETS := $(foreach g,$(GOALS),$(addsuffix /$(g),$(MODULES)))
+.PHONY: $(MODULE_TARGETS)
 
-clean: ## Limpiar artefactos de todos los módulos
-	@for mod in $(MODULES); do \
-		$(MAKE) -C $$mod clean; \
-	done
+$(MODULE_TARGETS):
+	@$(MAKE) --no-print-directory -C $(@D) $(@F) ENV=$(ENV)
 
-test: ## Ejecutar tests en todos los módulos
-	@for mod in $(MODULES); do \
-		$(MAKE) -C $$mod test ENV=$(ENV); \
-	done
+all: $(addsuffix /build,$(MODULES)) ## Construir todos los módulos
 
-deploy: ## Desplegar todos los módulos
-	@for mod in $(MODULES); do \
-		$(MAKE) -C $$mod deploy ENV=$(ENV); \
-	done
+clean: $(addsuffix /clean,$(MODULES)) ## Limpiar artefactos de todos los módulos
+
+test: $(addsuffix /test,$(MODULES)) ## Ejecutar tests en todos los módulos
+
+deploy: $(addsuffix /deploy,$(MODULES)) ## Desplegar todos los módulos
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

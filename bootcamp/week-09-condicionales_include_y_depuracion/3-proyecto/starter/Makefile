@@ -2,31 +2,36 @@
 .DEFAULT_GOAL := help
 
 MODULES := api worker frontend
+GOALS   := build clean test deploy
 ENV     ?= development
 
 # --------------------------------------------------------------------------
-# TODO 1: Implementa 'all' para construir todos los módulos con $(MAKE) -C
+# NO uses `for mod in $(MODULES); do $(MAKE) -C $$mod ...; done`: el código
+# de salida del bucle es el del último módulo y los fallos anteriores se
+# pierden. Cada módulo/meta debe ser un target propio.
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# TODO 1: Define MODULE_TARGETS (api/build api/clean ... frontend/deploy)
+#         con $(foreach) y $(addsuffix), y decláralos .PHONY
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# TODO 2: Una regla para todos los MODULE_TARGETS que ejecute
+#         $(MAKE) -C $(@D) $(@F) ENV=$(ENV)
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# TODO 3: all, clean, test y deploy solo con prerrequisitos
+#         Ejemplo: all: $(addsuffix /build,$(MODULES))
 # --------------------------------------------------------------------------
 all: ## Construir todos los módulos
-	# TODO: for mod in $(MODULES); do $(MAKE) -C $$mod build; done
 
-# --------------------------------------------------------------------------
-# TODO 2: Implementa 'clean' recursivo
-# --------------------------------------------------------------------------
 clean: ## Limpiar artefactos de todos los módulos
-	# TODO: for mod in $(MODULES); do $(MAKE) -C $$mod clean; done
 
-# --------------------------------------------------------------------------
-# TODO 3: Implementa 'test' recursivo pasando ENV a cada submake
-# --------------------------------------------------------------------------
 test: ## Ejecutar tests en todos los módulos
-	# TODO: for mod in $(MODULES); do $(MAKE) -C $$mod test ENV=$(ENV); done
 
-# --------------------------------------------------------------------------
-# TODO 4: Implementa 'deploy' recursivo pasando ENV a cada submake
-# --------------------------------------------------------------------------
 deploy: ## Desplegar todos los módulos (requiere ENV != development)
-	# TODO: for mod in $(MODULES); do $(MAKE) -C $$mod deploy ENV=$(ENV); done
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

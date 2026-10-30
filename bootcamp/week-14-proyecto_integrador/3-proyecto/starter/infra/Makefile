@@ -4,7 +4,8 @@
 APP_NAME := infra
 VERSION  := 1.0.0
 
-# TODO: importar deploy.mk y ci.mk (ruta: ../shared-mk/)
+# TODO: importar test.mk, deploy.mk y ci.mk (ruta: ../shared-mk/)
+#       ci.mk depende de test: sin test.mk, `make ci` falla
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

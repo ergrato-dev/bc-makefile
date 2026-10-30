@@ -1,41 +1,33 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: hooks-install hooks-uninstall hooks-status hooks-run-pre-commit help
 .DEFAULT_GOAL := help
 
 HOOKS_SRC := scripts/hooks
-HOOKS_DIR := .git/hooks
 HOOKS     := pre-commit pre-push
 
-hooks-install: ## Instalar git hooks desde scripts/hooks/
-	@mkdir -p $(HOOKS_DIR)
-	@$(foreach hook,$(HOOKS), \
-		cp $(HOOKS_SRC)/$(hook) $(HOOKS_DIR)/$(hook) && \
-		chmod +x $(HOOKS_DIR)/$(hook) && \
-		echo "  Instalado: $(hook)";)
+# core.hooksPath hace que git lea los hooks directamente de scripts/hooks/,
+# que está versionado: nada que copiar, nada que se desactualice.
+hooks-install: ## Activar los git hooks de scripts/hooks/
+	chmod +x $(addprefix $(HOOKS_SRC)/,$(HOOKS))
+	git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
 	@echo "Hooks instalados."
 
-hooks-uninstall: ## Desinstalar git hooks
-	@$(foreach hook,$(HOOKS), \
-		rm -f $(HOOKS_DIR)/$(hook) && \
-		echo "  Eliminado: $(hook)";)
+hooks-uninstall: ## Desactivar los git hooks
+	-git config --unset core.hooksPath
 	@echo "Hooks desinstalados."
 
-hooks-status: ## Ver estado de los git hooks instalados
+hooks-status: ## Ver estado de los git hooks
 	@echo "=== Estado de git hooks ==="
+	@echo "  core.hooksPath: $$(git config --get core.hooksPath || echo '(no configurado)')"
 	@$(foreach hook,$(HOOKS), \
 		printf "  %-15s" "$(hook)"; \
-		if [ -f "$(HOOKS_DIR)/$(hook)" ]; then \
-			printf "✓ instalado  "; \
-			if [ -x "$(HOOKS_DIR)/$(hook)" ]; then \
-				echo "✓ ejecutable"; \
-			else \
-				echo "✗ no ejecutable"; \
-			fi; \
-		else \
-			echo "✗ no instalado"; \
-		fi;)
+		if [ -x "$(HOOKS_SRC)/$(hook)" ]; then echo "✓ ejecutable"; else echo "✗ no ejecutable"; fi;)
 
 hooks-run-pre-commit: ## Ejecutar el hook pre-commit manualmente
-	@bash $(HOOKS_DIR)/pre-commit
+	./$(HOOKS_SRC)/pre-commit
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

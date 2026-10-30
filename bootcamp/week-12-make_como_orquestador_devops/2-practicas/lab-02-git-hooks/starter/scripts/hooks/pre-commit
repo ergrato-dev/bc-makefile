@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # pre-commit: validaciones rápidas antes de cada commit
-
-set -e
+set -euo pipefail
 
 echo "→ [pre-commit] Verificando archivos staged..."
 
-# Verifica que no haya archivos .env commiteados
-if git diff --cached --name-only | grep -q '\.env$'; then
-    echo "ERROR: Intentando commitear un archivo .env. Agrega .env a .gitignore."
+# Bloquea .env, .env.prod, config/.env.staging... pero deja pasar .env.example
+if git diff --cached --name-only \
+    | grep -E '(^|/)\.env(\.[^/]+)?$' \
+    | grep -vE '\.env\.example$'; then
+    echo "ERROR: archivo .env en staging. Agrega '.env*' y '!.env.example' a .gitignore."
     exit 1
 fi
 

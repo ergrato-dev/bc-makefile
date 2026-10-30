@@ -1,6 +1,7 @@
 .PHONY: build clean test help
 .DEFAULT_GOAL := help
 
+FAIL   ?=
 MODULE := frontend
 
 build: ## Compilar módulo frontend
@@ -9,7 +10,8 @@ build: ## Compilar módulo frontend
 clean: ## Limpiar módulo frontend
 	@echo "[$(MODULE)] clean"
 
-test: ## Testear módulo frontend
+test: ## Testear módulo frontend (FAIL=frontend simula un fallo)
+	@if [ "$(FAIL)" = "$(MODULE)" ]; then echo "[$(MODULE)] test FALLÓ"; exit 1; fi
 	@echo "[$(MODULE)] test"
 
 help: ## Mostrar ayuda

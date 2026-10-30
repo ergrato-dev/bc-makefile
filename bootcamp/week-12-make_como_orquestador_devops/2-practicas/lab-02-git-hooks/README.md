@@ -1,6 +1,6 @@
 # Lab 02 — Git Hooks desde Make
 
-**Duración estimada:** 50 min
+**Duración estimada:** 60 min
 
 ## Objetivo
 
@@ -8,7 +8,9 @@ Implementar un sistema de instalación y gestión de git hooks desde Make, inclu
 
 ## Contexto
 
-Los git hooks son scripts en `.git/hooks/` que git ejecuta en momentos clave del flujo (commit, push, merge). El problema es que `.git/` no se commitea, así que cada desarrollador necesita instalarlos manualmente. La solución es guardar los scripts en `scripts/hooks/` (que sí se commitea) e instalarlos con `make hooks-install`.
+Los git hooks son scripts que git ejecuta en momentos clave del flujo (commit, push, merge). Por defecto viven en `.git/hooks/`, que no se versiona. La solución moderna es guardarlos en `scripts/hooks/` (versionado) y apuntar git ahí con `git config core.hooksPath`: nada que copiar, nada que se desactualice, y funciona en worktrees.
+
+**Los hooks son una ayuda, no un control:** `git commit --no-verify` los salta. Cualquier verificación que importe tiene que correr también en CI.
 
 Tres reglas de oro para hooks en Make:
 - Los scripts de hook deben ser ejecutables (`chmod +x`)
@@ -29,11 +31,11 @@ Tres reglas de oro para hooks en Make:
    cat scripts/hooks/pre-commit
    ```
 
-3. Implementa `hooks-install` para copiar los hooks a `.git/hooks/` y hacerlos ejecutables.
+3. Implementa `hooks-install`: `chmod +x` a los hooks y `git config core.hooksPath` apuntando a `$(CURDIR)/scripts/hooks`.
 
-4. Implementa `hooks-uninstall` para eliminar los hooks instalados.
+4. Implementa `hooks-uninstall` con `git config --unset core.hooksPath`.
 
-5. Implementa `hooks-status` para verificar qué hooks están instalados y si son ejecutables.
+5. Implementa `hooks-status`: muestra `core.hooksPath` y si cada hook es ejecutable.
 
 6. Instala los hooks y verifica:
    ```bash
@@ -41,24 +43,33 @@ Tres reglas de oro para hooks en Make:
    make hooks-status
    ```
 
-7. Prueba que el hook funciona:
+7. Prueba que el hook bloquea secretos, incluidos los `.env.*`:
    ```bash
-   echo "x = 1" > test.py
-   git add test.py
+   echo "API_KEY=x" > .env.prod
+   git add -f .env.prod
    git commit -m "test"
-   # El pre-commit debe ejecutarse
+   # Debe abortar: ERROR: archivo .env en staging...
+   git reset .env.prod && rm .env.prod
    ```
 
-8. Implementa `hooks-run-pre-commit` para ejecutar el hook manualmente sin necesidad de hacer commit.
+8. Comprueba que el hook es solo una ayuda:
+   ```bash
+   echo "API_KEY=x" > .env.prod && git add -f .env.prod
+   git commit --no-verify -m "saltado"   # pasa sin ejecutar el hook
+   git reset --soft HEAD~1 && git reset .env.prod && rm .env.prod
+   ```
+
+9. Implementa `hooks-run-pre-commit` para ejecutar el hook manualmente sin necesidad de hacer commit.
 
 ## Criterios de éxito
 
-- [ ] `make hooks-install` → copia los scripts a `.git/hooks/` con permisos ejecutables, imprime `Hooks instalados.`
-- [ ] `make hooks-status` → muestra una tabla con nombre del hook, si existe y si es ejecutable
-- [ ] `make hooks-uninstall` → elimina los hooks instalados, imprime `Hooks desinstalados.`
+- [ ] `make hooks-install` → `git config --get core.hooksPath` devuelve la ruta de `scripts/hooks`; imprime `Hooks instalados.`
+- [ ] `make hooks-status` → muestra `core.hooksPath` y si cada hook es ejecutable
+- [ ] `make hooks-uninstall` → `git config --get core.hooksPath` ya no devuelve nada; imprime `Hooks desinstalados.`
+- [ ] Un commit con `.env.prod` o `config/.env.staging` aborta; uno con `.env.example` pasa
 - [ ] `make hooks-run-pre-commit` → ejecuta el script de pre-commit y muestra su salida
 - [ ] `make help` → lista todos los targets con descripción
 
 ## Reto extra
 
-Agrega soporte para múltiples repos en monorepo: `make hooks-install SUBDIR=backend` instala los hooks específicos de `backend/scripts/hooks/`.
+Añade a `pre-commit` una búsqueda de patrones de secreto en el contenido staged (`git diff --cached -U0`), por ejemplo `AKIA[0-9A-Z]{16}` o `-----BEGIN .*PRIVATE KEY-----`.

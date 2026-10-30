@@ -10,9 +10,8 @@
 |-----|----------------------|-----|
 | lab-01-condicionales | `make info ENV=production` muestra configuración de prod; `make info ENV=development` muestra configuración de dev | 10 |
 | lab-02-include-modular | `make build` funciona importando módulos con `include`; `make help` lista targets de todos los módulos | 10 |
-| lab-03-recursion | `make all` ejecuta build en cada subdirectorio; `make clean` limpia recursivamente | 10 |
-| lab-04-depuracion | `make debug-all` ejecuta diagnóstico completo; `$(info)` y `$(warning)` usados correctamente | 10 |
-| lab-05-scope-variables | `make show-scope` muestra correctamente qué variables heredan los submakes y cuáles no | 10 |
+| lab-03-depuracion | `make debug-all` ejecuta diagnóstico completo; `$(info)` y `$(warning)` usados correctamente | 10 |
+| lab-04-scope-variables | `make show-scope` muestra correctamente qué variables heredan los submakes y cuáles no | 10 |
 
 ## Proyecto semanal (30 pts)
 
