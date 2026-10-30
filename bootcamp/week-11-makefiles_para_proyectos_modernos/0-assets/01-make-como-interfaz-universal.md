@@ -9,9 +9,9 @@ graph TD
     MAKE --> PNPM[Node.js / pnpm]
     MAKE --> CMP[docker compose]
 
-    PY --> R1[".venv/ creado<br/>tests ejecutados<br/>linting verificado"]
+    PY --> R1[".venv/ creado<br/>tests con pytest<br/>lint con ruff"]
     DOC --> R2["Imagen construida<br/>Contenedor corriendo<br/>Push al registry"]
-    NPM --> R3["node_modules/<br/>Bundle generado<br/>Tests pasados"]
+    PNPM --> R3["node_modules/<br/>Bundle generado<br/>Tests pasados"]
     CMP --> R4["Stack local<br/>Servicios orquestados<br/>Logs centralizados"]
 
     style MAKE fill:#f5a623,stroke:#d68910,color:#000

@@ -1,73 +1,80 @@
 # Lab 06 — Targets Rotos
 
-**Duración estimada:** 50 minutos
+**Duración estimada:** 60 minutos
+
+**Requisitos:** GNU Make y bash. No hace falta uv ni Docker: la instalación y la imagen están simuladas con `echo`.
 
 ## Objetivo
 
-Identificar y corregir los cinco errores más comunes en Makefiles de proyectos modernos a partir de mensajes de error reales.
+Diagnosticar y corregir seis errores reales de un Makefile de servicio Python con Docker, reproduciendo cada síntoma antes de tocar el código.
 
 ## Contexto
 
-Un compañero dejó un Makefile heredado con cinco bugs. El Makefile "parece" correcto pero falla de maneras inesperadas. Cada bug produce un síntoma diferente y requiere un diagnóstico distinto.
+Un compañero dejó el Makefile del servicio `pedidos` con seis bugs. Dos son clásicos de cualquier Makefile; los otros cuatro son específicos de proyectos modernos: sentinels mal declarados, versiones de imagen vacías, secretos filtrados al entorno y fechas que cambian dentro del mismo despliegue. Ninguno hace fallar el build de forma ruidosa salvo el primero: ahí está la dificultad.
 
-Antes de mirar la solución, intenta reproducir cada error, leer el mensaje que produce Make y deducir la causa. Esta habilidad de diagnóstico es la que más diferencia a un usuario avanzado de Make.
-
-## Los 5 bugs
-
-| # | Síntoma | Causa subyacente |
-|---|---------|-----------------|
-| Bug 1 | `make build` dice "is up to date" sin hacer nada | `build` no está en `.PHONY` y existe un directorio `build/` |
-| Bug 2 | `make install` falla con "missing separator" | Una línea de receta usa espacios en vez de TAB |
-| Bug 3 | `make test` falla con "No rule to make target 'instal'" | Dependencia con typo: `instal` en vez de `install` |
-| Bug 4 | `make info` falla con "Recursive variable 'SOURCES' references itself" | Variable `SOURCES` definida con `=` referenciándose a sí misma |
-| Bug 5 | `make info` imprime "Versión: " (string vacío) y un `fatal: No names found` | `$(shell git describe --tags)` falla sin tags y no tiene fallback |
+La regla del lab: **primero reproduces, después corriges**. Para cada bug apunta en un comentario `# FIX N:` el síntoma que viste, la causa y por qué tu cambio la elimina.
 
 ## Instrucciones
 
-1. Entra al directorio starter:
+1. Entra al directorio starter y ejecuta cualquier target:
    ```bash
    cd lab-06-targets-rotos/starter
+   make help
    ```
+   **Síntoma 1:** `Makefile:NN: *** missing separator.  Stop.` Es un error de sintaxis: Make no llega a leer el resto del archivo. Localiza la línea, mírala con `cat -A Makefile | sed -n 'NN p'` (un TAB se ve como `^I`) y corrígelo.
 
-2. Ejecuta cualquier target y observa el error:
+2. **Síntoma 2.** Ejecuta `make build` dos veces:
    ```bash
-   make build               # bug 2: missing separator
+   make build
+   make build
    ```
-   El bug 2 es un error de sintaxis: Make no llega a leer el resto del archivo,
-   así que tapa a los demás. Corrígelo primero y después observa los otros cuatro:
+   La segunda dice `make: 'build' is up to date.` aunque nunca le pediste que comprobara nada. Explica por qué la primera ejecución "rompe" la segunda y corrígelo.
+
+3. **Síntoma 3.** Ejecuta `make tag` y `make release`. ¿Qué etiqueta de imagen sale? Prueba `docker build -t pedidos: .` si tienes Docker: falla con `invalid reference format`. Corrige `VERSION` para que nunca quede vacía (hash corto de git con `--always`, y `0.0.0` fuera de un repo).
+
+4. **Síntoma 4.** Simula que un compañero ejecutó `uv lock --upgrade` y solo cambió el lock:
    ```bash
-   mkdir -p build           # prepara el escenario del bug 1
-   make build               # bug 1
-   make test                # bug 3
-   make info                # bug 4; tras corregirlo, bug 5
+   make install
+   touch uv.lock
+   make install
    ```
+   Make no reinstala: tu entorno sigue con las versiones viejas. Corrige el sentinel y comprueba que ahora `touch uv.lock && make -n install` muestra la instalación.
 
-3. Corrige cada bug en el Makefile:
-   - **Bug 1:** agrega `build` a la línea `.PHONY`
-   - **Bug 2:** reemplaza los 4 espacios de la receta de `install` por un TAB real
-   - **Bug 3:** corrige `instal` → `install` en la dependencia de `test`
-   - **Bug 4:** cambia `SOURCES = $(SOURCES) src/main.py` por `SOURCES := src/main.py` (expansión inmediata)
-   - **Bug 5:** agrega fallback al shell: `$(shell git describe --tags 2>/dev/null || echo 0.0.0)`
+5. **Síntoma 5.** Ejecuta `make env-check`. La receta solo necesita `LOG_LEVEL`, pero ve también `DB_PASSWORD`: cualquier script, dependencia o log de esa receta puede filtrarla. Busca la línea responsable y sustitúyela por un `export` con lista explícita.
 
-4. Verifica que el Makefile corregido funciona:
+6. **Síntoma 6.** Ejecuta `make release` y compara las dos horas:
+   ```
+   docker build --build-arg BUILD_DATE=08:33:04 -t pedidos:... .
+   Etiqueta org.opencontainers.image.created=08:33:05
+   ```
+   Son distintas dentro del mismo despliegue. Explica por qué `BUILD_DATE` se calcula dos veces y corrígelo.
+
+7. Verifica el Makefile corregido y limpia:
    ```bash
    make demo
+   make demo        # build se rehace; install no
+   make clean
    ```
 
 ## Criterios de éxito
 
 ```
 $ make demo
-=== Makefile corregido ===
-Versión:  0.0.0  (o el tag git si existe)
-Sources:  src/main.py
-Build OK: target build es PHONY, siempre ejecuta
-Install:  TAB correcto
-Test dep: install correcto
+Build OK: build/artefacto.txt
+uv sync --locked  (simulado)
+Imagen: pedidos:ef69027
+docker build --build-arg BUILD_DATE=08:33:14 -t pedidos:ef69027 .
+Etiqueta org.opencontainers.image.created=08:33:14
+LOG_LEVEL=INFO
 ```
 
-No debe haber errores de `missing separator`, `Recursive variable ... references itself`, ni targets bloqueados por directorios existentes.
+- Ningún `missing separator` ni `'build' is up to date`.
+- La imagen lleva versión (hash de git, tag o `0.0.0`), nunca `pedidos:`.
+- `touch uv.lock && make -n install` muestra `uv sync --locked  (simulado)`.
+- `make env-check` muestra `LOG_LEVEL` y **no** `DB_PASSWORD`.
+- Las dos horas de `make release` son iguales.
+- Cada corrección lleva su comentario `# FIX N:` con síntoma, causa y arreglo.
 
 ## Reto extra
 
-Agrega un target `check-make` que verifique que todos los targets de `.PHONY` existen como targets declarados en el Makefile. Pista: usa `$(shell grep -E '^[a-zA-Z_-]+:' $(MAKEFILE_LIST) | cut -d: -f1)` para extraer la lista de targets declarados.
+Ejecuta `make --warn-undefined-variables demo` sobre el Makefile **original** (con el bug 1 ya corregido). ¿Detecta alguno de los otros cinco bugs? Explica en dos líneas por qué estos errores no se pueden encontrar con flags de Make y sí con una comprobación de comportamiento como las de `checks.json`.

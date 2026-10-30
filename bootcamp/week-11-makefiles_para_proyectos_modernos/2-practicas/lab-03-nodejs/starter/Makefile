@@ -1,3 +1,8 @@
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
 .PHONY: all install build test lint clean help
 .DEFAULT_GOAL := help
 
@@ -30,7 +35,14 @@ DIST_DIR := dist
 
 
 # TODO 6: Define el target 'clean' que elimine node_modules/ y dist/
+#   Guarda antes de borrar: $(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
 #   Imprime "Limpiado." al terminar
+
+
+# TODO 7: Build incremental. 'build' es phony y llama a pnpm siempre.
+#   - Target de archivo $(DIST_DIR)/index.js con prerrequisitos
+#     $(SRC_DIR)/index.js y node_modules/.installed; receta: $(PNPM) run build
+#   - 'build' pasa a ser un alias: build: $(DIST_DIR)/index.js
 
 
 help: ## Mostrar ayuda

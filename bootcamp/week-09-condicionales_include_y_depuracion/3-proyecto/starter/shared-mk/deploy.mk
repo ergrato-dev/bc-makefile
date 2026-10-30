@@ -1,19 +1,19 @@
 # Módulo compartido: deploy.mk
 # Variables requeridas: APP_NAME, VERSION, ENV
+# Targets: deploy, rollback
 
 .PHONY: deploy rollback
 
-# --------------------------------------------------------------------------
-# TODO: Implementa 'deploy' con un condicional que:
-#       - En production: imprime "[<APP_NAME>] Desplegando en production (CONFIRMADO)"
-#       - En cualquier otro entorno: imprime "[<APP_NAME>] Desplegando en <ENV>"
-#       Usa ifeq para distinguir el entorno
-# --------------------------------------------------------------------------
-deploy: ## Desplegar el módulo (ENV=production requiere confirmación)
-	# TODO
+# Esta línea solo documenta el target para 'make help'; las recetas van abajo.
+deploy: ## Desplegar en ENV (en production marca CONFIRMADO)
 
 # --------------------------------------------------------------------------
-# TODO: Implementa 'rollback' que imprime "[<APP_NAME>] Rollback a versión anterior"
+# TODO 1: Con ifeq/else/endif define la receta de 'deploy':
+#         - en production: "[<APP_NAME>] Desplegando en production (CONFIRMADO)"
+#         - en cualquier otro: "[<APP_NAME>] Desplegando en <ENV>"
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# TODO 2: 'rollback' imprime "[<APP_NAME>] Rollback a versión anterior"
 # --------------------------------------------------------------------------
 rollback: ## Revertir al despliegue anterior
-	# TODO

@@ -1,86 +1,127 @@
-# Lab 06 — Diagnosticar y Corregir un Makefile Roto
+# Lab 06 — Diagnosticar y corregir un Makefile roto
 
-**Duración estimada:** 50 min
+**Duración estimada:** 60 min
 
 ## Objetivo
 
-Identificar y corregir 6 errores intencionales en un Makefile usando las herramientas de depuración aprendidas en la semana: `make -n`, `--debug=b`, `$(info)` y lectura de mensajes de error de Make.
+Reparar un Makefile heredado con seis errores que Make reporta y dos que no,
+usando los mensajes de Make, `--warn-undefined-variables` y `$(info)`.
 
 ## Contexto
 
-Este lab invierte el flujo: en vez de implementar, diagnosticas. El `starter/Makefile` tiene 6 errores reales que Make reportará de forma críptica. Tu trabajo es:
+Este lab invierte el flujo: no implementas nada, diagnosticas. El starter no
+dice dónde están los errores. Los seis primeros detienen Make o lo hacen
+quejarse; los dos últimos solo producen una salida incorrecta, y son los que
+llegan a producción.
 
-1. Ejecutar Make y leer el error
-2. Localizar la causa usando herramientas de depuración
-3. Corregir el error
-4. Repetir hasta que `make ci` y `make lint` funcionen
-
-Los errores cubren los problemas más comunes en Makefiles reales:
-- Uso de espacios en vez de TAB
-- Variable recursiva que causa bucle
-- Prerrequisito que no tiene ninguna regla (`No rule to make target`)
-- `include` de archivo que no existe (sin `-include`)
-- Condicional mal formado
-- Dependencia circular
+Método: ejecuta, lee el mensaje **entero** (archivo, línea, texto), corrige
+una sola cosa, repite. Cada corrección lleva un comentario `# FIX:` que diga
+la causa, no solo el cambio.
 
 ## Instrucciones
 
-1. Copia el starter:
+1. Copia el starter y lee el primer error:
    ```bash
    cp -r starter/ mi-lab-06 && cd mi-lab-06
+   make ci
+   ```
+   ```
+   Makefile:22: *** missing separator (did you mean TAB instead of 8 spaces?).  Stop.
    ```
 
-2. Ejecuta Make y lee el primer error:
+2. Corrige y repite `make ci` hasta que imprima `CI completo`. Irás viendo, en
+   este orden, mensajes como:
+   ```
+   Makefile:48: *** missing 'endif'.  Stop.
+   Makefile:14: mk/config.mk: No such file or directory
+   make: *** No rule to make target 'check-syntax', needed by 'lint'.  Stop.
+   make: Circular deploy <- ci dependency dropped.
+   ```
+   Fíjate en el último: Make **no se detiene**, descarta la dependencia y
+   sigue. Mira qué imprime `make ci` justo antes de `CI completo`: tu pipeline
+   de CI estaba desplegando en producción.
+
+3. Cuando `make ci` pase, prueba el target que falta:
    ```bash
-   make ci 2>&1 | head -20
+   make deploy
    ```
+   ```
+   Makefile:NN: *** Recursive variable 'VERSION' references itself (eventually).  Stop.
+   ```
+   La versión correcta es `1.0.0`.
 
-3. Para cada error que encuentres:
-   - Anota el mensaje de error exacto
-   - Identifica el número de línea
-   - Corrige el error en tu copia
-   - Vuelve a ejecutar `make ci`
-
-4. Usa estas herramientas para ayudarte:
+4. **Errores silenciosos.** `make ci` y `make deploy` ya terminan bien, pero
+   mira la salida:
+   ```
+   Compilando  --debug
+   Desplegando mi-app 1.0.0 en production
+   ```
+   Falta el nombre en el primero y `--confirm` en el segundo. Pide ayuda a Make:
    ```bash
-   make -n ci          # dry-run: muestra comandos sin ejecutar
-   make --debug=b ci   # muestra decisiones de reconstrucción
-   make -p 2>/dev/null | grep "^ci"  # busca la regla en la base de datos
+   make --warn-undefined-variables ci deploy 2>&1 | grep undefined
    ```
+   El primer aviso es un typo. El segundo es más sutil: añade en columna 0,
+   justo antes del `ifeq` de `DEPLOY_FLAGS`, la línea temporal
+   `$(info ENV al leer = $(ENV))` y explica por qué ese `ifeq` nunca es
+   verdadero aunque `deploy` imprima `en production`. Corrígelo sin usar `ifeq`.
 
-5. `make ci` no pasa por `lint`: ese error solo aparece al pedirlo. Cuando
-   hayas corregido los 6 errores:
+5. **Un `lint` que sirva.** Quitar `check-syntax` deja un `lint` que siempre
+   dice OK. Haz que ejecute `$(MAKE) -n --warn-undefined-variables build deploy`,
+   capture la salida y falle si contiene `undefined variable`: así los errores
+   7 y 8 no vuelven. No incluyas `ci` ni `lint` en ese dry-run (pista: las
+   líneas con `$(MAKE)` se ejecutan incluso con `-n`). Comprueba el resultado:
    ```bash
    make ci
-   make lint
+   make deploy
+   make --warn-undefined-variables ci deploy 2>&1 | grep -c undefined   # 0
    make help
    ```
 
-## Errores intencionales (no leer antes de intentarlo)
+## Pistas (ábrelas solo si llevas 10 minutos atascado en un error)
 
 <details>
-<summary>Pista 1 — Tipos de errores presentes</summary>
+<summary>Pista 1 — Categorías de los 8 errores</summary>
 
-Los 6 errores son de estas categorías:
-1. Indentación con espacios en una receta
-2. Variable recursiva infinita (`= $(VAR)` referenciando a sí misma)
-3. Prerrequisito sin regla: un target depende de otro que no existe
-4. `include` sin guion de un archivo inexistente
-5. `ifeq` sin `endif`
-6. Dependencia circular: `a: b` y `b: a`
+1. Receta indentada con espacios
+2. `ifeq` sin `endif`
+3. `include` sin guion de un archivo opcional que no existe
+4. Prerrequisito sin regla
+5. Dependencia circular
+6. Variable recursiva que se referencia a sí misma
+7. Nombre de variable mal escrito
+8. `ifeq` que depende de una variable de target
+
+</details>
+
+<details>
+<summary>Pista 2 — El error 8</summary>
+
+Los condicionales se evalúan al leer el Makefile, con el valor global de
+`ENV`. `deploy: ENV := production` solo existe mientras se ejecuta `deploy`.
+Si la variable de target funciona para `ENV`, también funciona para
+`DEPLOY_FLAGS`.
+
+</details>
+
+<details>
+<summary>Pista 3 — lint</summary>
+
+Con `.SHELLFLAGS := -eu -o pipefail -c`, `out=$$($(MAKE) ...)` ya falla si el
+sub-make falla. Después basta `if grep 'undefined variable' <<<"$$out"; then exit 1; fi`.
 
 </details>
 
 ## Criterios de éxito
 
-- [ ] `make ci` completa sin errores e imprime `CI completo`
-- [ ] `make help` lista todos los targets
-- [ ] `make build` → `Compilando mi-app`
-- [ ] `make test` → `Tests OK`
-- [ ] `make lint` → `Lint OK`
-- [ ] `make ci` ya no muestra `Circular ... dependency dropped`
-- [ ] Puedes explicar cada uno de los 6 errores que corregiste
+- [ ] `make ci` imprime `Compilando mi-app --debug`, `Tests OK`, `Lint OK` y `CI completo`, sin aviso `Circular` ni ninguna línea `Desplegando`
+- [ ] `make deploy` imprime `Desplegando mi-app 1.0.0 en production --confirm`
+- [ ] `make --warn-undefined-variables ci deploy` no imprime ningún `undefined variable`
+- [ ] `make lint` falla (y muestra el aviso) si vuelves a escribir `$(APP_NMAE)`
+- [ ] Cada uno de los 8 errores tiene su comentario `# FIX:` con la causa
 
 ## Reto extra
 
-Escribe un target `make lint-makefile` que ejecute `make -n` y busque patrones de error comunes con grep (espacios al inicio de receta, etc.).
+Amplía `lint` para que también falle si alguna asignación de variable lleva
+un comentario en la misma línea (`VAR := valor # comentario`), el error que
+añade un espacio invisible al valor. Escribe la expresión regular y
+pruébala con un caso que debe fallar y otro que no.

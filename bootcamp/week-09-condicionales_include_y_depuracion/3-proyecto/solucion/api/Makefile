@@ -18,5 +18,6 @@ include ../shared-mk/debug.mk
 all: build ## Construir este módulo
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@echo "Targets disponibles:"
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

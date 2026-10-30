@@ -1,12 +1,9 @@
 # Módulo: deploy.mk — targets de despliegue
-# Importar desde el Makefile principal con: include mk/deploy.mk
+# Requiere: APP_NAME, VERSION, ENV
 
 .PHONY: deploy
 
 # --------------------------------------------------------------------------
-# TODO 5: Implementa el target 'deploy' que imprime:
-#         "[deploy] Desplegando en <ENV>"
-#         ENV viene del Makefile principal (ya definida antes del include)
+# TODO 5 (paso 4): 'deploy' imprime "[deploy] Desplegando <APP_NAME> <VERSION> en <ENV>"
 # --------------------------------------------------------------------------
 deploy: ## Desplegar en el entorno activo (ENV=development por defecto)
-	# TODO: @echo "[deploy] Desplegando en ..."

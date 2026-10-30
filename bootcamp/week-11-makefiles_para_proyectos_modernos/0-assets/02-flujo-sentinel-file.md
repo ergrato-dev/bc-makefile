@@ -4,7 +4,7 @@
 flowchart TD
     A[make install] --> B{¿Existe .venv/.installed?}
     B -->|No| E
-    B -->|Sí| D{¿pyproject.toml o uv.lock más nuevo\nque .venv/.installed?}
+    B -->|Sí| D{¿pyproject.toml o uv.lock más nuevo<br/>que .venv/.installed?}
     E[uv sync --locked]
     E --> F[touch .venv/.installed]
     F --> G[✓ Instalación completa]

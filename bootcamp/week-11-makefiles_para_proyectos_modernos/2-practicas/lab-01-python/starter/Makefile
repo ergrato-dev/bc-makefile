@@ -1,4 +1,9 @@
-.PHONY: all install test lint clean help
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
+.PHONY: all install test lint format clean help
 .DEFAULT_GOAL := help
 
 UV        := uv
@@ -6,7 +11,7 @@ VENV      := .venv
 # --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
 RUN       := $(UV) run --no-sync
 PYTEST    := $(RUN) pytest
-FLAKE8    := $(RUN) flake8
+RUFF      := $(RUN) ruff
 SRC_DIR   := src
 TESTS_DIR := tests
 
@@ -25,12 +30,18 @@ TESTS_DIR := tests
 #   Pista: $(PYTEST) $(TESTS_DIR) -v
 
 
-# TODO 4: Define el target 'lint' que dependa de install y ejecute flake8
-#   Pista: $(FLAKE8) $(SRC_DIR) --max-line-length=100
+# TODO 4: Define el target 'lint' que dependa de install y ejecute ruff check
+#   Pista: $(RUFF) check $(SRC_DIR)
 
 
-# TODO 5: Define el target 'clean' que elimine .venv/ y cachés de Python
-#   Pista: rm -rf $(VENV) __pycache__ $(SRC_DIR)/__pycache__ $(TESTS_DIR)/__pycache__ .pytest_cache
+# TODO 5: Define el target 'format' que dependa de install y reformatee el código
+#   Pista: $(RUFF) format $(SRC_DIR) $(TESTS_DIR)
+
+
+# TODO 6: Define el target 'clean' que elimine .venv/ y cachés de Python
+#   Una guarda por variable antes de borrar (Semana 03), p. ej.:
+#     $(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+#   Luego: rm -rf -- '$(VENV)' __pycache__ '$(SRC_DIR)/__pycache__' '$(TESTS_DIR)/__pycache__' .pytest_cache .ruff_cache
 #   Imprime "Limpiado." al terminar
 
 

@@ -1,4 +1,9 @@
-.PHONY: all up down logs ps restart exec info help
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
+.PHONY: all config up down logs ps restart exec info help
 .DEFAULT_GOAL := help
 
 STACK_NAME := mi-stack
@@ -39,6 +44,15 @@ info: ## Mostrar información del stack
 	@echo "Stack:    $(STACK_NAME)"
 	@echo "Compose:  $(COMPOSE)"
 	@echo "Servicios: web db"
+
+# TODO 7: Precondición .env. Sin .env, 'docker compose up' falla con un
+#   mensaje de interpolación poco claro. Haz que Make falle antes:
+#   - Regla de archivo '.env' (NO phony) cuya receta imprima por stderr
+#     "Falta .env: cp .env.example .env y cambia POSTGRES_PASSWORD" y salga con 1
+#   - 'up' depende de .env
+#   - Target 'config' que dependa de .env y ejecute $(COMPOSE) config --quiet
+#     e imprima "Configuración válida."
+
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

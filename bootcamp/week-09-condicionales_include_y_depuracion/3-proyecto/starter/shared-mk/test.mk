@@ -1,11 +1,14 @@
 # Módulo compartido: test.mk
-# Variables requeridas en el Makefile importador: APP_NAME
+# Variables requeridas: APP_NAME, VERSION, ARTIFACT (la define build.mk)
+# Targets: test
 
 .PHONY: test
 
 # --------------------------------------------------------------------------
-# TODO: Implementa 'test' que imprime "[<APP_NAME>] Ejecutando tests..."
-#       y luego "[<APP_NAME>] Tests OK"
+# TODO: 'test' depende de ARTIFACT y:
+#       - imprime "[<APP_NAME>] Ejecutando tests..."
+#       - comprueba con grep -qx que el artefacto contiene la línea
+#         version=<VERSION>; si no, imprime un FALLO y sale con exit 1
+#       - imprime "[<APP_NAME>] Tests OK"
 # --------------------------------------------------------------------------
-test: ## Ejecutar tests del módulo
-	# TODO
+test: ## Comprobar que el artefacto declara la versión correcta

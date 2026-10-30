@@ -2,8 +2,8 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make — Conditionals](https://www.gnu.org/software/make/manual/make.html#Conditionals) | Referencia oficial de `ifeq`, `ifneq`, `ifdef`, `ifndef` con sintaxis completa |
-| [GNU Make — Include](https://www.gnu.org/software/make/manual/make.html#Include) | Documentación de `include` y `-include`, rutas de búsqueda y variables `MAKEFILES` |
-| [GNU Make — Recursive Make](https://www.gnu.org/software/make/manual/make.html#Recursion) | Guía oficial de submakes: `$(MAKE) -C`, `export`, `MAKEFLAGS`, comunicación padre-hijo |
-| [Recursive Make Considered Harmful (Miller, 1998)](https://aegis.sourceforge.net/auug97.pdf) | Paper clásico sobre los problemas de la recursión y cuándo evitarla (PDF) |
-| [Your Makefiles are Wrong (Jacob Davis-Hansson)](https://tech.davis-hansson.com/p/make/) | Artículo sobre errores comunes en Makefiles modernos y cómo corregirlos |
+| [GNU Make — Conditionals](https://www.gnu.org/software/make/manual/html_node/Conditionals.html) | Sintaxis oficial de `ifeq`, `ifneq`, `ifdef`, `ifndef` y por qué se evalúan al leer el Makefile |
+| [GNU Make — Include](https://www.gnu.org/software/make/manual/html_node/Include.html) y [Remaking Makefiles](https://www.gnu.org/software/make/manual/html_node/Remaking-Makefiles.html) | `include`, `-include` y cómo Make rehace un incluido y vuelve a leer todo |
+| [GNU Make — Communicating Variables to a Sub-make](https://www.gnu.org/software/make/manual/html_node/Variables_002fRecursion.html) | Qué viaja al sub-make: `MAKEFLAGS`, `export`, `unexport`, `MAKELEVEL` |
+| [GNU Make — Options Summary](https://www.gnu.org/software/make/manual/html_node/Options-Summary.html) | `--trace`, `--debug`, `--warn-undefined-variables`, `-p` y el resto de flags |
+| [GNU Make — Special Variables](https://www.gnu.org/software/make/manual/html_node/Special-Variables.html) | `.FEATURES`, `MAKEFILE_LIST`, `.DEFAULT_GOAL` y otras variables que Make define por ti |

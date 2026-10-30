@@ -1,8 +1,8 @@
 # Proyecto — Makefile de Microservicio Listo para Producción
 
-**Duración estimada:** 2h 30min
+**Duración estimada:** 3 horas
 
-**Requisitos:** Python 3.14, Docker Engine 27+ con Compose v2
+**Requisitos:** Python 3.14 y uv; Docker Engine 27+ con Compose v2 (solo para `build`, `up` y `deploy-prod`)
 
 ## Contexto
 
@@ -19,7 +19,7 @@ starter/
 │   └── main.py           ← servicio Python (no modificar)
 ├── tests/
 │   └── test_main.py      ← tests (no modificar)
-├── pyproject.toml        ← dependencias (runtime + grupo dev: pytest, flake8)
+├── pyproject.toml        ← dependencias (runtime + grupo dev: pytest, ruff)
 ├── uv.lock               ← versiones exactas, generado por uv (commitear)
 ├── Dockerfile            ← imagen del servicio (no modificar)
 ├── docker-compose.yml    ← stack local (no modificar)
@@ -32,7 +32,10 @@ starter/
    - `make install` — `uv sync --locked --no-dev --inexact`, solo runtime (sentinel file)
    - `make install-dev` — `uv sync --locked`, runtime + grupo dev (sentinel file)
    - `make test` — pytest, depende de `install-dev`
-   - `make lint` — flake8, depende de `install-dev`
+   - `make lint` — `ruff check src/`, depende de `install-dev`
+   - `make format` — `ruff format src/ tests/` (reescribe los archivos)
+   - `make format-check` — `ruff format --check src/ tests/` (no escribe; falla si algo cambiaría)
+   - `make check` — sin receta: depende de `format-check lint test`. Es la puerta que correría CI
    - `make run` — ejecuta `src/main.py` con `uv run`
    - `make build` — `docker build` con `VERSION` y `BUILD_DATE` como `--build-arg`
    - `make docker-run` — `docker run` con variables de `.env`
@@ -42,7 +45,7 @@ starter/
    - `make deploy-prod` — pide confirmación antes de ejecutar
    - `make clean` — elimina `.venv/` y cachés Python, con guarda si `VENV` está vacía
 
-2. Preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y `-include .env` con `export` solo de las variables que lee la app (nunca `export` a secas)
+2. Preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y `-include .env` con `export` solo de las variables que lee la app (nunca `export` a secas), con `ENV ?= dev` y `LOG_LEVEL ?= INFO` para cuando no hay `.env`
 
 3. `make help` documentado con `##` en todos los targets
 
@@ -51,10 +54,16 @@ starter/
 ```bash
 cd starter
 
-# Instalar y testear
+# Instalar y pasar la puerta de calidad
 make install-dev
-make test
-make lint
+make check
+
+# Romper el formato a propósito y comprobar que check lo detecta
+printf 'x = {  "a":1 }\n' >> src/main.py
+make check          # debe fallar en format-check
+make format         # ruff lo reescribe
+make check          # vuelve a pasar
+git checkout src/main.py
 
 # Ver información del proyecto
 make info
@@ -76,7 +85,11 @@ uv sync --locked
 [...]
 Dependencias de desarrollo instaladas.
 
-$ make test
+$ make check
+uv run --no-sync ruff format --check src/ tests/
+2 files already formatted
+uv run --no-sync ruff check src/
+All checks passed!
 uv run --no-sync pytest tests/ -v
 ...
 tests/test_main.py::test_notificar PASSED
@@ -117,6 +130,8 @@ red ni Docker: los targets de Docker y Compose se verifican con `make -n`.
 - [ ] make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock
 - [ ] make test instala antes el grupo dev si falta
 - [ ] make test ejecuta pytest con uv run --no-sync
+- [ ] make lint ejecuta ruff check con uv run --no-sync
+- [ ] make check verifica el formato con ruff format --check, sin reescribir archivos
 - [ ] make build pasa VERSION a docker build como --build-arg
 - [ ] make build pasa BUILD_DATE a docker build como --build-arg
 - [ ] La imagen se etiqueta con la versión y nunca con latest

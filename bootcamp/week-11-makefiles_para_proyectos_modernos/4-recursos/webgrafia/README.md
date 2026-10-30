@@ -2,8 +2,10 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make — Phony Targets](https://www.gnu.org/software/make/manual/make.html#Phony-Targets) | Documentación oficial sobre `.PHONY` — esencial cuando los targets no producen archivos |
-| [Docker Build Reference](https://docs.docker.com/engine/reference/commandline/build/) | Flags de `docker build`, incluyendo `--build-arg`, `--tag` y `--cache-from` |
-| [Compose File Reference](https://docs.docker.com/compose/compose-file/) | Referencia completa del formato `docker-compose.yml` v3 |
-| [Makefile for Python Projects (Real Python)](https://realpython.com/makefile-python/) | Artículo práctico sobre Make para proyectos Python: pytest, flake8 (usa pip; aquí lo hacemos con uv) |
-| [Sentinel Files Pattern](https://www.gnu.org/software/make/manual/make.html#Empty-Targets) | GNU Make manual — "Empty Targets" (base del patrón sentinel file) |
+| [GNU Make — Empty Target Files](https://www.gnu.org/software/make/manual/html_node/Empty-Targets.html) | El patrón sentinel en el manual oficial: un archivo vacío cuya fecha registra cuándo corrió la receta |
+| [uv — Locking and syncing](https://docs.astral.sh/uv/concepts/projects/sync/) | Qué hacen `uv sync`, `--locked`, `--frozen`, `--no-dev`, `--inexact` y `uv run --no-sync` |
+| [Ruff — The Ruff Formatter](https://docs.astral.sh/ruff/formatter/) | `ruff format` y `ruff format --check`: lo que usa el target `check` del proyecto |
+| [pnpm install](https://pnpm.io/cli/install) | Opciones de `pnpm install`, incluido `--frozen-lockfile` |
+| [docker buildx build](https://docs.docker.com/reference/cli/docker/buildx/build/) | Flags de `docker build`: `--build-arg`, `--tag`, `--iidfile` |
+| [Compose — Interpolation](https://docs.docker.com/reference/compose-file/interpolation/) | Sintaxis `${VAR:?mensaje}` que usa el lab 04 para exigir la contraseña en `.env` |
+| [How to replace tox with uv and a Makefile](https://pydevtools.com/handbook/how-to/how-to-replace-tox-with-uv-and-a-makefile/) | Makefile con targets `uv run` para tests, `ruff check` y `ruff format` |

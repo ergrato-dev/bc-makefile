@@ -3,18 +3,46 @@
   "titulo": "Condicionales, include y depuración",
   "checks": [
     {
+      "id": "guarda-version-antigua",
+      "descripcion": "Con una versión de Make anterior a 4.3 el Makefile raíz se niega a ejecutar con un mensaje claro",
+      "cmd": "{make} -C {proyecto} help MAKE_VERSION=3.81 >/dev/null 2>&1 && exit 1; {make} -C {proyecto} help MAKE_VERSION=3.81 2>&1 | grep -q 'requiere GNU Make'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-portabilidad-y-diagnostico/README.md, paso 2; entregable 1"
+    },
+    {
       "id": "all-construye-tres",
       "descripcion": "make all desde la raíz construye api, worker y frontend",
-      "cmd": "{make} -C {proyecto} all 2>&1 | grep -cE '^.(api|worker|frontend). Compilando (api|worker|frontend) 1.0.0$'",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} all 2>&1 | grep -cE '^.(api|worker|frontend). Compilando (api|worker|frontend) 1.0.0$'",
       "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregables 1, 5 a 8; TODOs del Makefile raíz"
+      "pista": "3-proyecto/README.md, entregables 2 y 7; TODOs del Makefile raíz"
+    },
+    {
+      "id": "artefacto-por-modulo",
+      "descripcion": "make all genera el artefacto de cada módulo dentro de su BUILD_DIR",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -s {proyecto}/api/build/api-1.0.0.txt && test -s {proyecto}/worker/build/worker-1.0.0.txt && test -s {proyecto}/frontend/dist/frontend-1.0.0.txt",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, entregable 2; frontend define BUILD_DIR := dist"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make all no recompila ningún módulo",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -s {proyecto}/api/build/api-1.0.0.txt && {make} -C {proyecto} all 2>&1 | grep -c Compilando",
+      "assert": "stdout~^0$",
+      "pista": "3-proyecto/README.md, entregable 2: build depende del archivo, no es solo un echo"
+    },
+    {
+      "id": "package-tar",
+      "descripcion": "make -C api package crea un .tar.gz que contiene el artefacto",
+      "cmd": "{make} -C {proyecto}/api package >/dev/null 2>&1 && tar -tzf {proyecto}/api/build/api-1.0.0.tar.gz",
+      "assert": "stdout~^api-1.0.0.txt$",
+      "pista": "3-proyecto/README.md, entregable 2"
     },
     {
       "id": "test-tres",
       "descripcion": "make test desde la raíz ejecuta los tests de los tres módulos",
       "cmd": "{make} -C {proyecto} test 2>&1 | grep -cE '^.(api|worker|frontend). Tests OK$'",
       "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregable 2"
+      "pista": "3-proyecto/README.md, entregable 3"
     },
     {
       "id": "fallo-propaga",
@@ -35,68 +63,61 @@
       "descripcion": "deploy en production toma la rama ifeq que marca CONFIRMADO",
       "cmd": "{make} -C {proyecto}/api ENV=production deploy",
       "assert": "stdout~^.api. Desplegando en production .CONFIRMADO.$",
-      "pista": "2-practicas/lab-01-condicionales/README.md; entregable 3"
-    },
-    {
-      "id": "deploy-development-sin-confirmar",
-      "descripcion": "deploy sin ENV usa development y no marca CONFIRMADO",
-      "cmd": "{make} -C {proyecto}/api deploy",
-      "assert": "stdout~^.api. Desplegando en development$",
-      "pista": "2-practicas/lab-01-condicionales/README.md; entregable 3"
-    },
-    {
-      "id": "rollback-en-tres",
-      "descripcion": "Los tres módulos importan deploy.mk y ofrecen rollback",
-      "cmd": "for m in api worker frontend; do {make} -s -C {proyecto}/$m rollback; done 2>&1 | grep -cE '^.(api|worker|frontend). Rollback a versión anterior$'",
-      "assert": "stdout~^3$",
-      "pista": "2-practicas/lab-02-include-modular/README.md; TODO de include en cada módulo"
-    },
-    {
-      "id": "debug-vars-app",
-      "descripcion": "make -C worker debug-vars muestra APP_NAME del módulo con $(info)",
-      "cmd": "{make} -C {proyecto}/worker debug-vars",
-      "assert": "stdout~^APP_NAME *= worker$",
-      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+      "pista": "2-practicas/lab-01-condicionales/README.md; entregable 4"
     },
     {
       "id": "debug-vars-makefile-list",
       "descripcion": "debug-vars muestra en MAKEFILE_LIST los cuatro módulos incluidos",
       "cmd": "{make} -C {proyecto}/worker debug-vars 2>&1 | grep -E '^MAKEFILE_LIST' | grep -oE 'shared-mk/(build|test|deploy|debug)[.]mk' | sort -u | wc -l",
       "assert": "stdout~^ *4$",
-      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
-    },
-    {
-      "id": "validate-ok",
-      "descripcion": "make -C frontend validate pasa con las variables definidas",
-      "cmd": "{make} -C {proyecto}/frontend validate",
-      "assert": "stdout~Validación OK",
-      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 5"
     },
     {
       "id": "validate-version-vacia",
       "descripcion": "validate falla con mensaje claro si VERSION está vacía",
       "cmd": "{make} -C {proyecto}/frontend validate VERSION= >/dev/null 2>&1 && exit 1; {make} -C {proyecto}/frontend validate VERSION= 2>&1 | grep -q 'VERSION no puede estar vac'",
       "assert": "exit0",
-      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 4"
+      "pista": "2-practicas/lab-03-depuracion/README.md; entregable 5"
+    },
+    {
+      "id": "doctor-version",
+      "descripcion": "make doctor muestra la versión de Make en uso",
+      "cmd": "{make} -C {proyecto} doctor",
+      "assert": "stdout~^MAKE_VERSION *= *[0-9]+[.][0-9]+",
+      "pista": "2-practicas/lab-05-portabilidad-y-diagnostico/README.md, paso 7; entregable 6"
+    },
+    {
+      "id": "doctor-valida-modulos",
+      "descripcion": "make doctor ejecuta validate en los tres módulos",
+      "cmd": "{make} -C {proyecto} doctor 2>&1 | grep -cE '^.(api|worker|frontend). Validación OK$'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregable 6"
+    },
+    {
+      "id": "logica-en-shared-mk",
+      "descripcion": "--trace muestra que la regla del artefacto vive en shared-mk/build.mk",
+      "cmd": "{make} -C {proyecto}/api clean >/dev/null 2>&1; {make} -C {proyecto}/api --trace build 2>&1",
+      "assert": "stdout~shared-mk/build[.]mk:[0-9]+: update target",
+      "pista": "2-practicas/lab-05-portabilidad-y-diagnostico/README.md, paso 5; entregable 2"
     },
     {
       "id": "sin-variables-indefinidas",
       "descripcion": "make all no usa ninguna variable indefinida (--warn-undefined-variables)",
-      "cmd": "out=$({make} -C {proyecto} --warn-undefined-variables all 2>&1); grep -q Compilando <<<$out && ! grep -q 'undefined variable' <<<$out",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; out=$({make} -C {proyecto} --warn-undefined-variables all 2>&1); grep -q Compilando <<<$out && ! grep -q 'undefined variable' <<<$out",
       "assert": "exit0",
-      "pista": "1-teoria/01-contexto.md, sección Depuración"
+      "pista": "2-practicas/lab-05-portabilidad-y-diagnostico/README.md, paso 4"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD_DIR está vacío",
+      "cmd": "{make} -C {proyecto}/api clean BUILD_DIR=",
+      "assert": "stdout~BUILD_DIR vac",
+      "pista": "Semana 03: guardas de rm -rf; TODO de clean en shared-mk/build.mk"
     },
     {
       "id": "shellflags-estrictas",
       "descripcion": "El Makefile raíz ejecuta las recetas con bash -eu -o pipefail",
       "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
-      "assert": "exit0",
-      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
-    },
-    {
-      "id": "delete-on-error",
-      "descripcion": "El Makefile raíz declara .DELETE_ON_ERROR",
-      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
       "assert": "exit0",
       "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
     },

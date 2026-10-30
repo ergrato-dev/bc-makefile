@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all install install-dev test lint run build docker-run up down info deploy-prod clean help
+.PHONY: all install install-dev test lint format format-check check run build docker-run up down info deploy-prod clean help
 .DEFAULT_GOAL := help
 
 # ── Configuración ──────────────────────────────────────────────────────────────
@@ -12,7 +12,7 @@ VENV       := .venv
 # --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
 RUN        := $(UV) run --no-sync
 PYTEST     := $(RUN) pytest
-FLAKE8     := $(RUN) flake8
+RUFF       := $(RUN) ruff
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
 REGISTRY   := docker.io/miusuario
@@ -28,6 +28,9 @@ COMPOSE    := docker compose
 # ── Variables de entorno ────────────────────────────────────────────────────────
 # .env se parsea como Makefile: valores sin `$`, sin comillas y sin `#`.
 -include .env
+# Sin .env, `export` mandaría ENV vacía y la app no aplicaría su valor por defecto.
+ENV       ?= dev
+LOG_LEVEL ?= INFO
 # Solo lo que lee la app; nunca `export` a secas.
 export ENV LOG_LEVEL SMTP_HOST SMTP_PORT
 
@@ -52,8 +55,18 @@ install-dev: $(VENV)/.installed-dev ## Instalar dependencias de desarrollo
 test: install-dev ## Ejecutar tests con pytest
 	$(PYTEST) tests/ -v
 
-lint: install-dev ## Verificar estilo con flake8
-	$(FLAKE8) src/ --max-line-length=100
+lint: install-dev ## Analizar el código con ruff check
+	$(RUFF) check src/
+
+format: install-dev ## Reformatear src/ y tests/ con ruff format
+	$(RUFF) format src/ tests/
+
+# --check no escribe: sale con error si ruff format cambiaría algo. Es lo que corre CI.
+format-check: install-dev ## Comprobar el formato sin modificar archivos
+	$(RUFF) format --check src/ tests/
+
+# Sin receta: solo agrupa. Falla en cuanto falla cualquiera de los tres.
+check: format-check lint test ## Puerta de CI: formato, lint y tests
 
 # ── Ejecución local ────────────────────────────────────────────────────────────
 run: install ## Ejecutar servicio localmente con uv
@@ -74,7 +87,7 @@ docker-run: ## Ejecutar servicio en contenedor Docker
 # ── Compose ────────────────────────────────────────────────────────────────────
 up: ## Levantar stack de desarrollo con docker compose
 	$(COMPOSE) up -d
-	@echo "Stack arriba. Logs: make logs"
+	@echo "Stack arriba."
 
 down: ## Detener stack
 	$(COMPOSE) down
@@ -96,8 +109,8 @@ deploy-prod: build ## Desplegar en producción (pide confirmación)
 
 # ── Limpieza ───────────────────────────────────────────────────────────────────
 clean: ## Eliminar venv y cachés de Python
-	$(if $(VENV),,$(error VENV vacía))
-	@rm -rf -- '$(VENV)' __pycache__ src/__pycache__ tests/__pycache__ .pytest_cache
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' __pycache__ src/__pycache__ tests/__pycache__ .pytest_cache .ruff_cache
 	@find . -name "*.pyc" -delete
 	@echo "Limpiado."
 

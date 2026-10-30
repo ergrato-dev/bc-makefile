@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all install test backend-install backend-test frontend-install frontend-test clean info help
+.PHONY: all install test lint backend-install backend-test backend-lint backend-format frontend-install frontend-test frontend-lint clean info help
 .DEFAULT_GOAL := help
 
 # ── Backend Python ──────────────────────────────────────────────────────────────
@@ -11,6 +11,7 @@ VENV     := backend/.venv
 # --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
 RUN      := $(UV) run --no-sync
 PYTEST   := $(RUN) pytest
+RUFF     := $(RUN) ruff
 
 # ── Frontend Node.js ────────────────────────────────────────────────────────────
 PNPM     := pnpm
@@ -43,13 +44,29 @@ frontend-test: frontend-install ## Ejecutar tests del frontend
 	@echo "[frontend] Ejecutando tests..."
 	cd frontend && node tests/test.js
 
+backend-lint: backend-install ## Analizar el backend con ruff check
+	@echo "[backend] Lint..."
+	cd backend && $(RUFF) check src/
+
+backend-format: backend-install ## Reformatear el backend con ruff format
+	@echo "[backend] Formateando..."
+	cd backend && $(RUFF) format src/ tests/
+
+frontend-lint: frontend-install ## Lint del frontend
+	@echo "[frontend] Lint..."
+	cd frontend && $(PNPM) run lint
+
 install: backend-install frontend-install ## Instalar todas las dependencias
 
 test: backend-test frontend-test ## Ejecutar todos los tests
 
+lint: backend-lint frontend-lint ## Lint de los dos stacks
+
 clean: ## Eliminar artefactos de backend y frontend
-	@rm -rf backend/.venv backend/__pycache__ backend/tests/__pycache__ backend/.pytest_cache
-	@rm -rf frontend/node_modules
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	$(if $(NODE_MOD),,$(error NODE_MOD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' backend/src/__pycache__ backend/tests/__pycache__ backend/.pytest_cache backend/.ruff_cache
+	@rm -rf -- '$(NODE_MOD)'
 	@echo "Limpiado."
 
 info: ## Mostrar información del stack

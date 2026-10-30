@@ -2,12 +2,12 @@
 
 ```mermaid
 flowchart TD
-    Q1{¿La operación involucra\nmúltiples herramientas?} -->|Sí| MAKE[Usar Make]
-    Q1 -->|No| Q2{¿Necesita rastrear\ndependencias entre archivos?}
+    Q1{¿La operación involucra<br/>múltiples herramientas?} -->|Sí| MAKE[Usar Make]
+    Q1 -->|No| Q2{¿Necesita rastrear<br/>dependencias entre archivos?}
     Q2 -->|Sí| MAKE
-    Q2 -->|No| Q3{¿El equipo ya usa\nun task runner propio?}
+    Q2 -->|No| Q3{¿El equipo ya usa<br/>un task runner propio?}
     Q3 -->|pnpm scripts / tox / invoke| NATIVE[Herramienta nativa del stack]
-    Q3 -->|No hay convención| Q4{¿Lógica compleja\ncon condicionales?}
+    Q3 -->|No hay convención| Q4{¿Lógica compleja<br/>con condicionales?}
     Q4 -->|Sí, muchas ramas| SHELL[Script shell o Python]
     Q4 -->|No| MAKE
 

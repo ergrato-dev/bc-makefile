@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: all up down logs ps restart exec info help
+.PHONY: all config up down logs ps restart exec info help
 .DEFAULT_GOAL := help
 
 STACK_NAME := mi-stack
@@ -11,7 +11,18 @@ SERVICE    ?= web
 # Compose v2 viene integrado en Docker. docker-compose (v1) está en EOL desde 2023.
 COMPOSE := docker compose
 
-up: ## Levantar stack en modo detached
+# .env no es phony: es un archivo. Si existe, no hay nada que hacer; si
+# falta, esta regla falla con un mensaje claro antes de llamar a docker.
+# Nunca se genera solo: una contraseña por defecto acabaría en producción.
+.env:
+	@echo "Falta .env: cp .env.example .env y cambia POSTGRES_PASSWORD" >&2
+	@exit 1
+
+config: .env ## Validar docker-compose.yml y .env sin levantar nada
+	$(COMPOSE) config --quiet
+	@echo "Configuración válida."
+
+up: .env ## Levantar stack en modo detached
 	$(COMPOSE) up -d
 	@echo "Stack arriba. Logs: make logs"
 

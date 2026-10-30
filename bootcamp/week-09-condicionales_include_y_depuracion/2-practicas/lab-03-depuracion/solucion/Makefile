@@ -2,37 +2,51 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: build validate debug-vars debug-deps debug-all help
+.PHONY: build validate debug-vars debug-all clean help
 .DEFAULT_GOAL := help
 
-APP_NAME := mi-app
-ENV      ?= development
-VERSION  := $(shell git describe --tags --always 2>/dev/null || echo 0.0.0)
+APP_NAME  := manual
+ENV       ?= development
+SRC_DIR   ?= src
+BUILD_DIR ?= build
 
-build: ## Compilar el proyecto
-	@echo "Compilando $(APP_NAME) $(VERSION) [$(ENV)]"
+SRCS := $(sort $(wildcard $(SRC_DIR)/*.txt))
+OUT  := $(BUILD_DIR)/$(APP_NAME).txt
+
+# Aviso al leer: Make sigue, pero deja constancia con archivo y línea.
+ifeq ($(SRCS),)
+  $(warning No hay fuentes en $(SRC_DIR)/: $(OUT) saldrá vacío)
+endif
+
+build: $(OUT) ## Generar el manual a partir de src/*.txt
+
+$(OUT): $(SRCS)
+	@mkdir -p $(@D)
+	@cat /dev/null $^ > $@
+	@echo "[build] $@ <- $(words $^) capítulos"
 
 debug-vars: ## Mostrar variables clave para diagnóstico
 	$(info APP_NAME      = $(APP_NAME))
 	$(info ENV           = $(ENV))
-	$(info VERSION       = $(VERSION))
+	$(info SRCS          = $(SRCS))
+	$(info OUT           = $(OUT))
 	$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
 	@echo "Variables mostradas."
 
-debug-deps: ## Mostrar lógica de reconstrucción de dependencias
-	@$(MAKE) build --debug=b
-
-validate: ## Validar que APP_NAME esté definida
-	@[ -n "$(APP_NAME)" ] || \
-		(echo "ERROR: APP_NAME no puede estar vacía"; exit 1)
+# El $(error) va dentro de la receta: solo se evalúa si se pide validate.
+validate: ## Validar que APP_NAME y SRCS no están vacías
+	$(if $(APP_NAME),,$(error APP_NAME no puede estar vacía: make validate APP_NAME=<nombre>))
+	$(if $(SRCS),,$(error No hay fuentes en $(SRC_DIR)/))
 	@echo "Validación OK"
 
-debug-all: ## Ejecutar todos los diagnósticos
-	@$(MAKE) debug-vars
-	@$(MAKE) validate
-	@$(MAKE) debug-deps
+debug-all: debug-vars validate build ## Ejecutar todos los diagnósticos
 	@echo "Diagnóstico completo."
 
+clean: ## Borrar BUILD_DIR
+	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD_DIR)'
+
 help: ## Mostrar ayuda
+	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

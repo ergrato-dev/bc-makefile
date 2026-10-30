@@ -20,8 +20,12 @@ node_modules/.installed: package.json pnpm-lock.yaml
 
 install: node_modules/.installed ## Instalar dependencias Node.js
 
-build: install ## Compilar el proyecto
+# dist/index.js es un archivo real: Make solo recompila si cambia el fuente
+# o se reinstalan las dependencias (el sentinel es más nuevo).
+$(DIST_DIR)/index.js: $(SRC_DIR)/index.js node_modules/.installed
 	$(PNPM) run build
+
+build: $(DIST_DIR)/index.js ## Compilar el proyecto (incremental)
 
 test: install ## Ejecutar tests
 	$(PNPM) test

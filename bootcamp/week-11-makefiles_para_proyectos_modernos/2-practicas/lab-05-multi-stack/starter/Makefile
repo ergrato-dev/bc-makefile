@@ -1,4 +1,9 @@
-.PHONY: all install test backend-install backend-test frontend-install frontend-test clean info help
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
+.PHONY: all install test lint backend-install backend-test backend-lint backend-format frontend-install frontend-test frontend-lint clean info help
 .DEFAULT_GOAL := help
 
 # ── Backend Python ──────────────────────────────────────────────────────────────
@@ -7,6 +12,7 @@ VENV     := backend/.venv
 # --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
 RUN      := $(UV) run --no-sync
 PYTEST   := $(RUN) pytest
+RUFF     := $(RUN) ruff
 
 # ── Frontend Node.js ────────────────────────────────────────────────────────────
 PNPM     := pnpm
@@ -52,9 +58,21 @@ COMPOSE  := docker compose
 # TODO 8: Define 'test' que dependa de backend-test y frontend-test
 
 
+# TODO 9: Calidad del backend con ruff (instalado por el grupo dev de backend/pyproject.toml):
+#   backend-lint   → depende de backend-install;  cd backend && $(RUFF) check src/
+#   backend-format → depende de backend-install;  cd backend && $(RUFF) format src/ tests/
+#   Cada receta empieza con @echo "[backend] ..." como las demás.
+
+
+# TODO 10: 'frontend-lint' (depende de frontend-install; cd frontend && $(PNPM) run lint)
+#          y 'lint' que dependa de backend-lint y frontend-lint
+
+
 clean: ## Eliminar artefactos de backend y frontend
-	@rm -rf backend/.venv backend/__pycache__ backend/tests/__pycache__ backend/.pytest_cache
-	@rm -rf frontend/node_modules
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	$(if $(NODE_MOD),,$(error NODE_MOD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' backend/src/__pycache__ backend/tests/__pycache__ backend/.pytest_cache backend/.ruff_cache
+	@rm -rf -- '$(NODE_MOD)'
 	@echo "Limpiado."
 
 info: ## Mostrar información del stack

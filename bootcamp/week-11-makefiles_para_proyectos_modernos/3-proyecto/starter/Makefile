@@ -3,7 +3,7 @@
 #         .SHELLFLAGS := -eu -o pipefail -c
 #         .DELETE_ON_ERROR:
 
-.PHONY: all install install-dev test lint run build docker-run up down info deploy-prod clean help
+.PHONY: all install install-dev test lint format format-check check run build docker-run up down info deploy-prod clean help
 .DEFAULT_GOAL := help
 
 # ── Configuración ──────────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ VENV       := .venv
 # --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
 RUN        := $(UV) run --no-sync
 PYTEST     := $(RUN) pytest
-FLAKE8     := $(RUN) flake8
+RUFF       := $(RUN) ruff
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
 REGISTRY   := docker.io/miusuario
@@ -29,6 +29,8 @@ COMPOSE    := docker compose
 # ── Variables de entorno ────────────────────────────────────────────────────────
 # TODO A: Agrega '-include .env' y exporta SOLO las variables que lee la app:
 #         export ENV LOG_LEVEL SMTP_HOST SMTP_PORT
+#         Entre ambas líneas, valores por defecto para cuando no hay .env:
+#         ENV ?= dev  y  LOG_LEVEL ?= INFO  (si no, se exportan vacías).
 #         Nunca `export` a secas: mandaría todo a cada subproceso.
 
 
@@ -54,7 +56,14 @@ COMPOSE    := docker compose
 # TODO 5: Target 'test' que dependa de 'install-dev' y ejecute $(PYTEST) tests/ -v
 
 
-# TODO 6: Target 'lint' que dependa de 'install-dev' y ejecute $(FLAKE8) src/ --max-line-length=100
+# TODO 6: Target 'lint' que dependa de 'install-dev' y ejecute $(RUFF) check src/
+
+
+# TODO 6b: Formato con ruff (mismo binario, dos subcomandos):
+#   - 'format'       → $(RUFF) format src/ tests/          (reescribe archivos)
+#   - 'format-check' → $(RUFF) format --check src/ tests/  (solo comprueba; falla si algo cambiaría)
+#   - 'check'        → sin receta, depende de format-check lint test: la puerta de CI
+#   Los tres dependen (directa o indirectamente) de 'install-dev'.
 
 
 # ── Ejecución ──────────────────────────────────────────────────────────────────
@@ -96,8 +105,8 @@ COMPOSE    := docker compose
 
 # ── Limpieza ───────────────────────────────────────────────────────────────────
 # TODO 14: Target 'clean' que elimine .venv/, cachés Python y __pycache__
-#   - primera línea de la receta, la guarda: $(if $(VENV),,$(error VENV vacía))
-#   - después: rm -rf -- '$(VENV)' __pycache__ .pytest_cache
+#   - primera línea de la receta, la guarda: $(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+#   - después: rm -rf -- '$(VENV)' __pycache__ .pytest_cache .ruff_cache
 
 
 help: ## Mostrar ayuda

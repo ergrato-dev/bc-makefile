@@ -1,4 +1,5 @@
 # Módulo: test.mk — targets de testing
+# Requiere: APP_NAME
 
 .PHONY: test
 

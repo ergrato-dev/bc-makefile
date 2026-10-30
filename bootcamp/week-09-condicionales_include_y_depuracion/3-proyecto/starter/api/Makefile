@@ -14,8 +14,8 @@ ENV      ?= development
 
 # --------------------------------------------------------------------------
 # TODO: Importa los 4 módulos compartidos desde shared-mk/
-#       Recuerda que la ruta es relativa al directorio del Makefile (api/)
-#       Tip: la ruta correcta es ../shared-mk/build.mk
+#       La ruta es relativa al directorio donde corre Make. El Makefile
+#       raíz entra con -C api, así que la ruta es ../shared-mk/build.mk
 # --------------------------------------------------------------------------
 # TODO: include ../shared-mk/build.mk
 # TODO: include ../shared-mk/test.mk
@@ -25,5 +25,6 @@ ENV      ?= development
 all: build ## Construir este módulo
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@echo "Targets disponibles:"
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

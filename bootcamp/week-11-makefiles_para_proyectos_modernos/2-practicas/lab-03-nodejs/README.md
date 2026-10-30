@@ -1,12 +1,12 @@
 # Lab 03 — Node.js con Make
 
-**Duración estimada:** 50 minutos
+**Duración estimada:** 60 minutos
 
 **Requisitos:** Node.js 26 LTS y pnpm
 
 ## Objetivo
 
-Envolver el ciclo de vida de un proyecto Node.js (install, build, test, lint) en un Makefile, usando `node_modules/` como sentinel file para evitar reinstalaciones innecesarias.
+Envolver el ciclo de vida de un proyecto Node.js (install, build, test, lint) en un Makefile, con un sentinel en `node_modules/` y un build incremental que solo recompila cuando cambia el fuente.
 
 ## Contexto
 
@@ -21,7 +21,7 @@ node_modules/.installed: package.json pnpm-lock.yaml
 
 Usa `pnpm install --frozen-lockfile`: instala exactamente lo que dice el lockfile y falla si no coincide con `package.json`. Sin el flag, pnpm puede reescribir el lockfile y cada máquina acabar con versiones distintas. En este bootcamp Node.js se usa siempre con **pnpm**, nunca con npm.
 
-La ventaja: Make usa la fecha de modificación del archivo ya existente — no hay que crear nada extra.
+El sentinel es nuestro, no un archivo interno de pnpm: así no dependemos de qué toque o deje de tocar el gestor de paquetes en `node_modules/`. Lo mismo aplica al build: `pnpm run build` produce `dist/index.js`, un archivo real que Make puede comparar con `src/index.js`.
 
 ## Instrucciones
 
@@ -42,21 +42,37 @@ La ventaja: Make usa la fecha de modificación del archivo ya existente — no h
    make help
    ```
 
-4. Implementa los 6 TODOs del `Makefile`:
+4. Implementa el **TODO 0** (preámbulo estricto) y los TODOs 1–6 del `Makefile`:
    - **TODO 1:** target `node_modules/.installed` con dependencias `package.json` y `pnpm-lock.yaml`; receta: `pnpm install --frozen-lockfile`, `mkdir -p $(@D)` y `touch $@`
    - **TODO 2:** target `install` como alias del sentinel
    - **TODO 3:** target `build` que dependa de `install` y ejecute `pnpm run build`
    - **TODO 4:** target `test` que dependa de `install` y ejecute `pnpm test`
    - **TODO 5:** target `lint` que dependa de `install` y ejecute `pnpm run lint`
-   - **TODO 6:** target `clean` que elimine `node_modules/` y `dist/`
+   - **TODO 6:** target `clean` que elimine `node_modules/` y `dist/`, con guarda de variable vacía
 
 5. Verifica:
    ```bash
    make install
+   make install   # segunda vez: no debe reinstalar
    make test
    make build
+   make build     # vuelve a ejecutar pnpm run build: ¿hacía falta?
+   ```
+
+6. Simula que un compañero actualizó el lockfile y comprueba que el sentinel lo detecta:
+   ```bash
+   touch pnpm-lock.yaml
+   make -n install    # muestra pnpm install --frozen-lockfile
+   ```
+   Ahora edita `package.json` para añadir una dependencia sin actualizar el lock (por ejemplo `"dependencies": {"left-pad": "1.3.0"}`) y ejecuta `make install`: `--frozen-lockfile` falla con `ERR_PNPM_OUTDATED_LOCKFILE` y el sentinel **no** se crea. Deshaz el cambio en `package.json`.
+
+7. Implementa el **TODO 7** (build incremental con `dist/index.js` como target de archivo) y comprueba:
+   ```bash
+   make build         # compila
+   make build         # make: Nothing to be done for 'build'.
+   touch src/index.js
+   make build         # compila otra vez
    make clean
-   make install   # segunda vez: no debe reinstalar
    ```
 
 ## Criterios de éxito
@@ -81,6 +97,8 @@ Todos los tests pasaron.
 $ make build
 pnpm run build
 Compilando...
+$ make build
+make: Nothing to be done for 'build'.
 $ ls dist/
 index.js
 ```

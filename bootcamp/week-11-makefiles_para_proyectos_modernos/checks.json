@@ -35,7 +35,7 @@
       "descripcion": "make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock",
       "cmd": "d=$(mktemp -d); touch -t 200001010000 $d/.installed; viejo=$({make} -C {proyecto} -n install VENV=$d 2>&1); touch $d/.installed; nuevo=$({make} -C {proyecto} -n install VENV=$d 2>&1); rm -rf -- $d; grep -q 'uv sync' <<<$viejo && ! grep -q 'uv sync' <<<$nuevo",
       "assert": "exit0",
-      "pista": "2-practicas/lab-01-python/README.md, TODO 1"
+      "pista": "2-practicas/lab-01-python/README.md, paso 3"
     },
     {
       "id": "test-instala-dev",
@@ -50,6 +50,20 @@
       "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n test VENV=$d 2>&1; rm -rf -- $d",
       "assert": "stdout~uv run --no-sync pytest",
       "pista": "1-teoria/01-contexto.md, ejemplo mínimo funcional"
+    },
+    {
+      "id": "lint-ruff",
+      "descripcion": "make lint ejecuta ruff check con uv run --no-sync",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n lint VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~uv run --no-sync ruff check src",
+      "pista": "2-practicas/lab-01-python/README.md, paso 5; TODO 6 del starter"
+    },
+    {
+      "id": "check-ci",
+      "descripcion": "make check verifica el formato con ruff format --check, sin reescribir archivos",
+      "cmd": "d=$(mktemp -d); out=$({make} -C {proyecto} -n check VENV=$d 2>&1); rm -rf -- $d; grep -q 'ruff format --check' <<<$out && grep -q 'ruff check' <<<$out && grep -q 'pytest' <<<$out",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, entregable 1 (format-check y check); TODO 6b del starter"
     },
     {
       "id": "build-version",

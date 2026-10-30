@@ -1,47 +1,62 @@
-# Makefile con 5 bugs — encuéntralos y corrígelos
-# Pista: ejecuta cada target y lee el mensaje de error con atención
+# Makefile heredado del servicio "pedidos". Funciona... a veces.
+# No necesita uv ni Docker: la instalación y la imagen están simuladas con echo.
+# Tiene seis bugs. Reprodúcelos antes de corregirlos (ver README).
 
-# BUG 1: 'build' no está en .PHONY — si existe un directorio build/, este target nunca se ejecuta
-# Solución: agregar 'build' a la lista de .PHONY
-.PHONY: all install test clean demo info help
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
 
-# BUG 4: Variable recursiva que causa expansión infinita con '='
-# Solución: cambiar '=' por ':=' y eliminar la autorreferencia
-SOURCES = $(SOURCES) src/main.py
+.PHONY: all install tag release env-check clean demo help
+.DEFAULT_GOAL := help
 
-VERSION := $(shell git describe --tags)
+APP_NAME    := pedidos
+VENV        := .venv
+BUILD_DIR   := build
+VERSION     := $(shell git describe --tags --exact-match 2>/dev/null)
+BUILD_DATE   = $(shell date -u +%H:%M:%S)
+IMAGE       := $(APP_NAME):$(VERSION)
 
-build: ## Compilar el proyecto
-	@mkdir -p build
-	@echo "Compilando $(SOURCES)..."
-	@echo "Build OK"
+# Configuración local de la app (en un proyecto real vendría de .env)
+LOG_LEVEL   := INFO
+DB_PASSWORD := s3cr3t-local
 
-install: ## Instalar dependencias
-    uv sync --locked
+export
 
-# BUG 3: dependencia con typo — 'instal' no existe como target
-# Solución: cambiar 'instal' por 'install'
-test: instal ## Ejecutar tests
-	@echo "Ejecutando tests..."
-	@echo "Tests OK"
+build: ## Generar el artefacto en build/
+	@mkdir -p $(BUILD_DIR)
+	@echo "$(IMAGE)" > $(BUILD_DIR)/artefacto.txt
+	@echo "Build OK: $(BUILD_DIR)/artefacto.txt"
 
-clean: ## Limpiar artefactos
-	@rm -rf build/
+$(VENV)/.installed: pyproject.toml
+    @echo "uv sync --locked  (simulado)"
+	@mkdir -p $(@D)
+	@touch $@
+
+install: $(VENV)/.installed ## Instalar dependencias (simulado)
+
+tag: ## Mostrar la etiqueta de la imagen
+	@echo "Imagen: $(IMAGE)"
+
+# release simula dos pasos de un despliegue que tardan un poco cada uno
+release: release-build release-label ## Simular build + etiquetado de la imagen
+
+release-build:
+	@echo "docker build --build-arg BUILD_DATE=$(BUILD_DATE) -t $(IMAGE) ."
+	@sleep 1
+
+release-label:
+	@echo "Etiqueta org.opencontainers.image.created=$(BUILD_DATE)"
+
+env-check: ## Mostrar qué variables de configuración ve una receta
+	@env | grep -E '^(LOG_LEVEL|DB_PASSWORD)=' | sort || true
+
+clean: ## Eliminar artefactos
+	$(if $(BUILD_DIR),,$(error BUILD_DIR vacía: rm -rf no se ejecuta))
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(BUILD_DIR)' '$(VENV)'
 	@echo "Limpiado."
 
-# BUG 5: $(shell git describe --tags) sin fallback — devuelve string vacío si no hay tags
-# Solución: agregar '|| echo 0.0.0' al final del comando shell
-info: ## Mostrar información del proyecto
-	@echo "Versión:  $(VERSION)"
-	@echo "Sources:  $(SOURCES)"
-
-demo: ## Verificar que todos los bugs están corregidos
-	@echo "=== Makefile corregido ==="
-	@echo "Versión:  $(VERSION)"
-	@echo "Sources:  $(SOURCES)"
-	@echo "Build OK: target build es PHONY, siempre ejecuta"
-	@echo "Install:  TAB correcto"
-	@echo "Test dep: install correcto"
+demo: build install tag release env-check ## Ejecutar todo de una vez
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

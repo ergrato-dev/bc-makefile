@@ -2,18 +2,18 @@
 
 | Término | Definición en una línea | Ejemplo en Makefile |
 |---------|------------------------|---------------------|
-| `ifeq` | Directiva que inicia un bloque condicional si dos valores son iguales | `ifeq ($(ENV), production)` |
-| `ifneq` | Directiva que inicia un bloque condicional si dos valores son distintos | `ifneq ($(CI),)` |
-| `ifdef` | Directiva que evalúa si una variable tiene valor no vacío (`CI=` cuenta como no definida) | `ifdef DEBUG` |
-| `ifndef` | Directiva que evalúa si una variable NO está definida | `ifndef VERSION` |
-| `include` | Directiva que inserta el contenido de otro archivo; falla si no existe | `include mk/build.mk` |
-| `-include` | Variante de `include` que no falla si el archivo no existe | `-include .env` |
-| Make recursivo | Patrón donde un Makefile invoca `$(MAKE)` en subdirectorios | `$(MAKE) -C api build` |
-| `export` | Directiva que convierte una variable de Make en variable de entorno para submakes | `export SHARED_VAR` |
-| `unexport` | Directiva que evita que una variable se propague a submakes | `unexport SECRET` |
-| `$(info ...)` | Función que imprime texto durante el parsing de Make (sin prefijo @) | `$(info VERSION = $(VERSION))` |
-| `$(warning ...)` | Como `$(info)` pero imprime a stderr con número de archivo y línea | `$(warning Variable vacía)` |
-| `$(error ...)` | Función que detiene Make inmediatamente con un mensaje de error | `$(error Falta API_KEY)` |
-| `make --debug=b` | Flag de depuración básica: muestra por qué Make reconstruye cada target | `make --debug=b all` |
-| `make -p` | Imprime la base de datos completa de Make: todas las reglas y variables | `make -p 2>/dev/null \| less` |
-| módulo `.mk` | Archivo Make parcial que define targets y variables, importado con `include` | `include mk/colors.mk` |
+| `ifeq` / `ifneq` | Bloque condicional que compara dos textos al leer el Makefile | `ifeq ($(ENV),production)` |
+| `ifdef` / `ifndef` | Bloque condicional que pregunta si una variable tiene valor no vacío (`CI=` cuenta como vacía) | `ifdef CI` |
+| Fase de lectura | Primera pasada de Make: asigna variables, evalúa condicionales e `include`; no ve variables de target | `$(info leyendo $(MAKEFILE_LIST))` |
+| `include` | Inserta el texto de otro Makefile en ese punto; falla si no existe y no hay regla para crearlo | `include ../shared-mk/build.mk` |
+| `-include` | Como `include`, pero no falla si el archivo no existe | `-include mk/local.mk` |
+| Include generado | Archivo incluido que tiene regla: Make lo rehace y vuelve a leer todo | `version.mk: VERSION` |
+| `unexport` | Impide que una variable, incluida una del entorno, llegue a sub-makes y recetas | `unexport SECRET_VAR` |
+| `override` | Hace que una asignación del Makefile gane a la línea de comandos | `override CFLAGS += -fPIC` |
+| `MAKELEVEL` | Profundidad de recursión: 0 en el make raíz, 1 en su sub-make | `$(info nivel $(MAKELEVEL))` |
+| `$(warning ...)` | Imprime un aviso con archivo y línea y deja seguir a Make | `$(warning No hay fuentes en src/)` |
+| `MAKE_VERSION` | Versión del GNU Make que está leyendo el archivo | `$(firstword $(sort $(MAKE_VERSION) 4.3))` |
+| `.FEATURES` | Lista de capacidades que anuncia esta versión de Make | `$(filter grouped-target,$(.FEATURES))` |
+| `MAKECMDGOALS` | Targets pedidos en la línea de comandos | `ifneq ($(filter publish,$(MAKECMDGOALS)),)` |
+| `--trace` | Muestra qué línea del Makefile rehace cada target y por qué | `make --trace all` |
+| `--warn-undefined-variables` | Avisa de cada referencia a una variable que no existe | `make --warn-undefined-variables all` |

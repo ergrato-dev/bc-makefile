@@ -22,13 +22,29 @@ Resultado: `make install` solo reinstala cuando `pyproject.toml` o `uv.lock` cam
 
 Python se gestiona siempre con **uv**, nunca con pip: `pyproject.toml` declara las dependencias, `uv.lock` las fija y se commitea, `uv sync --locked` instala exactamente eso (y falla si el lock no coincide con `pyproject.toml`).
 
+Dos reglas hacen que el sentinel no mienta. Primera: el target es un archivo, no el directorio `.venv/`, porque la fecha de un directorio cambia con cualquier cosa que se cree dentro y porque un `uv sync` fallido a mitad deja el directorio creado. Segunda: las herramientas se ejecutan con `uv run --no-sync`. Sin el flag, uv volvería a sincronizar el entorno por su cuenta y habría dos sistemas decidiendo cuándo instalar.
+
+## Calidad: ruff
+
+**ruff** es linter y formateador en un solo binario, fijado en el grupo `dev` de `pyproject.toml` (`ruff==0.16.10`). Dos subcomandos, dos targets:
+
+```makefile
+lint: install
+	uv run --no-sync ruff check src/
+
+format: install
+	uv run --no-sync ruff format src/ tests/
+```
+
+`ruff format` reescribe archivos: es para tu máquina. En CI usas `ruff format --check`, que no toca nada y sale con error si algo cambiaría. Un target sin receta como `check: format-check lint test` agrupa todo lo que debe pasar antes de integrar.
+
 ## Referencia rápida
 
 | Ecosistema | Sentinel file | Herramienta | Patrón |
 |-----------|---------------|-------------|--------|
 | Python | `.venv/.installed` | uv | depende de `pyproject.toml` y `uv.lock` |
 | Node.js | `node_modules/.installed` | pnpm install --frozen-lockfile | depende de `package.json` y `pnpm-lock.yaml` |
-| Docker | ninguno (imagen en registry) | docker | siempre reconstruye o usa `--cache-from` |
+| Docker | `.build/<imagen>.iid` | `docker build --iidfile` | depende de `Dockerfile` y del código copiado |
 | Compose v2 | ninguno | `docker compose` | targets PHONY, orquestación |
 
 ## Variables de entorno desde `.env`
@@ -43,19 +59,26 @@ Nunca `export` a secas: manda todas las variables, secretos incluidos, a cada pr
 
 ## Ejemplo mínimo funcional
 
-Pega esto en un directorio vacío y ejecuta `make info`:
+Pega esto como `Makefile` en un directorio vacío y ejecuta `make` y `make info`. Para el resto de targets necesitas un proyecto uv (ver la nota al final):
 
 ```makefile
-.PHONY: all install test clean info help
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
+.PHONY: all install test lint clean info help
 .DEFAULT_GOAL := help
 
 UV       := uv
 VENV     := .venv
 # --no-sync: Make decide cuándo instalar; uv run solo ejecuta
 PYTEST   := $(UV) run --no-sync pytest
+RUFF     := $(UV) run --no-sync ruff
 VERSION  := $(shell git describe --tags --always 2>/dev/null || echo 0.0.0)
 
+# .env se parsea como Makefile: valores sin $, sin comillas y sin #
 -include .env
+ENV ?= dev
 export ENV
 
 $(VENV)/.installed: pyproject.toml uv.lock
@@ -67,13 +90,18 @@ install: $(VENV)/.installed ## Instalar dependencias
 test: install ## Ejecutar tests
 	$(PYTEST) tests/ -v
 
+lint: install ## Analizar con ruff
+	$(RUFF) check .
+
 info: ## Mostrar información del proyecto
 	@echo "Versión:  $(VERSION)"
 	@echo "uv:       $(shell $(UV) --version 2>&1)"
 	@echo "Venv:     $(VENV)"
+	@echo "Entorno:  $$ENV"
 
 clean: ## Eliminar artefactos
-	@rm -rf $(VENV) __pycache__ .pytest_cache
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' __pycache__ .pytest_cache .ruff_cache
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
@@ -81,7 +109,7 @@ help: ## Mostrar ayuda
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
-> **Nota:** si el directorio no tiene proyecto Python, créalo antes con `uv init --bare && uv add --dev pytest` (genera `pyproject.toml` y `uv.lock`).
+> **Nota:** para probar `install`, `test` y `lint`, crea el proyecto con `uv init --bare && uv add --dev pytest ruff==0.16.10` (genera `pyproject.toml` y `uv.lock`) y un `tests/test_ok.py` con `def test_ok(): assert True`.
 
 ---
 

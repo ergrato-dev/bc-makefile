@@ -68,7 +68,7 @@ el sentinel si había que instalar; si uv decide otra vez, hay dos fuentes de
 verdad y el sentinel deja de describir lo que hay en `.venv/`.
 
 **5.** `uv sync` es exacto por defecto: deja el entorno con lo pedido y nada más.
-`make run` instalaría solo runtime y **desinstalaría** pytest y flake8, pero
+`make run` instalaría solo runtime y **desinstalaría** pytest y ruff, pero
 `.venv/.installed-dev` sigue existiendo y es más nuevo que sus dependencias.
 `make test` no reinstala y `uv run --no-sync pytest` falla porque pytest ya no
 está. `--inexact` añade lo que falta sin quitar lo que sobra.
@@ -113,12 +113,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — Python con uv](2-practicas/lab-01-python/README.md) | `make install` crea `.venv/` con `uv sync --locked`; la segunda ejecución dice `Nothing to be done`; `make test` y `make lint` pasan | 10 |
-| [02 — Docker](2-practicas/lab-02-docker/README.md) | `make build VERSION=1.0.0` inyecta `VERSION` y `BUILD_DATE`; la imagen se etiqueta sin `latest`; `make info` muestra tamaño y fecha de creación | 10 |
-| [03 — Node.js con pnpm](2-practicas/lab-03-nodejs/README.md) | `make install` usa `pnpm install --frozen-lockfile` con sentinel; segunda ejecución sin trabajo; `make test` y `make build` funcionan | 10 |
-| [04 — Compose](2-practicas/lab-04-compose/README.md) | `make info` funciona sin Docker; `up`, `ps`, `restart SERVICE=web` y `down` usan `docker compose` | 10 |
-| [05 — Multi-stack](2-practicas/lab-05-multi-stack/README.md) | Targets `backend-*` y `frontend-*` con su propio sentinel; `make test` corre los dos stacks | 10 |
-| [06 — Targets rotos](2-practicas/lab-06-targets-rotos/README.md) | Los cinco bugs reproducidos y corregidos; `make demo` pasa sin errores | 10 |
+| [01 — Python con uv](2-practicas/lab-01-python/README.md) | `make install` crea `.venv/` con `uv sync --locked` y la segunda ejecución dice `Nothing to be done`; `touch uv.lock` provoca reinstalación; `make lint` (ruff check) falla con un import sin usar y `make format` corrige el formato | 10 |
+| [02 — Docker](2-practicas/lab-02-docker/README.md) | `make build VERSION=1.0.0` inyecta `VERSION` y `BUILD_DATE` sin `latest`; la segunda ejecución no llama a docker gracias a `--iidfile`; `make info` muestra tamaño y fecha | 10 |
+| [03 — Node.js con pnpm](2-practicas/lab-03-nodejs/README.md) | `make install` usa `pnpm install --frozen-lockfile` con sentinel; un `package.json` desalineado hace fallar la instalación; `make build` es incremental sobre `dist/index.js` | 10 |
+| [04 — Compose](2-practicas/lab-04-compose/README.md) | Sin `.env`, `make up` falla con mensaje propio antes de llamar a docker; `make config` valida; `up`, `ps`, `restart SERVICE=web` y `down` usan `docker compose` | 10 |
+| [05 — Multi-stack](2-practicas/lab-05-multi-stack/README.md) | Targets `backend-*` y `frontend-*` con su propio sentinel; `make test` y `make lint` (ruff + pnpm) corren los dos stacks; explicas qué cambia con `-j2 -O` y con `-k` | 10 |
+| [06 — Targets rotos](2-practicas/lab-06-targets-rotos/README.md) | Los seis bugs reproducidos y corregidos, cada uno con su `# FIX N:`; `make demo` muestra versión no vacía, una sola hora y ningún `DB_PASSWORD` | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué decide el sentinel o la variable que usaste; 8 si se cumplen
@@ -136,19 +136,21 @@ necesita red ni Docker: los targets de contenedores se comprueban con `make -n`.
 | Comprobación | Puntos |
 |---|:--:|
 | `shellflags-estrictas` — las recetas corren con `bash -eu -o pipefail` | 3 |
-| `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 3 |
-| `install-runtime` — `make install` sincroniza solo runtime con `uv sync --locked --no-dev` | 4 |
-| `install-dev-completo` — `make install-dev` sincroniza el grupo dev con `uv sync --locked` | 4 |
-| `sentinel-incremental` — con el sentinel al día, `make install` no vuelve a ejecutar `uv sync` | 6 |
+| `delete-on-error` — el Makefile declara `.DELETE_ON_ERROR` | 2 |
+| `install-runtime` — `make install` sincroniza solo runtime con `uv sync --locked --no-dev` | 3 |
+| `install-dev-completo` — `make install-dev` sincroniza el grupo dev con `uv sync --locked` | 3 |
+| `sentinel-incremental` — con el sentinel al día, `make install` no vuelve a ejecutar `uv sync` | 5 |
 | `test-instala-dev` — `make test` instala antes el grupo dev si falta | 4 |
 | `test-sin-sync` — `make test` ejecuta pytest con `uv run --no-sync` | 3 |
-| `build-version` — `make build` pasa `VERSION` como `--build-arg` | 4 |
+| `lint-ruff` — `make lint` ejecuta `ruff check` con `uv run --no-sync` | 3 |
+| `check-ci` — `make check` verifica el formato con `ruff format --check`, además de lint y tests | 4 |
+| `build-version` — `make build` pasa `VERSION` como `--build-arg` | 3 |
 | `build-fecha` — `make build` pasa `BUILD_DATE` como `--build-arg` | 3 |
 | `build-sin-latest` — la imagen se etiqueta con la versión y nunca con `latest` | 3 |
-| `export-selectivo` — las recetas reciben `LOG_LEVEL` pero no variables que el Makefile no exporta | 5 |
+| `export-selectivo` — las recetas reciben `LOG_LEVEL` pero no variables que el Makefile no exporta | 4 |
 | `info-imagen` — `make info` muestra la imagen con la versión | 3 |
 | `compose-v2` — `make up` usa `docker compose` | 3 |
-| `deploy-cancela` — responder `n` a `make deploy-prod` cancela sin llamar a docker | 5 |
+| `deploy-cancela` — responder `n` a `make deploy-prod` cancela sin llamar a docker | 4 |
 | `clean-con-guarda` — `make clean` se niega a borrar si `VENV` está vacía | 4 |
 | `clean-borra-venv` — `make clean` elimina el entorno virtual | 3 |
 | **Total** | **60** |
@@ -161,9 +163,9 @@ Lo que el autograding no puede ver.
 |---|---|---|:--:|
 | **Una sola fuente de verdad** | Solo los sentinels deciden cuándo instalar; ningún target llama a `uv sync` o `uv run` sin `--no-sync` fuera de ellos | Un target instala por su cuenta | 10 |
 | **`.env` tratado como Makefile** | `-include .env` con comentario que advierte de `$`, comillas y `#`; `export` con lista explícita | Lista explícita sin advertencia | 8 |
-| **Comandos en variables** | `UV`, `COMPOSE`, `PYTEST`, `IMAGE` en variables; ninguna receta repite el nombre de la imagen | Algún literal repetido | 6 |
+| **Comandos en variables** | `UV`, `RUFF`, `PYTEST`, `COMPOSE`, `IMAGE` en variables; ninguna receta repite el nombre de la imagen | Algún literal repetido | 6 |
 | **`.PHONY` completo** | Todos los targets que no producen archivo están declarados; los sentinels no | Falta uno | 6 |
-| **Orden y secciones** | Preámbulo, configuración, entorno, instalación, calidad, Docker, Compose, despliegue, limpieza | Secciones mezcladas | 6 |
+| **Orden y secciones** | Preámbulo, configuración, entorno, instalación, calidad (`lint`, `format`, `format-check`, `check`), Docker, Compose, despliegue, limpieza | Secciones mezcladas | 6 |
 | **`help` útil** | `make` sin argumentos lista todos los targets con descripción | Falta alguno | 4 |
 | **Total** | | | **40** |
 
@@ -184,8 +186,9 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 11` con las 16 comprobaciones en verde
-- [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `.venv/` ni cachés)
+- [ ] `./scripts/verificar-semana.sh 11` con las 18 comprobaciones en verde
+- [ ] `make check` del proyecto pasa en tu máquina (requiere uv)
+- [ ] `make clean` deja el árbol de trabajo limpio (`git status` sin `.venv/`, `.ruff_cache/` ni cachés)
 
 ---
 

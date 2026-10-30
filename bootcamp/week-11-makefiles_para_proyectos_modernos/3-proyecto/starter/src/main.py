@@ -13,4 +13,6 @@ def notificar(destinatario: str, mensaje: str) -> dict:
 
 if __name__ == "__main__":
     resultado = notificar("equipo@empresa.com", "Servicio iniciado correctamente")
-    print(f"Notificación enviada a {resultado['destinatario']} [{resultado['entorno']}]")
+    print(
+        f"Notificación enviada a {resultado['destinatario']} [{resultado['entorno']}]"
+    )

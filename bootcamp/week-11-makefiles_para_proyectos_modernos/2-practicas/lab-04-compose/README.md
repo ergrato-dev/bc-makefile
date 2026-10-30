@@ -27,10 +27,10 @@ Los targets de orquestación son siempre `.PHONY` — nunca producen archivos �
    cd lab-04-compose/starter
    ```
 
-2. Revisa el `docker-compose.yml` y crea tu `.env`:
+2. Revisa el `docker-compose.yml` (todavía **no** crees `.env`):
    ```bash
    cat docker-compose.yml
-   cp .env.example .env    # edita la contraseña
+   cat .env.example
    ```
 
 3. Ejecuta `make info` para ver el stack configurado (funciona sin docker):
@@ -38,7 +38,7 @@ Los targets de orquestación son siempre `.PHONY` — nunca producen archivos �
    make info
    ```
 
-4. Implementa los 6 TODOs del `Makefile`:
+4. Implementa el **TODO 0** (preámbulo estricto) y los TODOs 1–6 del `Makefile`:
    - **TODO 1:** target `up` que levante el stack en modo detached (`-d`)
    - **TODO 2:** target `down` que detenga y elimine los contenedores
    - **TODO 3:** target `logs` que muestre logs del servicio `web` en tiempo real
@@ -46,11 +46,26 @@ Los targets de orquestación son siempre `.PHONY` — nunca producen archivos �
    - **TODO 5:** target `restart` que reinicie un servicio específico (usar variable `SERVICE`)
    - **TODO 6:** target `exec` que abra un shell en el contenedor `web`
 
-5. Verifica (requiere Docker):
+5. Sin `.env`, prueba qué pasa con `make up` (requiere Docker):
+   ```bash
+   make up
+   ```
+   Compose falla al interpolar `${POSTGRES_PASSWORD:?...}`. El mensaje es correcto, pero llega tarde y desde otra herramienta. Implementa el **TODO 7**: `.env` como regla de archivo que falla con un mensaje propio, `up` dependiendo de ella y un target `config` que valide sin levantar nada.
+   ```bash
+   make up                 # Falta .env: cp .env.example .env y cambia POSTGRES_PASSWORD
+   make -n up              # muestra el echo y el exit 1: docker ni aparece
+   cp .env.example .env    # edita la contraseña
+   make config             # Configuración válida.
+   ```
+   Prueba también con `POSTGRES_PASSWORD=` vacío en `.env`: ahora `.env` existe y es `make config` quien falla, con el mensaje de Compose. Restaura la contraseña.
+
+6. Ciclo completo (requiere Docker):
    ```bash
    make up
    make ps
-   make logs        # Ctrl+C para salir
+   make logs                   # Ctrl+C para salir
+   make restart SERVICE=db
+   make exec                   # sh dentro de web; exit para salir
    make down
    ```
 
@@ -61,6 +76,16 @@ $ make info
 Stack:    mi-stack
 Compose:  docker compose
 Servicios: web db
+```
+
+```
+$ rm .env; make up
+Falta .env: cp .env.example .env y cambia POSTGRES_PASSWORD
+make: *** [Makefile:NN: .env] Error 1
+
+$ cp .env.example .env; make config
+docker compose config --quiet
+Configuración válida.
 ```
 
 ```
