@@ -1,0 +1,118 @@
+{
+  "semana": "03",
+  "titulo": "Shell en recetas y modo estricto",
+  "checks": [
+    {
+      "id": "help-por-defecto",
+      "descripcion": "make sin argumentos muestra la ayuda",
+      "cmd": "{make} -C {proyecto}",
+      "assert": "stdout~[Tt]argets disponibles",
+      "pista": "3-proyecto/README.md, paso 1"
+    },
+    {
+      "id": "bash-como-shell",
+      "descripcion": "El Makefile ejecuta las recetas con bash, no con /bin/sh",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^SHELL :?= ([^ ]*/)?bash$'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-bash-vs-sh/README.md, paso 4"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail -c$'",
+      "assert": "exit0",
+      "pista": "1-teoria/02-modo-estricto.md, sección Preámbulo estricto"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-delete-on-error/README.md, paso 3"
+    },
+    {
+      "id": "reporte-total",
+      "descripcion": "make report genera build/summary.txt con el total de peticiones del log",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} report >/dev/null 2>&1 && cat {proyecto}/build/summary.txt",
+      "assert": "stdout~Total de peticiones: 40",
+      "pista": "3-proyecto/README.md, paso 5"
+    },
+    {
+      "id": "status-por-codigo",
+      "descripcion": "build/status.txt cuenta las peticiones por código HTTP",
+      "cmd": "{make} -C {proyecto} report >/dev/null 2>&1 && cat {proyecto}/build/status.txt",
+      "assert": "stdout~^ *3 500$",
+      "pista": "3-proyecto/README.md, paso 2"
+    },
+    {
+      "id": "errores-5xx",
+      "descripcion": "build/errors.csv contiene exactamente las peticiones con código 5xx",
+      "cmd": "{make} -C {proyecto} report >/dev/null 2>&1 && wc -l < {proyecto}/build/errors.csv",
+      "assert": "stdout~^ *4$",
+      "pista": "3-proyecto/README.md, paso 4"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make report no rehace nada",
+      "cmd": "{make} -C {proyecto} report >/dev/null 2>&1; test -s {proyecto}/build/summary.txt && {make} -C {proyecto} report",
+      "assert": "stdout~Nothing to be done|is up to date",
+      "pista": "3-proyecto/README.md, paso 5"
+    },
+    {
+      "id": "paquete-sin-prefijo",
+      "descripcion": "make package empaqueta los reportes sin el prefijo build/",
+      "cmd": "{make} -C {proyecto} package >/dev/null 2>&1 && tar -tzf {proyecto}/build/reportes.tar.gz",
+      "assert": "stdout~^summary.txt$",
+      "pista": "2-practicas/lab-01-cada-linea-un-shell/README.md, paso 3"
+    },
+    {
+      "id": "log-sin-errores",
+      "descripcion": "Un log sin peticiones 5xx no rompe el build",
+      "cmd": "{make} -C {proyecto} -B report LOG=data/no-5xx.csv >/dev/null 2>&1 && cat {proyecto}/build/summary.txt",
+      "assert": "stdout~Errores 5xx: 0",
+      "pista": "2-practicas/lab-03-pipefail/README.md, paso 5"
+    },
+    {
+      "id": "pipefail-detiene",
+      "descripcion": "Una línea corrupta en mitad de la tubería detiene el build",
+      "cmd": "{make} -C {proyecto} build/status.txt >/dev/null 2>&1 && test -s {proyecto}/build/status.txt && ! {make} -C {proyecto} -B build/status.txt LOG=data/corrupt.csv >/dev/null 2>&1",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-pipefail/README.md, paso 4"
+    },
+    {
+      "id": "parcial-borrado",
+      "descripcion": "Si la tubería falla, el reporte a medio escribir se borra",
+      "cmd": "{make} -C {proyecto} build/status.txt >/dev/null 2>&1 && test -s {proyecto}/build/status.txt && { {make} -C {proyecto} -B build/status.txt LOG=data/corrupt.csv >/dev/null 2>&1; test ! -e {proyecto}/build/status.txt; }",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-delete-on-error/README.md, paso 3"
+    },
+    {
+      "id": "dry-run-no-borra",
+      "descripcion": "make -n clean no borra nada",
+      "cmd": "{make} -C {proyecto} report >/dev/null 2>&1 && test -s {proyecto}/build/summary.txt && {make} -C {proyecto} -n clean >/dev/null 2>&1 && test -s {proyecto}/build/summary.txt",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-guardas-rm/README.md, paso 7"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD_DIR está vacío",
+      "cmd": "{make} -C {proyecto} -n clean BUILD_DIR=",
+      "assert": "stdout~BUILD_DIR vacía: rm -rf no se ejecuta",
+      "pista": "2-practicas/lab-05-guardas-rm/README.md, paso 4"
+    },
+    {
+      "id": "clean-rechaza-fuera",
+      "descripcion": "make clean se niega a borrar un BUILD_DIR fuera del proyecto",
+      "cmd": "{make} -C {proyecto} -n clean BUILD_DIR=/",
+      "assert": "stdout~fuera del proyecto",
+      "pista": "2-practicas/lab-05-guardas-rm/README.md, paso 6"
+    },
+    {
+      "id": "clean-borra-build",
+      "descripcion": "make clean elimina build/ por completo",
+      "cmd": "{make} -C {proyecto} report >/dev/null 2>&1 && test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null 2>&1 && test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-guardas-rm/README.md, paso 4"
+    }
+  ]
+}
