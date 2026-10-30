@@ -47,14 +47,14 @@ Un archivo por semana, en la raíz de la carpeta de la semana.
     {
       "id": "delete-on-error",
       "descripcion": "El Makefile del proyecto declara .DELETE_ON_ERROR",
-      "cmd": "{make} -C {semana}/3-proyecto/starter -p __nada__ 2>/dev/null | grep -q '^.DELETE_ON_ERROR:'",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^.DELETE_ON_ERROR:'",
       "assert": "exit0",
       "pista": "1-teoria/02-modo-estricto.md"
     },
     {
       "id": "pipefail",
       "descripcion": "Un fallo dentro de una tubería detiene el build",
-      "cmd": "{make} -C {semana}/3-proyecto/starter tuberia-rota",
+      "cmd": "{make} -C {proyecto} tuberia-rota",
       "assert": "exit!=0",
       "pista": "2-practicas/lab-03-pipefail/README.md, paso 2"
     }
@@ -97,8 +97,13 @@ separator`, `No rule to make target`) salen por ahí.
 | `{raiz}` | Ruta absoluta del repositorio |
 | `{semana}` | Ruta de la carpeta de la semana, p. ej. `bootcamp/week-03-shell_y_modo_estricto` |
 | `{make}` | `gmake` si existe, si no `make` (o `$MAKE_BIN`) |
+| `{proyecto}` | `{semana}/3-proyecto/starter`; con `ENTREGA=solucion`, `{semana}/3-proyecto/solucion` |
 
 Usa siempre `{make}`, nunca `make` a secas: en macOS `make` es la 3.81.
+
+Apunta al proyecto siempre con `{proyecto}`, nunca con `3-proyecto/starter` literal:
+así la misma comprobación valida la solución de referencia con
+`ENTREGA=solucion ./scripts/verificar-semana.sh NN`.
 
 ---
 
@@ -127,7 +132,7 @@ verificable:
 ```json
 { "id": "incremental",
   "descripcion": "Una segunda ejecución de make all no rehace nada",
-  "cmd": "{make} -C {semana}/3-proyecto/starter all >/dev/null && {make} -C {semana}/3-proyecto/starter all",
+  "cmd": "{make} -C {proyecto} all >/dev/null && {make} -C {proyecto} all",
   "assert": "stdout~Nothing to be done|is up to date",
   "pista": "2-practicas/lab-02-dependencias/README.md, paso 5" }
 ```
@@ -135,7 +140,7 @@ verificable:
 ```json
 { "id": "sin-for-recursivo",
   "descripcion": "La recursión no usa bucles for que se tragan los fallos",
-  "cmd": "grep -nE 'for .*; *do .*[$][(]MAKE[)]' {semana}/3-proyecto/starter/Makefile",
+  "cmd": "grep -nE 'for .*; *do .*[$][(]MAKE[)]' {proyecto}/Makefile",
   "assert": "exit!=0",
   "pista": "1-teoria/02-recursion-correcta.md" }
 ```
@@ -143,7 +148,7 @@ verificable:
 ```json
 { "id": "fallo-propaga",
   "descripcion": "Si un servicio falla, make ci sale con error",
-  "cmd": "{make} -C {semana}/3-proyecto/starter ci FORZAR_FALLO=api",
+  "cmd": "{make} -C {proyecto} ci FORZAR_FALLO=api",
   "assert": "exit!=0",
   "pista": "2-practicas/lab-03-subdirectorios/README.md, paso 4" }
 ```
@@ -151,7 +156,7 @@ verificable:
 ```json
 { "id": "help-documentado",
   "descripcion": "make sin argumentos muestra la ayuda",
-  "cmd": "{make} -C {semana}/3-proyecto/starter",
+  "cmd": "{make} -C {proyecto}",
   "assert": "stdout~[Tt]argets disponibles",
   "pista": "3-proyecto/README.md, paso 1" }
 ```

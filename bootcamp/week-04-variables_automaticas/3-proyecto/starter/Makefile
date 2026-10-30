@@ -7,12 +7,17 @@
 #   3. Verifica con: make all && ./build/app
 # ============================================================
 
+# TODO: preámbulo estricto de la semana 03 (va antes que todo lo demás):
+#   SHELL       := bash
+#   .SHELLFLAGS := -eu -o pipefail -c
+#   .DELETE_ON_ERROR:
+
 .PHONY: all clean help
 
 .DEFAULT_GOAL := help
 
 # ── Compilador ────────────────────────────────────────────────
-# TODO: define CC con ?= y valor "gcc"
+# TODO: define CC con := y valor "gcc" (no ?=: CC ya vale "cc" de serie, ver rúbrica pregunta 9)
 # TODO: define CFLAGS con ?= y valor "-Wall -Wextra -std=c11"
 # TODO: define LDFLAGS con := y valor vacío (para flags del linker)
 

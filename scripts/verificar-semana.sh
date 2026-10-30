@@ -5,6 +5,8 @@
 # Uso:
 #   ./scripts/verificar-semana.sh 03        comprueba la Semana 03
 #   ./scripts/verificar-semana.sh --doctor  comprueba tu entorno
+#   ENTREGA=solucion ./scripts/verificar-semana.sh 03
+#                                           comprueba la solucion de referencia
 #
 # Este script no sabe nada de ninguna semana en concreto: lee las
 # comprobaciones de bootcamp/week-NN-*/checks.json y las ejecuta. Si necesitas
@@ -188,6 +190,8 @@ verificar_semana() {
     cmd=${cmd//\{semana\}/$dir}
     cmd=${cmd//\{raiz\}/$RAIZ}
     cmd=${cmd//\{make\}/$MAKE_BIN}
+    # El estudiante trabaja en starter/; el instructor valida solucion/.
+    cmd=${cmd//\{proyecto\}/$dir/3-proyecto/${ENTREGA:-starter}}
 
     # `if` alrededor: con `set -e`, capturar el codigo de un comando que falla
     # a proposito requiere que la ejecucion este en un contexto condicional.

@@ -11,7 +11,7 @@ SHELL       := bash
 .DEFAULT_GOAL := help
 
 # ── Compilador ────────────────────────────────────────────────
-CC      ?= gcc
+CC      := gcc
 CFLAGS  ?= -Wall -Wextra -std=c11
 LDFLAGS :=
 

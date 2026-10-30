@@ -62,7 +62,7 @@ producto(3, 4) = 12
 
 | Variable | Tipo | Default | Descripción |
 |----------|------|---------|-------------|
-| `CC` | `?=` | `gcc` | Compilador C |
+| `CC` | `:=` | `gcc` | Compilador C. `make CC=clang` lo sobrescribe igual |
 | `CFLAGS` | `?=` | `-Wall -Wextra -std=c11` | Flags de compilación |
 | `BUILD_DIR` | `:=` | `build` | Directorio de artefactos |
 | `SRC_DIR` | `:=` | `src` | Directorio de fuentes |
@@ -98,15 +98,23 @@ touch src/greet.c && make all     # solo recompila greet.o
 touch include/calc.h && make all  # recompila calc.o y main.o (los que lo incluyen)
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make all` desde cero produce el binario y lo ejecuta correctamente | 8 |
-| Regla `$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c` usa `$@`, `$<`, `$(@D)` | 8 |
-| Rebuild incremental: modificar un `.c` o un header recompila solo los objetos afectados (`-MMD -MP`) | 5 |
-| `make clean` + `make all` produce el mismo binario correcto | 5 |
-| `make help` documenta todos los targets | 4 |
+Los comprueba `./scripts/verificar-semana.sh 04` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] make all desde cero produce build/app y el binario imprime producto(3, 4) = 12
+- [ ] Cada src/*.c produce su objeto en build/
+- [ ] Una segunda ejecución de make all no rehace nada
+- [ ] Tocar un .c recompila solo ese objeto
+- [ ] El build genera un archivo .d de dependencias por objeto
+- [ ] Tocar include/calc.h recompila exactamente los dos objetos que lo incluyen
+- [ ] CC se puede cambiar desde la línea de comandos
+- [ ] make clean elimina build/ por completo
+- [ ] make clean se niega a borrar si BUILD_DIR está vacío
+- [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile declara .DELETE_ON_ERROR
 
 ## Entrega
 

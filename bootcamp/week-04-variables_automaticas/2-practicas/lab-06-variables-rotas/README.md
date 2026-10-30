@@ -57,3 +57,11 @@ Este lab contiene cinco bugs. Tu tarea es identificar cada uno, entender por qu�
 - [ ] Bug D: `make alfa.html` imprime el stem `alfa`, no una cadena vacía
 - [ ] Bug E: `make build/main.o` se ejecuta sin error de directorio
 - [ ] Cada corrección tiene un comentario `# FIX:` explicando el cambio
+
+## Reto extra
+
+Rompe tú el Makefile corregido de una sexta forma: usa `$^` en la regla de
+compilación en lugar de `$<` y añade `include/util.h` como prerrequisito del
+`.o`. Ejecuta `make -B build/main.o` y explica en un comentario `# FIX:` por qué
+el error que da gcc no menciona `$^` en ningún momento, y cómo lo habrías
+encontrado con `make -n`.
