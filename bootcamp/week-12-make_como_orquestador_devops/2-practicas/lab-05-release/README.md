@@ -1,6 +1,6 @@
 # Lab 05 — Releases con Versionado Semántico
 
-**Duración estimada:** 50 min
+**Duración estimada:** 60 min
 
 ## Objetivo
 
@@ -59,7 +59,8 @@ En Make, el flujo de release se modela así:
 - [ ] `make bump-major` → actualiza VERSION de `X.Y.Z` a `(X+1).0.0`
 - [ ] `make tag` → crea tag git `vX.Y.Z` con el mensaje "Release vX.Y.Z"
 - [ ] `make changelog` → agrega entrada en `CHANGELOG.md` con fecha y commits desde el último tag
-- [ ] `make release-patch` → ejecuta bump-patch + tag + changelog en secuencia
+- [ ] `make release-patch` con VERSION `0.1.0` → crea el tag `v0.1.1` (no `v0.1.0`)
+- [ ] Con `VERSION` = `1.0.0;touch PWNED`, cualquier `make` falla con `VERSION inválida` y no crea `PWNED`
 
 ## Reto extra
 

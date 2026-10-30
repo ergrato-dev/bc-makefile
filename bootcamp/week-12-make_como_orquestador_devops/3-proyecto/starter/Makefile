@@ -1,3 +1,7 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: env-check install hooks-install hooks-uninstall hooks-status \
         lint test build report ci version bump-patch clean help
 .DEFAULT_GOAL := help
@@ -12,23 +16,30 @@ PYTEST      := $(VENV)/bin/pytest
 FLAKE8      := $(VENV)/bin/flake8
 APP_NAME    := mi-api
 VERSION_FILE := VERSION
-VERSION     := $(shell cat $(VERSION_FILE) 2>/dev/null || echo "0.0.0")
-MAJOR       := $(shell echo $(VERSION) | cut -d. -f1)
-MINOR       := $(shell echo $(VERSION) | cut -d. -f2)
-PATCH       := $(shell echo $(VERSION) | cut -d. -f3)
+# VERSION viene de un archivo del repo: léelo sin shell y valídalo.
+VERSION     := $(strip $(or $(file < $(VERSION_FILE)),0.0.0))
+VERSION_PARTS := $(subst ., ,$(VERSION))
+# TODO 0: valida VERSION. Quitar todos los dígitos debe dejar exactamente
+#         ".." y VERSION_PARTS debe tener 3 palabras. Si no, $(error ...).
+#         Nunca la pases a $(shell echo $(VERSION) | ...): un PR que ponga
+#         `1.0.0';rm -rf ~;'` en VERSION ejecutaría código al hacer `make help`.
+MAJOR       := $(word 1,$(VERSION_PARTS))
+MINOR       := $(word 2,$(VERSION_PARTS))
+PATCH       := $(word 3,$(VERSION_PARTS))
 DIST        := dist
 SRC         := src
 TESTS       := tests
 HOOKS_SRC   := scripts/hooks
-HOOKS_DIR   := .git/hooks
 HOOKS       := pre-commit pre-push
 DATE        := $(shell date '+%Y-%m-%d %H:%M:%S')
 
+# .env se parsea como Makefile: valores sin `$`, sin comillas y sin `#`.
 -include .env
-export
+# TODO 1b: exporta SOLO APP_NAME ENV DB_URL SECRET_KEY (nunca `export` a secas)
 
 # ---------------------------------------------------------------------------
-# TODO 1: guard-% — valida variables requeridas
+# TODO 1: guard-% — valida variables requeridas con $(if) y $(error),
+#         sin pasar el valor por el shell
 # ---------------------------------------------------------------------------
 guard-%:
 	# TODO: implementar
@@ -51,14 +62,14 @@ install: $(VENV)/.installed ## Instalar dependencias Python
 # ---------------------------------------------------------------------------
 # TODO 4: hooks-install, hooks-uninstall, hooks-status
 # ---------------------------------------------------------------------------
-hooks-install: ## Instalar git hooks
-	# TODO: copiar HOOKS_SRC/* a HOOKS_DIR con chmod +x
+hooks-install: ## Instalar git hooks (core.hooksPath)
+	# TODO: chmod +x a HOOKS_SRC/* y git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
 
 hooks-uninstall: ## Desinstalar git hooks
-	# TODO: eliminar hooks de HOOKS_DIR
+	# TODO: git config --unset core.hooksPath
 
 hooks-status: ## Ver estado de los git hooks
-	# TODO: mostrar tabla de estado
+	# TODO: mostrar core.hooksPath y si cada hook es ejecutable
 
 # ---------------------------------------------------------------------------
 # TODO 5: lint — ejecuta flake8 sobre SRC
@@ -98,11 +109,13 @@ version: ## Mostrar versión actual
 	@echo "Versión actual: $(VERSION)"
 
 bump-patch: ## Incrementar versión patch
-	# TODO: incrementar PATCH y escribir a VERSION_FILE
+	# TODO: escribir $(MAJOR).$(MINOR).$$(( $(PATCH) + 1 )) en VERSION_FILE
 
 # ---------------------------------------------------------------------------
 clean: ## Eliminar artefactos
-	@rm -rf $(VENV) $(DIST) __pycache__ .pytest_cache .coverage
+	$(if $(VENV),,$(error VENV vacía))
+	$(if $(DIST),,$(error DIST vacía))
+	@rm -rf -- '$(VENV)' '$(DIST)' __pycache__ .pytest_cache .coverage
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	@echo "Limpiado."
 

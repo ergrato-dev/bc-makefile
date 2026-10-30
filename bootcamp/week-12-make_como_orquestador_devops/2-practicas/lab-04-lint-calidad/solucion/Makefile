@@ -26,17 +26,19 @@ lint-python: ## Análisis estático de Python
 		$(FLAKE8) $(SRC_DIR); \
 	else \
 		echo "  (flake8 no instalado — verificando sintaxis con py_compile)"; \
-		find $(SRC_DIR) -name '*.py' -exec python3 -m py_compile {} \; && echo "  Sintaxis OK"; \
+		find $(SRC_DIR) -name '*.py' -exec python3 -m py_compile {} + && echo "  Sintaxis OK"; \
 	fi
 	@echo "✓ Lint Python OK"
 
+# `-exec ... {} +` pasa todos los archivos en una llamada y propaga el
+# código de salida. Con `\;` find sale con 0 aunque shellcheck falle.
 lint-shell: ## Análisis estático de scripts bash
 	@echo "→ Lint Shell..."
 	@if [ -n "$(SHELLCHECK)" ]; then \
-		find $(SCRIPTS) -name '*.sh' -exec shellcheck {} \;; \
+		find $(SCRIPTS) -name '*.sh' -exec shellcheck {} +; \
 	else \
 		echo "  (shellcheck no instalado — verificando sintaxis con bash -n)"; \
-		find $(SCRIPTS) -name '*.sh' -exec bash -n {} \; && echo "  Sintaxis OK"; \
+		find $(SCRIPTS) -name '*.sh' -exec bash -n {} + && echo "  Sintaxis OK"; \
 	fi
 	@echo "✓ Lint Shell OK"
 

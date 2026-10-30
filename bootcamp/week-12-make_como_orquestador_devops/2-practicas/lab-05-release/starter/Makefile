@@ -1,11 +1,26 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: version bump-patch bump-minor bump-major tag changelog release-patch release-minor help
 .DEFAULT_GOAL := help
 
 VERSION_FILE := VERSION
-VERSION      := $(shell cat $(VERSION_FILE) 2>/dev/null || echo "0.0.0")
-MAJOR        := $(shell echo $(VERSION) | cut -d. -f1)
-MINOR        := $(shell echo $(VERSION) | cut -d. -f2)
-PATCH        := $(shell echo $(VERSION) | cut -d. -f3)
+DATE         := $(shell date '+%Y-%m-%d')
+# VERSION viene de un archivo del repo: se lee sin shell.
+VERSION      := $(strip $(or $(file < $(VERSION_FILE)),0.0.0))
+VERSION_PARTS := $(subst ., ,$(VERSION))
+
+# --------------------------------------------------------------------------
+# TODO 0: Valida VERSION antes de usarla. Quitar todos los dígitos debe
+#         dejar exactamente ".." y VERSION_PARTS debe tener 3 palabras; si
+#         no, $(error ...). NO uses $(shell echo $(VERSION) | cut ...): un
+#         PR que escriba `1.0.0';rm -rf ~;'` en VERSION ejecutaría código
+#         en cuanto alguien corra `make help`.
+# --------------------------------------------------------------------------
+MAJOR        := $(word 1,$(VERSION_PARTS))
+MINOR        := $(word 2,$(VERSION_PARTS))
+PATCH        := $(word 3,$(VERSION_PARTS))
 
 version: ## Mostrar versión actual
 	@echo "Versión actual: $(VERSION)"
@@ -14,7 +29,7 @@ version: ## Mostrar versión actual
 # TODO 1: Implementa bump-patch.
 #         Debe incrementar PATCH en 1, escribir la nueva versión a VERSION_FILE
 #         e imprimir: "Nueva versión: X.Y.(Z+1)"
-#         Tip: usa $(shell expr $(PATCH) + 1)
+#         Tip: con VERSION ya validada, bash calcula: $$(( $(PATCH) + 1 ))
 # --------------------------------------------------------------------------
 bump-patch: ## Incrementar versión patch (X.Y.Z → X.Y.Z+1)
 	# TODO: calcular nueva versión y escribir a VERSION_FILE
@@ -47,12 +62,17 @@ tag: ## Crear tag git con la versión actual
 #         - Fecha actual
 #         - Versión
 #         - Lista de commits desde el último tag (git log --oneline)
+#         Escribe en un temporal de `mktemp` y luego `mv`: nunca a una ruta
+#         fija como /tmp/cl_tmp (otro usuario puede crearla antes).
 # --------------------------------------------------------------------------
 changelog: ## Generar entrada en CHANGELOG.md
 	# TODO: obtener commits desde último tag y escribir a CHANGELOG.md
 
 # --------------------------------------------------------------------------
 # TODO 6: Implementa release-patch que encadena: bump-patch → tag → changelog
+#         Trampa: VERSION se calcula al PARSEAR. Si pones tag y changelog
+#         como prerrequisitos, usarán la versión vieja. Tras el bump hay
+#         que relanzar: @$(MAKE) --no-print-directory tag changelog
 # --------------------------------------------------------------------------
 release-patch: ## Release patch: bump + tag + changelog
 	# TODO: encadenar bump-patch, tag, changelog

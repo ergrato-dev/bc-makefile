@@ -28,7 +28,7 @@ starter/
 │   └── test_api.py
 └── scripts/
     └── hooks/
-        ├── pre-commit    ← verifica que .env no se commitee
+        ├── pre-commit    ← verifica que ningún .env* (salvo .env.example) se commitee
         └── pre-push      ← ejecuta lint antes de push
 ```
 
@@ -36,7 +36,7 @@ starter/
 
 1. `Makefile` completo con todos los targets especificados
 2. `.env` creado a partir de `.env.example` con valores de desarrollo
-3. Hooks instalados en `.git/hooks/`
+3. Hooks activos con `git config core.hooksPath` (versionados en `scripts/hooks/`)
 4. Pipeline `make ci` ejecutándose sin errores
 
 ## Targets requeridos

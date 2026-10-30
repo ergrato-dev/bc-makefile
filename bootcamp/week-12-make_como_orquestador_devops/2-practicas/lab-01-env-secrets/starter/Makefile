@@ -1,56 +1,58 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: env-check env-show env-dev env-staging env-prod help
 .DEFAULT_GOAL := help
 
 APP_NAME  := mi-app
-ENV_FILE  := .env
+ENV_FILE  ?= .env
 ENV       ?= development
 
-# Carga .env si existe (no falla si no existe)
+# Carga .env si existe (no falla si no existe).
+# OJO: se parsea como Makefile. Ver Contexto del README.
 -include $(ENV_FILE)
-export
 
 # --------------------------------------------------------------------------
-# TODO 1: Implementa el target guard-% que valida que una variable esté
-#         definida. Si no lo está, debe imprimir un error y salir con código 1.
-#         Sintaxis de uso: guard-NOMBRE_VAR
-#         Ejemplo de uso: deploy: guard-API_KEY
+# TODO 1: Exporta SOLO las variables que las recetas necesitan (DB_URL y
+#         API_KEY). Nunca `export` sin argumentos: mandaría todos los
+#         secretos a cada subproceso.
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# TODO 2: Implementa guard-% en Make, sin pasar el valor por el shell:
+#         $(if $($*),:,$(error $* no definida. Copia .env.example a .env y asigna un valor))
 # --------------------------------------------------------------------------
 guard-%:
-	# TODO: completar implementación
+	@echo "TODO: implementa guard-$*"
 
 # --------------------------------------------------------------------------
-# TODO 2: Implementa env-check para validar que APP_NAME, DB_URL y API_KEY
-#         estén definidas. Usa guard-% para cada una.
+# TODO 3: env-check depende de guard-DB_URL y guard-API_KEY
 # --------------------------------------------------------------------------
 env-check: ## Verificar que las variables de entorno requeridas están definidas
-	# TODO: llamar guard-APP_NAME guard-DB_URL guard-API_KEY
 	@echo "Variables de entorno OK"
 
 # --------------------------------------------------------------------------
-# TODO 3: Implementa env-show para mostrar las variables de entorno.
-#         API_KEY debe mostrarse enmascarada (primeros 6 chars + ***)
-#         Tip: usa $(shell echo "$(API_KEY)" | cut -c1-6)
+# TODO 4: env-show. Los secretos se leen como variables de entorno del
+#         shell ($$API_KEY), NUNCA pegados en el comando con $(API_KEY):
+#           @printf 'API_KEY  = %s***\n' "$${API_KEY:0:4}"
+#         DB_URL debe ocultar usuario y contraseña (user:pass@ -> ***@).
 # --------------------------------------------------------------------------
 env-show: ## Mostrar variables de entorno activas (secretos enmascarados)
 	@echo "=== Variables de entorno ==="
 	@echo "APP_NAME = $(APP_NAME)"
 	@echo "ENV      = $(ENV)"
-	# TODO: mostrar DB_URL
-	# TODO: mostrar API_KEY enmascarada
 
 # --------------------------------------------------------------------------
-# TODO 4: Implementa env-dev, env-staging y env-prod.
-#         Cada uno debe cargar su archivo .env.ENTORNO e imprimir el entorno activo.
-#         Tip: usa $(MAKE) con ENV=development y -f o recarga variables
+# TODO 5: env-dev, env-staging y env-prod relanzan Make con otro archivo:
+#           @$(MAKE) --no-print-directory ENV_FILE=.env.dev ENV=development _show-env
+#         y _show-env imprime "Entorno: <ENV>" y el archivo cargado.
 # --------------------------------------------------------------------------
 env-dev: ## Activar entorno development
-	# TODO: cargar .env.dev y mostrar "Entorno: development"
 
 env-staging: ## Activar entorno staging
-	# TODO: cargar .env.staging y mostrar "Entorno: staging"
 
 env-prod: ## Activar entorno production
-	# TODO: cargar .env.prod y mostrar "Entorno: production"
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
