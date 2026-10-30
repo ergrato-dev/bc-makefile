@@ -1,6 +1,6 @@
 # Proyecto Semana 02 — Makefile parametrizable multi-entorno
 
-⏱ Duración estimada: ~2h 30min
+⏱ Duración estimada: ~3 h
 
 ## Contexto
 
@@ -26,18 +26,32 @@ Imprime toda la configuración activa. Output esperado con `make config ENV=stag
 ```
 Entorno:    staging
 Versión:    0.1.0-abc1234
+Fecha:      2026-01-15
 Imagen:     registry.local/mywebservice:0.1.0-abc1234-staging
-DB URL:     postgres://staging-db.internal:5432/mywebservice_staging
+DB URL:     postgres://localhost:5432/mywebservice_staging
 Log level:  info
+Origen ENV: command line
 ```
+
+La última línea usa `$(origin ENV)` y dice de dónde salió el valor: `file` si
+nadie pasó `ENV` (se aplicó el `?=`), `command line` con `make config ENV=...`
+y `environment` con `ENV=... make config`. Es tu herramienta de diagnóstico
+cuando alguien jura que "desplegó en prod" y Make usó `dev`.
 
 ### 2. `build`
 Simula la construcción. Output esperado con `make build ENV=prod VERSION=1.2.0`:
 ```
 [build] Construyendo mywebservice:1.2.0-prod...
+[build] Flags: --pull
 [build] Compilación OK.
-[build] Imagen lista: registry.local/mywebservice:1.2.0-prod-prod
+[build] Imagen lista: registry.local/mywebservice:1.2.0-prod
 ```
+
+`BUILD_ARGS` es configurable, pero `--pull` (traer siempre la imagen base
+actualizada) es obligatorio. Con `make build BUILD_ARGS=--no-cache` la línea
+de flags debe ser `[build] Flags: --no-cache --pull`: el valor del usuario se
+respeta y el flag obligatorio no se pierde. Sin `override`, la asignación del
+Makefile se ignoraría y `--pull` desaparecería.
 
 ### 3. `test`
 Simula la ejecución de tests. Output esperado:
@@ -53,7 +67,7 @@ Depende de `build` y `test`. Output esperado con `make deploy ENV=staging VERSIO
 [test] ...
 [deploy] Desplegando en staging...
 [deploy]   Imagen: registry.local/mywebservice:1.1.0-staging
-[deploy]   DB:     postgres://staging-db.internal:5432/mywebservice_staging
+[deploy]   DB:     postgres://localhost:5432/mywebservice_staging
 [deploy] Deploy OK.
 ```
 
@@ -74,7 +88,8 @@ Tu Makefile debe definir al menos:
 | Variable | Tipo | Default | Descripción |
 |----------|------|---------|-------------|
 | `ENV` | `?=` | `dev` | Entorno destino |
-| `VERSION` | `?=` | resultado de `git describe` o `"0.1.0"` | Versión del build |
+| `GIT_VERSION` | `:=` | resultado de `git describe` o `"0.1.0"` | Versión calculada una sola vez al cargar el Makefile |
+| `VERSION` | `?=` | `$(GIT_VERSION)` | Versión del build |
 | `APP_NAME` | `?=` | `mywebservice` | Nombre de la aplicación |
 | `REGISTRY` | `?=` | `registry.local` | Registry de imágenes |
 | `LOG_LEVEL` | `?=` | `info` | Nivel de logging |
@@ -83,6 +98,7 @@ Tu Makefile debe definir al menos:
 | `DB_NAME` | `=` | `$(APP_NAME)_$(ENV)` | Nombre de la base de datos |
 | `DB_URL` | `=` | `postgres://$(DB_HOST):5432/$(DB_NAME)` | URL completa de BD |
 | `BUILD_DATE` | `:=` | `$(shell date +%F)` | Fecha de construcción |
+| `BUILD_ARGS` | `?=` y `override +=` | vacío, más `--pull` siempre | Flags del build; `--pull` no se puede quitar desde la CLI |
 
 ## Verificación
 
@@ -96,18 +112,31 @@ make config ENV=prod DB_HOST=prod-db.internal
 make build
 make build ENV=prod VERSION=2.0.0
 make deploy ENV=staging VERSION=1.1.0
+make build BUILD_ARGS=--no-cache   # [build] Flags: --no-cache --pull
+ENV=prod make config               # Origen ENV: environment
 make clean
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make config` y `make config ENV=prod` muestran configuraciones distintas | 8 |
-| `make deploy ENV=staging` produce output con imagen y DB correctas para staging | 8 |
-| Variables `?=` respetan override desde CLI y desde entorno exportado | 7 |
-| `make clean` funciona sin error aunque `dist/` no exista | 4 |
-| `make help` documenta todos los targets | 3 |
+Los comprueba `./scripts/verificar-semana.sh 02` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30).
+
+- [ ] Sin ENV, make config muestra el entorno dev
+- [ ] make config ENV=staging muestra el entorno staging
+- [ ] ENV exportada en la shell cambia el entorno sin tocar el Makefile
+- [ ] Sin VERSION, la imagen lleva una versión no vacía obtenida de git o 0.1.0
+- [ ] make config ENV=prod VERSION=2.0.0 muestra la imagen registry.local/mywebservice:2.0.0-prod
+- [ ] La URL de base de datos incluye el entorno activo
+- [ ] DB_HOST se puede cambiar desde la línea de comandos
+- [ ] make config ENV=staging informa de que ENV viene de la línea de comandos
+- [ ] Con ENV exportada, make config informa de que ENV viene del entorno
+- [ ] make build BUILD_ARGS=--no-cache conserva el flag obligatorio --pull
+- [ ] IMAGE_TAG se define con = y referencia a ENV
+- [ ] BUILD_DATE se define con := y guarda una fecha AAAA-MM-DD
+- [ ] make deploy ejecuta build y test antes de desplegar
+- [ ] make clean no falla aunque dist/ no exista
 
 ## Entrega
 

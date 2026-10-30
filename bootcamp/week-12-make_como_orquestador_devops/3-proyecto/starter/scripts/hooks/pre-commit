@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "→ [pre-commit] Verificando archivos staged..."
+
+# .env, .env.prod, config/.env.staging... pero no .env.example
+if git diff --cached --name-only \
+    | grep -E '(^|/)\.env(\.[^/]+)?$' \
+    | grep -vE '\.env\.example$'; then
+    echo "ERROR: archivo .env en staging. Agrega '.env*' y '!.env.example' a .gitignore."
+    exit 1
+fi
+
+if git diff --cached --name-only | grep -q '^\.venv/'; then
+    echo "ERROR: Intentando commitear el directorio .venv/."
+    exit 1
+fi
+
+echo "✓ [pre-commit] OK"

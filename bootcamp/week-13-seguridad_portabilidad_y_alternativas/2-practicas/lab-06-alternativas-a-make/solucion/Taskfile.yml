@@ -1,0 +1,42 @@
+# Taskfile.yml — traducción de Makefile a Task (SOLUCIÓN)
+# Task sí sabe si algo está al día: compara checksums de `sources` y guarda
+# el estado en .task/ (no fechas, como Make).
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  build:
+    desc: Une src/*.txt en build/manual.txt
+    sources:
+      - src/*.txt
+    generates:
+      - build/manual.txt
+    cmds:
+      - mkdir -p build
+      - cat src/*.txt > build/manual.txt
+
+  test:
+    desc: Comprueba el manual
+    deps: [build]
+    cmds:
+      - grep -q 'Capítulo 1' build/manual.txt
+
+  release:
+    desc: "Empaqueta: task release VERSION=1.2.3"
+    deps: [test]
+    requires:
+      vars: [VERSION]
+    # VERSION llega por entorno ("$VERSION"), no pegada con {{.VERSION}}
+    env:
+      VERSION: '{{.VERSION}}'
+    cmds:
+      - '[[ "$VERSION" =~ ^[0-9]+[.][0-9]+[.][0-9]+$ ]] || { echo "Versión inválida" >&2; exit 1; }'
+      - tar -czf "build/manual-$VERSION.tar.gz" -C build manual.txt
+
+  clean:
+    desc: Borra build/ y .task/
+    cmds:
+      - rm -rf -- build .task

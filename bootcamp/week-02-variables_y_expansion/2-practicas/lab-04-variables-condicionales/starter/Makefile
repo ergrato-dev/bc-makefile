@@ -8,7 +8,7 @@
 #   SERVER_HOST=10.0.0.1 make config     → override desde entorno
 # ============================================================
 
-.PHONY: config servidor help
+.PHONY: config servidor origen help
 
 .DEFAULT_GOAL := help
 
@@ -27,24 +27,26 @@
 # TODO: define LOG_LEVEL con ?= y valor "info"
 # LOG_LEVEL ?= ...
 
-## config: muestra la configuración actual
-config:
+config: ## muestra la configuración actual
 	@echo "Configuración actual:"
 	# TODO: @echo "  SERVER_HOST: $(SERVER_HOST)"
 	# TODO: @echo "  SERVER_PORT: $(SERVER_PORT)"
 	# TODO: @echo "  DB_HOST:     $(DB_HOST)"
 	# TODO: @echo "  LOG_LEVEL:   $(LOG_LEVEL)"
 
-## servidor: simula inicio de servidor
-servidor:
+servidor: ## simula inicio de servidor
 	@echo "Iniciando servidor..."
 	# TODO: @echo "  Escuchando en $(SERVER_HOST):$(SERVER_PORT)"
 	# TODO: @echo "  Log level: $(LOG_LEVEL)"
 	@echo "Servidor listo."
 
-## help: muestra esta ayuda
-help:
+# TODO (paso 6): imprime el resultado de la función origin para
+#   SERVER_HOST, SERVER_PORT, HOME y NO_EXISTE, una por línea, con el formato
+#   SERVER_HOST: <origin de SERVER_HOST>
+origen: ## muestra de dónde sale el valor de cada variable
+	@echo "TODO: implementa origen"
+
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [SERVER_HOST=host] [SERVER_PORT=puerto]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

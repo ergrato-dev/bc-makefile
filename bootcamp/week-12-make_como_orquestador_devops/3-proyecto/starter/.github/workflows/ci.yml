@@ -1,0 +1,23 @@
+# TODO 11: este workflow funciona, pero duplica el pipeline y confía en tags
+#          que se pueden mover. Déjalo así:
+#   - permissions: contents: read a nivel de workflow
+#   - cada `uses:` pinneado por el SHA de 40 caracteres de su commit, con el
+#     tag en un comentario (ver lab-03, paso 10)
+#   - un único paso `run: make ci`; nada de repetir uv, flake8 ni pytest
+#   - ENV, DB_URL y SECRET_KEY en `env:` del job (SECRET_KEY desde secrets)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
+      - run: uv sync --locked
+      - run: uv run --no-sync flake8 src
+      - run: uv run --no-sync pytest --cov=src

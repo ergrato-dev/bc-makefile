@@ -1,0 +1,111 @@
+{
+  "semana": "10",
+  "titulo": "Paralelismo y recursión",
+  "checks": [
+    {
+      "id": "build-completo",
+      "descripcion": "make all desde cero construye app con el trabajo de core y util",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} all >/dev/null 2>&1; paste -sd ' ' {proyecto}/packages/app/dist/app.txt",
+      "assert": "stdout~^app 1.0 +core 1.0 +util 1.0$",
+      "pista": "3-proyecto/README.md, paso 3"
+    },
+    {
+      "id": "paquete-como-target",
+      "descripcion": "make packages/util/build construye util y nada más",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} packages/util/build >/dev/null 2>&1 && test -f {proyecto}/packages/util/dist/util.txt && test ! -e {proyecto}/packages/core/dist",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-recursion/README.md, paso 3"
+    },
+    {
+      "id": "dependencias-con-j",
+      "descripcion": "Con make -j8 all desde cero, app se construye después de core y util",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -j8 all >/dev/null 2>&1; paste -sd ' ' {proyecto}/packages/app/dist/app.txt",
+      "assert": "stdout~^app 1.0 +core 1.0 +util 1.0$",
+      "pista": "2-practicas/lab-02-carrera-roto/README.md, paso 4"
+    },
+    {
+      "id": "paralelo-real",
+      "descripcion": "Con make -j4 all, al menos dos paquetes se construyen a la vez",
+      "cmd": "t=$(mktemp); {make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -j4 all TRACE=$t >/dev/null 2>&1; awk '/^start/{n++; if(n>m)m=n} /^end/{n--} END{print m+0}' $t; rm -f $t",
+      "assert": "stdout~^[2-9]$",
+      "pista": "2-practicas/lab-01-jobs-paralelos/README.md, paso 4"
+    },
+    {
+      "id": "fallo-propaga",
+      "descripcion": "Si un paquete falla, make all sale con error aunque el último paquete pase",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} all FAIL=docs",
+      "assert": "exit!=0",
+      "pista": "2-practicas/lab-04-recursion/README.md, paso 5"
+    },
+    {
+      "id": "keep-going",
+      "descripcion": "Con make -k all FAIL=core, util y docs se construyen y app no",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -k all FAIL=core >/dev/null 2>&1; test -f {proyecto}/packages/util/dist/util.txt && test -f {proyecto}/packages/docs/dist/docs.txt && test ! -e {proyecto}/packages/app/dist/app.txt",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-recursion/README.md, paso 6"
+    },
+    {
+      "id": "sin-for",
+      "descripcion": "El Makefile raíz no recorre los paquetes con un bucle for",
+      "cmd": "grep -nE '^[^#]*for [^;]*;[[:space:]]*do' {proyecto}/Makefile",
+      "assert": "exit!=0",
+      "pista": "2-practicas/lab-04-recursion/README.md, Contexto"
+    },
+    {
+      "id": "sin-make-literal",
+      "descripcion": "Los sub-makes se invocan con $(MAKE), nunca con make literal",
+      "cmd": "grep -nE '^[^#]*(^|[;&|]|do)[[:space:]]*[-@+]*make[[:space:]]' {proyecto}/Makefile",
+      "assert": "exit!=0",
+      "pista": "2-practicas/lab-05-jobserver/README.md, paso 2"
+    },
+    {
+      "id": "dry-run-recursivo",
+      "descripcion": "make -n all llega hasta las recetas de los paquetes sin construir nada",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -n all 2>&1 | grep -E 'echo .[[]app[]] inicio' && test ! -e {proyecto}/packages/core/dist",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-jobserver/README.md, paso 4"
+    },
+    {
+      "id": "salida-agrupada",
+      "descripcion": "Con make -j4 all la salida de cada paquete sale agrupada sin pasar -O",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -j4 all 2>&1 | grep -E '(inicio|fin)$' | awk '/inicio$/{p=$1} /fin$/{if($1!=p)bad++} {n++} END{print n, bad+0}'",
+      "assert": "stdout~^8 0$",
+      "pista": "2-practicas/lab-03-output-sync/README.md, paso 5"
+    },
+    {
+      "id": "rebuild-con-j",
+      "descripcion": "make -j8 rebuild rehace los cuatro paquetes y deja app construida",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; a=$({make} -C {proyecto} -j8 rebuild 2>&1 | grep -c 'inicio$'); test -f {proyecto}/packages/app/dist/app.txt || a=0; b=$({make} -C {proyecto} -j8 rebuild 2>&1 | grep -c 'inicio$'); test -f {proyecto}/packages/app/dist/app.txt || b=0; echo rehechos=$a,$b",
+      "assert": "stdout~^rehechos=4,4$",
+      "pista": "2-practicas/lab-02-carrera-roto/README.md, paso 6"
+    },
+    {
+      "id": "clean-limpia",
+      "descripcion": "make clean borra el dist/ de todos los paquetes",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -f {proyecto}/packages/app/dist/app.txt && {make} -C {proyecto} clean >/dev/null 2>&1 && ls -d {proyecto}/packages/*/dist 2>/dev/null | wc -l",
+      "assert": "stdout~^ *0$",
+      "pista": "2-practicas/lab-04-recursion/README.md, paso 4"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean DIST_DIR= se niega a borrar porque la variable llega a cada paquete",
+      "cmd": "{make} -C {proyecto} clean DIST_DIR=",
+      "assert": "stdout~DIST_DIR vac",
+      "pista": "2-practicas/lab-04-recursion/README.md, paso 7"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile raíz ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO 1 del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile raíz declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO 1 del starter"
+    }
+  ]
+}

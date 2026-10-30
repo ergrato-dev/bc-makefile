@@ -1,0 +1,29 @@
+# justfile — traducción de Makefile a just (SOLUCIÓN)
+# just es un command runner: no compara fechas de archivos. `build` se
+# ejecuta SIEMPRE, aunque build/manual.txt esté al día.
+
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+# Sin argumentos, lista las recetas (equivale al target help)
+default:
+    @just --list
+
+# Une src/*.txt en build/manual.txt
+build:
+    mkdir -p build
+    cat src/*.txt > build/manual.txt
+
+# Comprueba el manual
+test: build
+    grep -q 'Capítulo 1' build/manual.txt
+
+# quote() cita el argumento para el shell, como $(call q,...) en Make:
+# {{version}} a secas se pegaría tal cual en el comando.
+# Empaqueta: just release 1.2.3
+release version: test
+    [[ {{quote(version)}} =~ ^[0-9]+[.][0-9]+[.][0-9]+$ ]] || { echo "Versión inválida" >&2; exit 1; }
+    tar -czf build/manual-{{version}}.tar.gz -C build manual.txt
+
+# Borra build/
+clean:
+    rm -rf -- build

@@ -1,0 +1,111 @@
+{
+  "semana": "06",
+  "titulo": "Dependencias automáticas y targets especiales",
+  "checks": [
+    {
+      "id": "help-por-defecto",
+      "descripcion": "make sin argumentos muestra la ayuda",
+      "cmd": "{make} -C {proyecto}",
+      "assert": "stdout~[Tt]argets disponibles",
+      "pista": "3-proyecto/README.md, entregable 1"
+    },
+    {
+      "id": "binario-funciona",
+      "descripcion": "make all desde cero produce build/app y el binario imprime la versión de VERSION",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} all >/dev/null 2>&1 && {proyecto}/build/app",
+      "assert": "stdout~^calc v1[.]4[.]2$",
+      "pista": "3-proyecto/README.md, entregables 2 y 3"
+    },
+    {
+      "id": "paralelo-desde-cero",
+      "descripcion": "make -j8 all desde cero termina sin errores",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -j8 all >/dev/null 2>&1 && test -x {proyecto}/build/app",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-06-dependencias-rotas/README.md, bug E"
+    },
+    {
+      "id": "generador-una-vez",
+      "descripcion": "Con make -j8 desde cero, el generador de version.c y version.h corre una sola vez",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; {make} -C {proyecto} -j8 all 2>&1 | grep -c '^.gen.'",
+      "assert": "stdout~^1$",
+      "pista": "2-practicas/lab-04-grouped-targets/README.md, paso 4"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make all no compila, no enlaza y no regenera nada",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && {make} -C {proyecto} all 2>&1 | grep -cE '^.(cc|link|gen).'",
+      "assert": "stdout~^0$",
+      "pista": "2-practicas/lab-02-order-only/README.md, paso 3"
+    },
+    {
+      "id": "fuente-recompila-solo-uno",
+      "descripcion": "Tocar src/util/fmt.c recompila solo ese objeto",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && touch {proyecto}/src/util/fmt.c && {make} -C {proyecto} all 2>&1 | grep -c '^.cc.'",
+      "assert": "stdout~^1$",
+      "pista": "3-proyecto/README.md, entregable 3"
+    },
+    {
+      "id": "header-recompila-exacto",
+      "descripcion": "Tocar include/calc.h recompila exactamente los dos objetos que lo incluyen",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && touch {proyecto}/include/calc.h && {make} -C {proyecto} all 2>&1 | grep -c '^.cc.'",
+      "assert": "stdout~^2$",
+      "pista": "2-practicas/lab-01-anatomia-del-d/README.md, paso 2"
+    },
+    {
+      "id": "version-recompila-exacto",
+      "descripcion": "Tocar VERSION recompila solo los dos objetos que usan el código generado",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && touch {proyecto}/VERSION && {make} -C {proyecto} all 2>&1 | grep -c '^.cc.'",
+      "assert": "stdout~^2$",
+      "pista": "2-practicas/lab-06-dependencias-rotas/README.md, bug E"
+    },
+    {
+      "id": "crear-en-build-no-recompila",
+      "descripcion": "Crear un archivo dentro de build/ no provoca recompilaciones",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && touch {proyecto}/build/marca.txt && {make} -C {proyecto} all 2>&1 | grep -c '^.cc.'",
+      "assert": "stdout~^0$",
+      "pista": "2-practicas/lab-02-order-only/README.md, paso 4"
+    },
+    {
+      "id": "header-obsoleto-no-rompe",
+      "descripcion": "Dejar de incluir un header y borrarlo no rompe el build",
+      "cmd": "cd {proyecto} && {make} all >/dev/null 2>&1 && t=$(mktemp) && cp src/util/fmt.c $t && trap 'cp $t src/util/fmt.c; rm -f $t include/obsoleto.h build/util/fmt.d build/util/fmt.o' EXIT && touch include/obsoleto.h && { echo '#include <obsoleto.h>'; cat $t; } > src/util/fmt.c && {make} all >/dev/null 2>&1 && grep -q obsoleto.h build/util/fmt.d && cp $t src/util/fmt.c && rm include/obsoleto.h && {make} all",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-01-anatomia-del-d/README.md, paso 4"
+    },
+    {
+      "id": "flags-recompilan",
+      "descripcion": "Cambiar CFLAGS en la línea de comandos recompila los cuatro objetos",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/app && {make} -C {proyecto} all CFLAGS='-O2 -Wall -Wextra -std=c11' 2>&1 | grep -c '^.cc.'",
+      "assert": "stdout~^4$",
+      "pista": "2-practicas/lab-01-anatomia-del-d/README.md, paso 6"
+    },
+    {
+      "id": "clean-borra-build",
+      "descripcion": "make clean elimina build/ por completo",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD_DIR está vacío",
+      "cmd": "{make} -C {proyecto} clean BUILD_DIR=",
+      "assert": "stdout~BUILD_DIR vac",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    }
+  ]
+}

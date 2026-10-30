@@ -1,7 +1,0 @@
-#!/bin/bash
-# pre-push: validaciones antes de cada push (puede ser más lento)
-
-set -e
-
-echo "→ [pre-push] Ejecutando validaciones antes del push..."
-echo "✓ [pre-push] OK"

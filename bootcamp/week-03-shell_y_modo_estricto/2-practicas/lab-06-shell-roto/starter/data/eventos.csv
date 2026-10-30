@@ -1,0 +1,8 @@
+2026-10-29T08:00:01,INFO,servicio arrancado
+2026-10-29T08:00:05,INFO,conexión a la base de datos lista
+2026-10-29T08:03:12,INFO,petición /api/users
+2026-10-29T08:04:40,ERROR,timeout en /api/orders
+2026-10-29T08:05:02,INFO,petición /api/orders
+2026-10-29T08:07:33,INFO,petición /health
+2026-10-29T08:09:10,ERROR,disco al 95%
+2026-10-29T08:10:00,INFO,rotación de logs

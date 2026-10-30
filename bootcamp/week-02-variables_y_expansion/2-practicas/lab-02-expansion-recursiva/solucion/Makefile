@@ -21,30 +21,25 @@ DESTINATARIO_EAGER := Mundo
 # ── Reto extra: recursión infinita ───────────────────────────
 PELIGROSO = $(PELIGROSO)-snapshot
 
-# Versión corregida: usa una variable base separada
-BASE_VERSION    := v1.0
-VERSION_RELEASE := $(BASE_VERSION)-snapshot
+# Versión corregida: con := el lado derecho se expande UNA vez, con el valor
+# anterior de la variable, y el resultado se guarda. No queda referencia pendiente
+VERSION_RELEASE := v1.0
+VERSION_RELEASE := $(VERSION_RELEASE)-snapshot
 
-## lazy: = evalúa al usar la variable; DESTINATARIO puede definirse después
-lazy:
+lazy: ## = evalúa al usar la variable; DESTINATARIO puede definirse después
 	@echo "SALUDO_LAZY: $(SALUDO_LAZY)"
 
-## eager: := evalúa al asignar; DESTINATARIO estaba vacío en ese momento
-eager:
+eager: ## := evalúa al asignar; DESTINATARIO estaba vacío en ese momento
 	@echo "SALUDO_EAGER: $(SALUDO_EAGER)"
 
-## peligro: demuestra el error de recursión infinita con =
-peligro:
+peligro: ## demuestra el error de recursión infinita con =
 	@echo "Intentando expandir PELIGROSO..."
 	@echo "$(PELIGROSO)"
 
-## corregido: muestra VERSION_RELEASE sin recursión
-corregido:
+corregido: ## muestra VERSION_RELEASE sin recursión
 	@echo "VERSION_RELEASE: $(VERSION_RELEASE)"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [lazy|eager|peligro|corregido]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

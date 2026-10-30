@@ -1,6 +1,6 @@
 # Lab 04 — Targets que crean archivos vs targets PHONY
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -51,12 +51,42 @@ Make compara timestamps. Si el target produce `reporte.txt` y ese archivo ya exi
    make clean
    ```
 
+8. **Cadena de dos niveles.** `resumen.txt` cuenta las líneas de
+   `reporte.txt`. Completa su TODO (`resumen.txt: reporte.txt`) y construye todo
+   de nuevo:
+   ```bash
+   make preparar
+   make resumen.txt
+   ```
+   Make genera `reporte.txt` primero (no existía) y después `resumen.txt`. Ahora
+   predice qué se regenera en cada caso antes de ejecutarlo:
+
+   | Comando | Debes ver |
+   |---------|-----------|
+   | `make resumen.txt` (sin tocar nada) | `make: 'resumen.txt' is up to date.` |
+   | `touch reporte.txt && make resumen.txt` | Solo `Generando resumen.txt...` |
+   | `touch datos.csv && make resumen.txt` | `Generando reporte.txt...` y después `Generando resumen.txt...` |
+   | `rm reporte.txt && make resumen.txt` | Los dos, en ese orden |
+
+   Make recorre la cadena hacia atrás desde el target pedido y solo rehace
+   los eslabones cuya dependencia es más nueva o falta.
+
+9. Comprueba el contenido:
+   ```bash
+   cat resumen.txt
+   ```
+   Debe decir `Líneas del reporte: 7`. Observa el `$$(wc -l < reporte.txt)` de
+   la receta: `$$` llega a la shell como `$`, y es la shell la que ejecuta
+   `wc`. Termina con `make clean`.
+
 ## Criterios de éxito
 
 - [ ] Primera ejecución de `make reporte.txt`: crea el archivo
 - [ ] Segunda ejecución sin cambios: `make: 'reporte.txt' is up to date`
 - [ ] Tras `touch datos.csv`: Make regenera `reporte.txt`
-- [ ] `make clean` elimina ambos archivos
+- [ ] Tras `touch reporte.txt`, `make resumen.txt` regenera solo `resumen.txt`
+- [ ] Tras `touch datos.csv`, `make resumen.txt` regenera los dos, en orden
+- [ ] `make clean` elimina los tres archivos
 
 ## Reto extra
 

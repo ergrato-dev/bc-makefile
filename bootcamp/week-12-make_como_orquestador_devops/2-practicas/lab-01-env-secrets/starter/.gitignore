@@ -1,0 +1,4 @@
+# Cualquier .env con valores reales; solo la plantilla se versiona
+.env
+.env.*
+!.env.example

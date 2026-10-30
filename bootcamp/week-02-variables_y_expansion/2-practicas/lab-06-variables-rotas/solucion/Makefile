@@ -8,7 +8,7 @@
 #   Bug 4: usar BASE como variable separada y no referenciar VERSION a sí misma
 # ============================================================
 
-.PHONY: check-image check-flags check-url check-version help
+.PHONY: check-image check-flags check-url check-version diagnostico help
 
 .DEFAULT_GOAL := help
 
@@ -30,25 +30,26 @@ DB_URL   := postgres://$(DB_HOST):5432/$(DB_NAME)
 BASE     := v1.0
 VERSION  := $(BASE)-rc1
 
-## check-image: verifica que IMAGE sea registry.local/myapp:latest
-check-image:
+check-image: ## verifica que IMAGE sea registry.local/myapp:latest
 	@echo "IMAGE: $(IMAGE)"
 
-## check-flags: verifica que FLAGS tenga los tres flags
-check-flags:
+check-flags: ## verifica que FLAGS tenga los tres flags
 	@echo "FLAGS: $(FLAGS)"
 
-## check-url: verifica que DB_URL sea la URL completa
-check-url:
+check-url: ## verifica que DB_URL sea la URL completa
 	@echo "DB_URL: $(DB_URL)"
 
-## check-version: verifica que VERSION sea v1.0-rc1
-check-version:
+check-version: ## verifica que VERSION sea v1.0-rc1
 	@echo "VERSION: $(VERSION)"
 
-## help: muestra esta ayuda
-help:
+diagnostico: ## muestra el sabor de cada variable sin expandirla
+	@echo "IMAGE:   $(flavor IMAGE)"
+	@echo "FLAGS:   $(flavor FLAGS)"
+	@echo "DB_URL:  $(flavor DB_URL)"
+	@echo "VERSION: $(flavor VERSION)"
+	@echo "DB_HOST: $(flavor DB_HOST), origen $(origin DB_HOST)"
+
+help: ## muestra esta ayuda
 	@echo "Uso: make [check-image|check-flags|check-url|check-version]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "→ [pre-push] Ejecutando lint antes del push..."
+make lint
+echo "✓ [pre-push] OK"

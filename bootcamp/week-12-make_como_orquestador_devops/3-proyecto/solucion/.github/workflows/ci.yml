@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Mínimo privilegio: el token del job solo puede leer el repositorio
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    # En CI no hay .env: las variables las pone el runner. SECRET_KEY sale de
+    # los secretos del repositorio y GitHub la enmascara en los logs.
+    env:
+      ENV: ci
+      DB_URL: sqlite:///ci.db
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    steps:
+      # Acciones pinneadas por SHA: un tag se puede mover, un commit no
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.2"
+      # El mismo comando que en local: un fallo de CI se reproduce con `make ci`
+      - run: make ci

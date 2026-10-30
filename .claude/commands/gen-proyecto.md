@@ -10,7 +10,7 @@ Genera el proyecto semanal integrador de una semana del bootcamp.
 
 **Ejemplo:**
 ```
-/gen-proyecto week-03-variables_automaticas "Build System para Calculadora CLI" "proyecto C multi-archivo con main.c, operaciones.c, operaciones.h"
+/gen-proyecto week-04-variables_automaticas "Build System para Calculadora CLI" "proyecto C multi-archivo con main.c, operaciones.c, operaciones.h"
 ```
 
 ---
@@ -55,7 +55,8 @@ Secciones obligatorias:
 
 ### Criterio de calidad del proyecto
 
-- Debe tomar ~2h30 para alguien que completó los labs de la semana
-- Si se puede completar en 30 min, es demasiado simple — agregar complejidad
+- Debe tomar ~3h para alguien que completó los labs de la semana
+- Si se puede completar en 1h, es demasiado simple — agregar complejidad
+- Escribe primero (o actualiza) `checks.json` de la semana; el README del proyecto copia sus `descripcion` en `✅ Requisitos verificables`
 - El contexto debe ser real (no "haz un Makefile para ejercicio.c")
 - Los criterios de éxito deben ser binarios: funciona o no funciona

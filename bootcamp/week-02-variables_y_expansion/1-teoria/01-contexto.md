@@ -2,16 +2,17 @@
 
 ## ¿Por qué importa esto?
 
-Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre del compilador en cinco lugares y te olvidas del sexto, tienes un bug silencioso. Las variables resuelven eso, pero Make tiene cuatro operadores de asignación con comportamientos distintos. Elegir el incorrecto produce bugs que solo aparecen bajo condiciones específicas — y que son difíciles de rastrear porque el error no está en la receta sino en cuándo se evaluó la variable.
+Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre del compilador en cinco lugares y te olvidas del sexto, tienes un bug silencioso. Las variables resuelven eso, pero Make tiene varios operadores de asignación con comportamientos distintos. Elegir el incorrecto produce bugs que solo aparecen bajo condiciones específicas — y que son difíciles de rastrear porque el error no está en la receta sino en cuándo se evaluó la variable.
 
-## Los cuatro operadores
+## Los operadores
 
 | Operador | Nombre | Cuándo se expande | Regla práctica |
 |----------|--------|-------------------|----------------|
 | `=`  | Recursiva (lazy) | Al usar la variable | Usa si dependes de variables definidas después |
 | `:=` | Simple (inmediata) | Al asignar | Usa siempre que puedas; es predecible |
-| `?=` | Condicional | Al asignar (si vacía) | Usa para defaults sobreescribibles desde CLI |
+| `?=` | Condicional | Al usar (crea una variable recursiva) | Usa para defaults sobreescribibles; solo asigna si la variable no está definida (vacía cuenta como definida) |
 | `+=` | Append | Hereda el tipo original | Usa para acumular listas de flags o archivos |
+| `!=` | Shell | El comando corre al asignar; el resultado se guarda como recursiva | Equivale a `:= $(shell ...)`; detalles en [02-origen-y-precedencia.md](02-origen-y-precedencia.md) |
 
 ## Ejemplo funcional — pega y ejecuta
 
@@ -34,20 +35,17 @@ IMAGE_TAG   = myapp:$(VERSION)-$(ENV)
 CFLAGS     := -Wall
 CFLAGS     += -Wextra
 
-## info: muestra configuración actual
-info:
+info: ## muestra configuración actual
 	@echo "Fecha build: $(BUILD_DATE)"
 	@echo "Entorno:     $(ENV)"
 	@echo "Versión:     $(VERSION)"
 	@echo "Imagen:      $(IMAGE_TAG)"
 	@echo "CFLAGS:      $(CFLAGS)"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|prod] [VERSION=x.y.z]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
 Ejecuta y observa:
@@ -77,8 +75,8 @@ make ENV=prod deploy        # ENV vale "prod" en todos los targets
 make CC=clang CFLAGS=-O2    # pasa múltiples variables
 ```
 
-Las variables de CLI tienen mayor precedencia que `=`, `:=` y `?=`, pero no superan a `override`.
+Las variables de CLI tienen mayor precedencia que `=`, `:=` y `?=`, pero no superan a `override`. Las de entorno, en cambio, pierden ante `=` y `:=`: el orden completo está en [02-origen-y-precedencia.md](02-origen-y-precedencia.md).
 
 ---
 
-Listo. Ve al [lab-01](../2-practicas/lab-01-variables-basicas/README.md) y ponlo en práctica.
+Sigue con [02-origen-y-precedencia.md](02-origen-y-precedencia.md) y después ve al [lab-01](../2-practicas/lab-01-variables-basicas/README.md).

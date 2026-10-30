@@ -1,0 +1,5 @@
+mkdir -p 'build'
+printf '# %s\n' 'Informe de ventas' > 'build/header.txt'
+awk -F, '{ s += $2 } END { print "Total:", s }' data/q1.csv data/q2.csv > 'build/total.txt'
+cat 'build/header.txt' 'build/total.txt' > 'build/report.txt'
+echo "Informe 'Informe de ventas' listo"

@@ -17,39 +17,31 @@
 
 .DEFAULT_GOAL := help
 
-## all: ejecuta build y test
-all: build test
+all: build test ## ejecuta build y test
 
-## build: simula compilación
-build:
+build: ## simula compilación
     @echo "Compilando..."
     @mkdir -p output
     @echo "binario" > output/app
     @echo "Build OK"
 # ERROR 1 está en las 4 líneas de arriba (mira con cuidado el whitespace)
 
-## test: ejecuta las pruebas
 # ERROR 2 está en la dependencia de abajo — crea un ciclo con 'all'
-test: all
+test: all ## ejecuta las pruebas
 	@echo "Ejecutando tests..."
 	@echo "Tests OK"
 
-## clean: elimina output/
-clean:
+clean: ## elimina output/
 	@rm -rf output
 	@echo "Limpio."
 
 # ERROR 4: este target se llama 'verify' pero está referenciado en otro lado como 'validate'
-## verify: verifica el binario generado
-verify: build
+verify: build ## verifica el binario generado
 	@test -f output/app && echo "Binario encontrado." || echo "ERROR: binario no encontrado"
 
-## validate-output: valida la salida del build (depende de validate — ERROR 4)
-validate-output: validate
+validate-output: validate ## valida la salida del build (depende de validate — ERROR 4)
 	@echo "Salida validada."
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## muestra esta ayuda
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

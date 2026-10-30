@@ -2,7 +2,7 @@
 # Lab 01 — Variables básicas (SOLUCIÓN)
 # ============================================================
 
-.PHONY: info-compilador info-entorno info-libs help
+.PHONY: info-compilador info-entorno info-libs tipos help
 
 .DEFAULT_GOAL := help
 
@@ -17,22 +17,24 @@ ENV    ?= dev
 LIBS   := -lm
 LIBS   += -lpthread
 
-## info-compilador: imprime CC y CFLAGS
-info-compilador:
+info-compilador: ## imprime CC y CFLAGS
 	@echo "CC:     $(CC)"
 	@echo "CFLAGS: $(CFLAGS)"
 
-## info-entorno: imprime el entorno actual
-info-entorno:
+info-entorno: ## imprime el entorno actual
 	@echo "Entorno: $(ENV)"
 
-## info-libs: imprime las bibliotecas enlazadas
-info-libs:
+info-libs: ## imprime las bibliotecas enlazadas
 	@echo "LIBS: $(LIBS)"
 
-## help: muestra esta ayuda
-help:
+tipos: ## muestra el sabor (flavor) de cada variable
+	@echo "CC:     $(flavor CC)"
+	@echo "CFLAGS: $(flavor CFLAGS)"
+	@echo "ENV:    $(flavor ENV)"
+	@echo "LIBS:   $(flavor LIBS)"
+	@echo "NADA:   $(flavor NADA)"
+
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|prod]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

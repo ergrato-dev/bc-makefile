@@ -58,4 +58,4 @@ Este error significa que usaste espacios donde Make exige un TAB. Configura tu e
 
 ---
 
-Listo. Ve al [lab-01](../2-practicas/lab-01-primer-target/README.md) y ponlo en práctica.
+Sigue con [02-instalacion-y-version.md](02-instalacion-y-version.md) y después ve al [lab-01](../2-practicas/lab-01-primer-target/README.md).

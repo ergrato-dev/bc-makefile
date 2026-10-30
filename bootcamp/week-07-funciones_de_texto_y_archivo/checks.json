@@ -1,0 +1,125 @@
+{
+  "semana": "07",
+  "titulo": "Funciones de texto y archivo",
+  "checks": [
+    {
+      "id": "binario-funciona",
+      "descripcion": "make all desde cero produce build/sistema y el binario inicia los tres módulos",
+      "cmd": "{make} -C {proyecto} clean >/dev/null 2>&1; rm -rf -- {proyecto}/build; {make} -C {proyecto} all >/dev/null 2>&1 && {proyecto}/build/sistema",
+      "assert": "stdout~todos los modulos iniciados",
+      "pista": "2-practicas/lab-05-combinadas/README.md, pasos 3 a 7"
+    },
+    {
+      "id": "objetos-espejo",
+      "descripcion": "Los objetos conservan la estructura de directorios de las fuentes dentro de build/",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -f {proyecto}/build/src/main.o && test -f {proyecto}/build/modules/auth/auth.o && test -f {proyecto}/build/modules/logger/logger.o",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, tabla de variables (OBJS)"
+    },
+    {
+      "id": "include-por-modulo",
+      "descripcion": "Cada directorio de módulo llega al compilador como flag -I",
+      "cmd": "{make} -C {proyecto} -n -B all",
+      "assert": "stdout~[-]Imodules/auth/ -Imodules/config/ -Imodules/logger/",
+      "pista": "2-practicas/lab-04-rutas/README.md, paso 7"
+    },
+    {
+      "id": "modulo-nuevo-sin-editar",
+      "descripcion": "Un .c nuevo en modules/logger/ se compila sin editar el Makefile",
+      "cmd": "f={proyecto}/modules/logger/metrics.c; trap 'rm -f -- $f' EXIT; echo 'void metrics_init(void) {}' > $f && {make} -C {proyecto} all >/dev/null 2>&1 && test -f {proyecto}/build/modules/logger/metrics.o",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-01-wildcard/README.md, pasos 4 y 7"
+    },
+    {
+      "id": "segunda-pasada-sin-trabajo",
+      "descripcion": "Una segunda ejecución de make all no rehace nada",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -x {proyecto}/build/sistema && {make} -C {proyecto} all",
+      "assert": "stdout~Nothing to be done|is up to date",
+      "pista": "2-practicas/lab-05-combinadas/README.md, paso 7"
+    },
+    {
+      "id": "report-core",
+      "descripcion": "make report cuenta las fuentes core y las lista sin directorio",
+      "cmd": "{make} -C {proyecto} report",
+      "assert": "stdout~Fuentes core: +2 archivos [(]app.c main.c[)]",
+      "pista": "2-practicas/lab-04-rutas/README.md, paso 4"
+    },
+    {
+      "id": "report-directorios",
+      "descripcion": "make report muestra los directorios de módulo ordenados y sin repetir",
+      "cmd": "{make} -C {proyecto} report",
+      "assert": "stdout~Directorios: +modules/auth/ modules/config/ modules/logger/ *$",
+      "pista": "3-proyecto/README.md, tabla de variables (MODULE_DIRS)"
+    },
+    {
+      "id": "report-objetos",
+      "descripcion": "make report cuenta 5 objetos con $(words)",
+      "cmd": "{make} -C {proyecto} report",
+      "assert": "stdout~Total objetos: +5 *$",
+      "pista": "1-teoria/01-contexto.md, referencia rápida"
+    },
+    {
+      "id": "manifest-una-por-linea",
+      "descripcion": "make manifest escribe build/manifest.txt con las 5 fuentes, una por línea",
+      "cmd": "{make} -C {proyecto} manifest >/dev/null 2>&1; grep -cE '^(src|modules)/.*[.]c$' {proyecto}/build/manifest.txt",
+      "assert": "stdout~^5$",
+      "pista": "3-proyecto/README.md, entregable 3"
+    },
+    {
+      "id": "report-modulos",
+      "descripcion": "make report lista los nombres de módulo sin directorio ni barra final",
+      "cmd": "{make} -C {proyecto} report",
+      "assert": "stdout~^Módulos: +auth config logger *$",
+      "pista": "2-practicas/lab-04-rutas/README.md, paso 10"
+    },
+    {
+      "id": "objs-de-modulo",
+      "descripcion": "make objs MODULE=logger lista solo los objetos de ese módulo",
+      "cmd": "{make} -s -C {proyecto} objs MODULE=logger",
+      "assert": "stdout~^build/modules/logger/logger.o *$",
+      "pista": "2-practicas/lab-03-filter/README.md, paso 9"
+    },
+    {
+      "id": "objs-modulo-con-espacios",
+      "descripcion": "make objs normaliza con $(strip) los espacios alrededor de MODULE",
+      "cmd": "{make} -s -C {proyecto} objs 'MODULE= logger '",
+      "assert": "stdout~^build/modules/logger/logger.o *$",
+      "pista": "1-teoria/02-trampas-y-utilidades.md, sección strip"
+    },
+    {
+      "id": "objs-modulo-inexistente",
+      "descripcion": "make objs con un módulo inexistente falla listando los módulos disponibles",
+      "cmd": "{make} -C {proyecto} objs MODULE=nope",
+      "assert": "stdout~nope.*no existe.*auth config logger",
+      "pista": "2-practicas/lab-03-filter/README.md, paso 10"
+    },
+    {
+      "id": "clean-borra-build",
+      "descripcion": "make clean elimina build/ por completo",
+      "cmd": "{make} -C {proyecto} all >/dev/null 2>&1; test -d {proyecto}/build && {make} -C {proyecto} clean >/dev/null && test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si BUILD está vacío",
+      "cmd": "{make} -C {proyecto} clean BUILD=",
+      "assert": "stdout~BUILD vac",
+      "pista": "Semana 03: guardas de rm -rf; plantilla en el TODO de clean"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO del inicio del starter"
+    }
+  ]
+}

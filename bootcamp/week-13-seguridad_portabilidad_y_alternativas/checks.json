@@ -1,0 +1,125 @@
+{
+  "semana": "13",
+  "titulo": "Seguridad, portabilidad y alternativas",
+  "checks": [
+    {
+      "id": "version-minima",
+      "descripcion": "El Makefile se niega a correr con una versión de Make anterior a MIN_MAKE_VERSION",
+      "cmd": "{make} -C {proyecto} help MIN_MAKE_VERSION=99.0",
+      "assert": "stdout~[Rr]equiere GNU Make >= 99.0",
+      "pista": "2-practicas/lab-05-portabilidad/README.md, paso 1"
+    },
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO 1 del starter"
+    },
+    {
+      "id": "sin-efectos-al-parsear",
+      "descripcion": "make help y make -n no crean nada en disco",
+      "cmd": "rm -rf {proyecto}/build; {make} -C {proyecto} help >/dev/null 2>&1; {make} -C {proyecto} -n -B package deploy DEPLOY_TOKEN=x >/dev/null 2>&1; test ! -e {proyecto}/build",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-01-parse-time-vs-run-time/README.md, pasos 1 a 4"
+    },
+    {
+      "id": "env-validado",
+      "descripcion": "Un ENV_FILE con código Make no se ejecuta y uno con claves válidas se acepta",
+      "cmd": "d=$(mktemp -d); printf 'PWN := $(shell touch %s/pwned)' $d > $d/env; printf 'DEPLOY_URL=file:///tmp/remoto/' > $d/ok; {make} -C {proyecto} help ENV_FILE=$d/env >/dev/null 2>&1; test ! -e $d/pwned && {make} -C {proyecto} help ENV_FILE=$d/ok >/dev/null 2>&1; r=$?; rm -rf $d; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-01-parse-time-vs-run-time/README.md, pasos 5 y 6"
+    },
+    {
+      "id": "sin-export-global",
+      "descripcion": "Las recetas no reciben variables que el Makefile no exporta explícitamente",
+      "cmd": "{make} -C {proyecto} --eval 'CANARIO := x' --eval '__probe: ; @env | grep -c ^CANARIO=' __probe 2>&1",
+      "assert": "stdout~^0$",
+      "pista": "2-practicas/lab-03-secretos-y-descargas/README.md, paso 1"
+    },
+    {
+      "id": "version-sin-inyeccion",
+      "descripcion": "Una VERSION con código de shell se rechaza sin ejecutar nada",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} package 'VERSION=1.0.0`touch '$d'/pwned`' >/dev/null 2>&1; test ! -e $d/pwned; r=$?; rm -rf $d; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-inyeccion-rota/README.md, paso 4"
+    },
+    {
+      "id": "branch-como-dato",
+      "descripcion": "Una BRANCH con código de shell se guarda como texto en BUILDINFO sin ejecutarse",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -B package 'BRANCH=feat`touch '$d'/pwned`' >/dev/null 2>&1; test ! -e $d/pwned && tar -xzOf {proyecto}/build/notify-0.1.0.tar.gz BUILDINFO | grep -q touch; r=$?; rm -rf $d; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-inyeccion-rota/README.md, paso 5"
+    },
+    {
+      "id": "secreto-fuera-de-dry-run",
+      "descripcion": "make -n deploy muestra $DEPLOY_TOKEN y nunca el valor del token",
+      "cmd": "f=$(mktemp); {make} -C {proyecto} -n -B deploy DEPLOY_TOKEN=canario-s3cr3t-42 > $f 2>&1; grep -q DEPLOY_TOKEN $f && ! grep -q canario-s3cr3t $f; r=$?; rm -f $f; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-secretos-y-descargas/README.md, pasos 3 y 4"
+    },
+    {
+      "id": "credenciales-600",
+      "descripcion": "build/curl-auth.conf se crea legible solo por su dueño",
+      "cmd": "rm -rf {proyecto}/build; {make} -C {proyecto} build/curl-auth.conf DEPLOY_TOKEN=x >/dev/null 2>&1; ls -l {proyecto}/build/curl-auth.conf | cut -c5-10",
+      "assert": "stdout~^------$",
+      "pista": "2-practicas/lab-03-secretos-y-descargas/README.md, paso 5"
+    },
+    {
+      "id": "clean-guarda-vacia",
+      "descripcion": "make clean se niega a borrar si BUILD_DIR está vacío",
+      "cmd": "{make} -C {proyecto} -n clean BUILD_DIR=",
+      "assert": "stdout~BUILD_DIR vac",
+      "pista": "2-practicas/lab-02-inyeccion-rota/README.md, paso 7"
+    },
+    {
+      "id": "clean-rutas-peligrosas",
+      "descripcion": "make clean se niega a borrar rutas absolutas o con ..",
+      "cmd": "d=$(mktemp -d); { {make} -C {proyecto} -n clean BUILD_DIR=$d; {make} -C {proyecto} -n clean BUILD_DIR=build/../..; } 2>&1 | grep -c BUILD_DIR; rmdir $d",
+      "assert": "stdout~^2$",
+      "pista": "2-practicas/lab-02-inyeccion-rota/README.md, paso 7"
+    },
+    {
+      "id": "instalador-verificado",
+      "descripcion": "make install-tools solo ejecuta el instalador si su SHA-256 coincide",
+      "cmd": "d=$(mktemp -d); printf 'touch %s/pwned' $d > $d/inst.sh; rm -rf {proyecto}/build; {make} -C {proyecto} install-tools TOOL_URL=file://$d/inst.sh >/dev/null 2>&1; test ! -e $d/pwned && {make} -C {proyecto} install-tools >/dev/null 2>&1 && test -x {proyecto}/build/tools/fmt-tool; r=$?; rm -rf $d; exit $r",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-secretos-y-descargas/README.md, paso 7"
+    },
+    {
+      "id": "sin-avisos-undefined",
+      "descripcion": "make --warn-undefined-variables -n no avisa de ninguna variable indefinida",
+      "cmd": "{make} -C {proyecto} --warn-undefined-variables -n -B package deploy clean DEPLOY_TOKEN=x 2>&1 | grep -E 'undefined variable|[*][*][*]'",
+      "assert": "exit!=0",
+      "pista": "2-practicas/lab-04-testing-de-makefiles/README.md, paso 1"
+    },
+    {
+      "id": "paquete-make-q",
+      "descripcion": "El paquete es un target de archivo: make -q lo da por bueno tras package y por obsoleto tras tocar src/",
+      "cmd": "{make} -C {proyecto} package VERSION=1.2.3 >/dev/null 2>&1 && {make} -C {proyecto} -q build/notify-1.2.3.tar.gz VERSION=1.2.3 && touch {proyecto}/src/notify.sh && ! {make} -C {proyecto} -q build/notify-1.2.3.tar.gz VERSION=1.2.3",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-testing-de-makefiles/README.md, paso 3"
+    },
+    {
+      "id": "autoprueba-check",
+      "descripcion": "make check ejecuta la autoprueba del Makefile y termina sin errores",
+      "cmd": "{make} -C {proyecto} check",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-04-testing-de-makefiles/README.md, paso 4"
+    },
+    {
+      "id": "auditoria-sin-todo",
+      "descripcion": "AUDITORIA.md existe y no contiene ningún TODO",
+      "cmd": "test -s {proyecto}/AUDITORIA.md && ! grep -q TODO {proyecto}/AUDITORIA.md",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, entregable 2"
+    },
+    {
+      "id": "auditoria-hallazgos",
+      "descripcion": "AUDITORIA.md documenta al menos 8 hallazgos en su tabla",
+      "cmd": "grep -cE '^[|] *H[0-9]+ *[|]' {proyecto}/AUDITORIA.md",
+      "assert": "stdout~^([89]|[1-9][0-9])$",
+      "pista": "3-proyecto/README.md, entregable 2"
+    }
+  ]
+}

@@ -24,8 +24,10 @@ Lee `CLAUDE.md` y luego revisa todos los archivos de `bootcamp/<semana>/`. Repor
 **Estructura**
 - [ ] Existen todos los directorios: `0-assets/`, `1-teoria/`, `2-practicas/`, `3-proyecto/`, `4-recursos/`, `5-glosario/`
 - [ ] `README.md` de la semana tiene todas las secciones requeridas
-- [ ] `rubrica-evaluacion.md` existe y suma 100 pts correctamente
-- [ ] Hay entre 5 y 6 labs en `2-practicas/`
+- [ ] `rubrica-evaluacion.md` usa 30/40/30 con 10 preguntas de Conocimiento y 70% por evidencia
+- [ ] `checks.json` existe, es válido; `./scripts/verificar-semana.sh NN` falla contra el starter y `ENTREGA=solucion ./scripts/verificar-semana.sh NN` pasa N/N
+- [ ] README tiene `## 🔗 Navegación` y la semana figura en `bootcamp/README.md`
+- [ ] Hay 6 labs en `2-practicas/`
 - [ ] Cada lab tiene `README.md`, `starter/Makefile` y `solucion/Makefile`
 - [ ] El proyecto tiene `README.md`, `starter/` y `solucion/`
 
@@ -37,10 +39,12 @@ Lee `CLAUDE.md` y luego revisa todos los archivos de `bootcamp/<semana>/`. Repor
 - [ ] `.DEFAULT_GOAL` definido en Makefiles de solución
 
 **Calidad de contenido**
-- [ ] `1-teoria/01-contexto.md` tiene menos de 600 palabras
+- [ ] Cada archivo de `1-teoria/` tiene menos de 600 palabras de prosa
 - [ ] La teoría no repite lo que los labs explican paso a paso
 - [ ] Los labs tienen criterios de éxito verificables
-- [ ] El proyecto toma ~2h30 (no más de 4, no menos de 1h30)
+- [ ] El proyecto toma ~3h (no más de 4, no menos de 2h)
+- [ ] Soluciones desde la semana 03 usan preámbulo estricto; sin `for` recursivo, `export` global ni `rm -rf` sin guarda
+- [ ] `./scripts/verificar-enlaces.sh` sale 0
 - [ ] Idioma: prosa en español, código en inglés
 
 **Progresión pedagógica**

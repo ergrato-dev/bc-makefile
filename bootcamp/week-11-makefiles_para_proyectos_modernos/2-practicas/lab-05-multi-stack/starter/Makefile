@@ -1,0 +1,86 @@
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
+.PHONY: all install test lint backend-install backend-test backend-lint backend-format frontend-install frontend-test frontend-lint clean info help
+.DEFAULT_GOAL := help
+
+# ── Backend Python ──────────────────────────────────────────────────────────────
+UV       := uv
+VENV     := backend/.venv
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN      := $(UV) run --no-sync
+PYTEST   := $(RUN) pytest
+RUFF     := $(RUN) ruff
+
+# ── Frontend Node.js ────────────────────────────────────────────────────────────
+PNPM     := pnpm
+NODE_MOD := frontend/node_modules
+
+# ── Docker ─────────────────────────────────────────────────────────────────────
+# Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
+COMPOSE  := docker compose
+
+# TODO 1: Define el target '$(VENV)/.installed' con dependencias backend/pyproject.toml y backend/uv.lock
+#   Receta: cd backend && $(UV) sync --locked   (crea backend/.venv)
+#           @touch $@
+#   Antes de instalar, imprime "@echo '[backend] Instalando dependencias...'"
+
+
+# TODO 2: Define 'backend-install' como alias del sentinel
+
+
+# TODO 3: Define 'backend-test' que dependa de backend-install y ejecute:
+#   @echo "[backend] Ejecutando tests..."
+#   cd backend && $(PYTEST) tests/ -v
+
+
+# TODO 4: Define el target 'frontend/node_modules/.installed' con dependencias
+#         frontend/package.json y frontend/pnpm-lock.yaml
+#   Receta: cd frontend && $(PNPM) install --frozen-lockfile
+#           @mkdir -p $(@D)
+#           @touch $@
+#   (el mkdir asegura que node_modules/ exista aunque no haya dependencias)
+
+
+# TODO 5: Define 'frontend-install' como alias del sentinel
+
+
+# TODO 6: Define 'frontend-test' que dependa de frontend-install y ejecute:
+#   @echo "[frontend] Ejecutando tests..."
+#   cd frontend && node tests/test.js
+
+
+# TODO 7: Define 'install' que dependa de backend-install y frontend-install
+
+
+# TODO 8: Define 'test' que dependa de backend-test y frontend-test
+
+
+# TODO 9: Calidad del backend con ruff (instalado por el grupo dev de backend/pyproject.toml):
+#   backend-lint   → depende de backend-install;  cd backend && $(RUFF) check src/
+#   backend-format → depende de backend-install;  cd backend && $(RUFF) format src/ tests/
+#   Cada receta empieza con @echo "[backend] ..." como las demás.
+
+
+# TODO 10: 'frontend-lint' (depende de frontend-install; cd frontend && $(PNPM) run lint)
+#          y 'lint' que dependa de backend-lint y frontend-lint
+
+
+clean: ## Eliminar artefactos de backend y frontend
+	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
+	$(if $(NODE_MOD),,$(error NODE_MOD vacía: rm -rf no se ejecuta))
+	@rm -rf -- '$(VENV)' backend/src/__pycache__ backend/tests/__pycache__ backend/.pytest_cache backend/.ruff_cache
+	@rm -rf -- '$(NODE_MOD)'
+	@echo "Limpiado."
+
+info: ## Mostrar información del stack
+	@echo "=== Stack multi-lenguaje ==="
+	@echo "Backend:   $(shell $(UV) --version 2>&1) — backend/"
+	@echo "Frontend:  Node.js $(shell node --version 2>/dev/null || echo 'no instalado') — frontend/"
+	@echo "Docker:    $(COMPOSE) disponible"
+
+help: ## Mostrar ayuda
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

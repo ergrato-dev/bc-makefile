@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="assets/bootcamp-header.svg" alt="Bootcamp GNU Make — Domina el Build System" width="800">
+  <img src="assets/bootcamp-header.svg" alt="Bootcamp GNU Make — Zero to Advanced" width="800">
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg" alt="License CC BY-NC-SA 4.0"></a>
-  <a href="#"><img src="https://img.shields.io/badge/semanas-10-yellow.svg" alt="10 Semanas"></a>
-  <a href="#"><img src="https://img.shields.io/badge/horas-80-orange.svg" alt="80 Horas"></a>
-  <a href="#"><img src="https://img.shields.io/badge/GNU%20Make-≥4.x-A42E2B?logo=gnu&logoColor=white" alt="GNU Make"></a>
+  <a href="#"><img src="https://img.shields.io/badge/semanas-14-yellow.svg" alt="14 Semanas"></a>
+  <a href="#"><img src="https://img.shields.io/badge/horas-140-orange.svg" alt="140 Horas"></a>
+  <a href="#"><img src="https://img.shields.io/badge/GNU%20Make-≥4.3-A42E2B?logo=gnu&logoColor=white" alt="GNU Make ≥ 4.3"></a>
 </p>
 
 <p align="center">
@@ -17,41 +17,41 @@
 
 ## 📋 Descripción
 
-Bootcamp intensivo de **10 semanas (~2.5 meses)** enfocado en el dominio de **GNU Make** como herramienta de automatización y build system. Diseñado para llevar a desarrolladores de un uso básico a **dominio avanzado**, con énfasis en proyectos reales, patrones profesionales y técnicas de DevOps.
+Bootcamp **Zero to Advanced** de **14 semanas (~3.5 meses)** enfocado en el dominio de **GNU Make** como herramienta de automatización y build system. Autoestudio asincrónico, **10 h/semana**, 100% práctico: lleva a desarrolladores que nunca dominaron Make hasta diseñar build systems modulares, paralelos y seguros listos para producción.
 
 ### 🎯 Objetivos
 
 Al finalizar el bootcamp, los estudiantes serán capaces de:
 
 - ✅ Escribir Makefiles idiomáticos con targets, dependencias y recetas correctas
-- ✅ Dominar los tipos de variables (`=`, `:=`, `?=`, `+=`) y su expansión
+- ✅ Dominar los tipos de variables (`=`, `:=`, `?=`, `+=`, `!=`) y su expansión
+- ✅ Escribir recetas robustas en modo estricto (`.SHELLFLAGS`, `.DELETE_ON_ERROR`, `.ONESHELL`)
 - ✅ Usar variables automáticas (`$@`, `$<`, `$^`, `$?`, `$*`) con fluidez
-- ✅ Crear reglas de patrón genéricas (`%.o: %.c`) y static pattern rules
-- ✅ Aplicar funciones de texto y archivo (`$(wildcard)`, `$(patsubst)`, `$(filter)`)
-- ✅ Usar funciones avanzadas (`$(foreach)`, `$(call)`, `$(eval)`, `$(shell)`)
-- ✅ Integrar Make con proyectos Python, Docker y Node.js
-- ✅ Construir pipelines CI/CD locales con Make como orquestador
-- ✅ Aplicar técnicas avanzadas: condicionales, `include`, recursión, depuración
-- ✅ Diseñar build systems modulares y reutilizables listos para producción
+- ✅ Crear reglas de patrón, generar dependencias automáticas (`-MMD -MP`) y usar targets especiales
+- ✅ Aplicar funciones de texto, archivo y metaprogramación (`$(foreach)`, `$(call)`, `$(eval)`, `$(file)`)
+- ✅ Depurar Makefiles con `--trace`, `--warn-undefined-variables` y `-p`
+- ✅ Paralelizar builds con `-j`, `--output-sync` y recursión que no se traga los fallos
+- ✅ Orquestar proyectos Python, Docker y Node.js y pipelines CI/CD locales con Make
+- ✅ Proteger un Makefile: secretos, `.env`, inyección de comandos, portabilidad y alternativas
 
 ### 🔧 ¿Por qué GNU Make?
 
 > **Make moderno desde el día 1** — Sin antipatrones legacy, solo las mejores prácticas actuales.
 
-GNU Make lleva más de 40 años siendo la columna vertebral de los build systems más críticos del mundo. Este bootcamp demuestra que Make no es una herramienta antigua: es la herramienta de automatización más ubicua, portable y poderosa disponible en cualquier sistema Unix. Los estudiantes aprenden directamente los patrones que encontrarán en proyectos reales de Linux, Open Source y DevOps.
+Make nació en 1976 y GNU Make en 1988: casi cuatro décadas como columna vertebral de los build systems más críticos del mundo. Este bootcamp demuestra que Make no es una herramienta antigua: es la herramienta de automatización más ubicua, portable y poderosa disponible en cualquier sistema Unix. Los estudiantes aprenden directamente los patrones que encontrarán en proyectos reales de Linux, Open Source y DevOps.
 
 ---
 
 ## 🗓️ Estructura del Bootcamp
 
-|         Etapa          | Semanas | Horas | Temas Principales                                              |
-| :--------------------: | :-----: | :---: | -------------------------------------------------------------- |
-| **Fundamentos**        |   1-2   |  16h  | Targets, variables, dependencias, `.PHONY`                     |
-| **Intermedio**         |   3-5   |  24h  | Variables automáticas, pattern rules, funciones                |
-| **Avanzado**           |   6-8   |  24h  | Funciones avanzadas, proyectos modernos, DevOps                |
-| **Producción**         |  9-10   |  16h  | Técnicas avanzadas, proyecto integrador                        |
+|         Fase           | Semanas | Horas | Temas Principales                                                    |
+| :--------------------: | :-----: | :---: | -------------------------------------------------------------------- |
+| **Fundamentos**        |   1-4   |  40h  | Targets, variables, shell y modo estricto, variables automáticas     |
+| **Intermedio**         |   5-8   |  40h  | Pattern rules, dependencias automáticas, funciones                   |
+| **Avanzado**           |  9-11   |  30h  | Depuración, paralelismo, recursión, proyectos modernos               |
+| **Producción**         |  12-14  |  30h  | DevOps, seguridad, portabilidad, proyecto integrador                 |
 
-**Total: 10 semanas** | **80 horas** de formación intensiva
+**Total: 14 semanas** | **140 horas** | Índice con estado de cada semana: [bootcamp/README.md](bootcamp/README.md)
 
 ---
 
@@ -61,12 +61,13 @@ Cada semana incluye:
 
 ```
 bootcamp/week-NN-nombre_del_tema/
-├── README.md                  # Descripción y objetivos
-├── rubrica-evaluacion.md      # Criterios de evaluación
+├── README.md                  # Descripción, objetivos y navegación
+├── rubrica-evaluacion.md      # Conocimiento 30% / Desempeño 40% / Producto 30%
+├── checks.json                # Comprobaciones automáticas (autograding)
 ├── 0-assets/                  # Diagramas Mermaid
-├── 1-teoria/                  # Contexto mínimo (≤ 30 min)
-├── 2-practicas/               # 5-6 labs progresivos (~50 min c/u)
-├── 3-proyecto/                # Proyecto semanal integrador (2h 30min)
+├── 1-teoria/                  # Contexto mínimo (≤ 45 min)
+├── 2-practicas/               # 6 labs progresivos (~60 min c/u)
+├── 3-proyecto/                # Proyecto semanal integrador (3 h)
 ├── 4-recursos/                # Recursos adicionales
 │   ├── ebooks-free/
 │   ├── videografia/
@@ -74,27 +75,31 @@ bootcamp/week-NN-nombre_del_tema/
 └── 5-glosario/                # Términos clave de la semana
 ```
 
-### 🗺️ Plan de 10 Semanas
+### 🗺️ Plan de 14 Semanas
 
 | Semana | Tema | Proyecto Semanal |
 |--------|------|-----------------|
 | [01 — Tu primer Makefile](bootcamp/week-01-tu_primer_makefile/) | Targets, dependencias, recetas, `.PHONY` | Makefile para sitio estático |
-| [02 — Variables y Expansión](bootcamp/week-02-variables_y_expansion/) | `=` `:=` `?=` `+=`, override CLI | Makefile parametrizable multi-entorno |
-| [03 — Variables Automáticas](bootcamp/week-03-variables_automaticas/) | `$@` `$<` `$^` `$?` `$*` `$(@D)` | Build system para proyecto C multi-archivo |
-| [04 — Reglas de Patrón](bootcamp/week-04-reglas_de_patron/) | Pattern rules `%.o: %.c`, static pattern rules | Compilador genérico para C |
-| [05 — Funciones de Texto y Archivo](bootcamp/week-05-funciones_de_texto_y_archivo/) | `$(wildcard)` `$(patsubst)` `$(filter)` `$(dir)` | Generador automático de reglas |
-| [06 — Funciones Avanzadas](bootcamp/week-06-funciones_avanzadas/) | `$(foreach)` `$(call)` `$(eval)` `$(shell)` | Meta-Makefile: Makefiles que se generan solos |
-| [07 — Make para Proyectos Modernos](bootcamp/week-07-makefiles_para_proyectos_modernos/) | Python, Docker, Node.js con Make | Makefile de microservicio listo para producción |
-| [08 — Make como Orquestador DevOps](bootcamp/week-08-make_como_orquestador_devops/) | CI/CD local, git hooks, `.env`, secrets | Pipeline local completo |
-| [09 — Técnicas Avanzadas](bootcamp/week-09-tecnicas_avanzadas/) | Condicionales, `include`, recursión, depuración | Makefile modular reutilizable |
-| [10 — Proyecto Integrador](bootcamp/week-10-proyecto_integrador/) | Integración de todo lo aprendido | Build system multi-lenguaje con Make |
+| [02 — Variables y Expansión](bootcamp/week-02-variables_y_expansion/) | `=` `:=` `?=` `+=` `!=`, override CLI, `$(origin)` | Makefile parametrizable multi-entorno |
+| [03 — Shell y Modo Estricto](bootcamp/week-03-shell_y_modo_estricto/) | `SHELL`, `.SHELLFLAGS`, `.ONESHELL`, `.DELETE_ON_ERROR` | Makefile de tareas a prueba de fallos |
+| [04 — Variables Automáticas](bootcamp/week-04-variables_automaticas/) | `$@` `$<` `$^` `$?` `$*` `$(@D)` | Build system para proyecto C multi-archivo |
+| [05 — Reglas de Patrón](bootcamp/week-05-reglas_de_patron/) | Pattern rules `%.o: %.c`, static pattern rules | Compilador genérico para C |
+| [06 — Dependencias y Targets Especiales](bootcamp/week-06-dependencias_y_targets_especiales/) | `-MMD -MP`, order-only, `vpath`, `&:`, `.SECONDARY` | Build C con dependencias de headers exactas |
+| [07 — Funciones de Texto y Archivo](bootcamp/week-07-funciones_de_texto_y_archivo/) | `$(wildcard)` `$(patsubst)` `$(filter)` `$(dir)` | Generador automático de reglas |
+| [08 — Funciones Avanzadas](bootcamp/week-08-funciones_avanzadas/) | `$(foreach)` `$(call)` `$(eval)` `$(shell)` `$(file)` | Meta-Makefile: Makefiles que se generan solos |
+| [09 — Condicionales, Include y Depuración](bootcamp/week-09-condicionales_include_y_depuracion/) | `ifeq`, `include`, `--trace`, `--warn-undefined-variables` | Makefile modular reutilizable |
+| [10 — Paralelismo y Recursión](bootcamp/week-10-paralelismo_y_recursion/) | `-j`, jobserver, `-O`, `.WAIT`, `--shuffle`, sub-makes | Monorepo con build paralelo y recursión segura |
+| [11 — Make para Proyectos Modernos](bootcamp/week-11-makefiles_para_proyectos_modernos/) | Python + uv, Docker, Node.js con Make | Makefile de microservicio listo para producción |
+| [12 — Make como Orquestador DevOps](bootcamp/week-12-make_como_orquestador_devops/) | CI/CD local, git hooks, `.env`, secrets | Pipeline local completo |
+| [13 — Seguridad, Portabilidad y Alternativas](bootcamp/week-13-seguridad_portabilidad_y_alternativas/) | Amenazas, testing de Makefiles, POSIX/BSD make, just/Task/ninja | Auditoría y endurecimiento de un Makefile real |
+| [14 — Proyecto Integrador](bootcamp/week-14-proyecto_integrador/) | Integración de todo lo aprendido | Build system multi-lenguaje con Make |
 
 ### 🔑 Componentes Clave
 
-- 📖 **Teoría**: Contexto mínimo indispensable (máx. 30 min/semana)
-- 💻 **Práctica**: 5-6 labs progresivos con starter + solución de referencia
+- 📖 **Teoría**: Contexto mínimo indispensable (máx. 45 min/semana)
+- 💻 **Práctica**: 6 labs progresivos con starter y criterios de éxito verificables
 - 🐛 **Debugging**: Labs con errores intencionados para desarrollar criterio real
-- 📝 **Evaluación**: Rúbrica con criterios verificables por comandos `make`
+- 🤖 **Autograding**: `./scripts/verificar-semana.sh NN` comprueba tu trabajo ([cómo funciona](docs/autograding.md))
 - 🎓 **Recursos**: Glosario, ebooks gratuitos, videografía y webgrafía
 
 ---
@@ -103,55 +108,33 @@ bootcamp/week-NN-nombre_del_tema/
 
 | Herramienta | Versión | Uso |
 |-------------|---------|-----|
-| GNU Make    | **≥ 4.x** | Herramienta central del bootcamp |
-| GCC / Clang | cualquiera | Semanas 3-4 (proyectos C) |
-| Python      | **3.x**   | Semana 7 (integración Make + Python) |
-| Docker      | cualquiera | Semana 7-8 (integración Make + Docker) |
-| Node.js     | **≥ 20**  | Semana 7 (integración Make + Node.js) |
+| GNU Make    | **≥ 4.3** (4.4.1 recomendada) | Herramienta central del bootcamp |
+| GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Semanas 4-10 y 14 (proyectos C) |
+| Python      | **3.14** + uv (nunca pip) | Semanas 11-14 |
+| Docker      | Engine 27+ con Compose v2 | Semanas 11-14 |
+| Node.js     | **26 LTS** + pnpm (nunca npm) | Semanas 11-14 |
+| jq          | cualquiera | Autograding |
 | Git         | cualquiera | Control de versiones |
-| VS Code     | última     | Editor recomendado |
 
-**Entorno de desarrollo**: Linux, macOS o WSL2 en Windows — GNU Make disponible por defecto.
+Versiones exactas y por qué: [docs/stack-versions.md](docs/stack-versions.md).
 
-**Verificar instalación**: `make --version` debe mostrar `GNU Make 4.x` o superior.
+> ⚠️ **macOS** trae GNU Make 3.81 (2006), que no sirve para este bootcamp. Instala `gmake` con Homebrew: [docs/setup-entorno.md](docs/setup-entorno.md).
 
 ---
 
 ## 🚀 Inicio Rápido
 
-### Prerrequisitos
-
-- **GNU Make ≥ 4.x** instalado (`make --version`)
-- **Git** para control de versiones
-- **VS Code** (recomendado) con extensiones incluidas
-- Terminal Linux/macOS o WSL2 en Windows
-
-### 1. Clonar el Repositorio
-
 ```bash
 git clone https://github.com/ergrato-dev/bc-makefile.git
 cd bc-makefile
+./scripts/verificar-semana.sh --doctor     # comprueba tu entorno
 ```
 
-### 2. Instalar Extensiones de VS Code
+Empieza por [bootcamp/week-01-tu_primer_makefile](bootcamp/week-01-tu_primer_makefile/README.md). Cada semana contiene un `README.md` con instrucciones, tiempo estimado y criterios de éxito verificables. Trabajas en las carpetas `starter/`; al terminar la semana, desde la raíz del repositorio:
 
 ```bash
-# Abrir en VS Code
-code .
-
-# Las extensiones recomendadas aparecerán automáticamente
-# O ejecutar: Ctrl+Shift+P → "Extensions: Show Recommended Extensions"
+./scripts/verificar-semana.sh 01
 ```
-
-### 3. Navegar a la Semana Actual
-
-```bash
-cd bootcamp/week-01-tu_primer_makefile
-```
-
-### 4. Seguir las Instrucciones
-
-Cada semana contiene un `README.md` con instrucciones detalladas, tiempo estimado y criterios de éxito verificables.
 
 ---
 
@@ -163,24 +146,23 @@ Cada semana contiene un `README.md` con instrucciones detalladas, tiempo estimad
 - 🧩 **Práctica Deliberada** — labs progresivos con dificultad incremental
 - 🐛 **Debugging Intencional** — errores reales para desarrollar criterio
 - 🔄 **Build Challenges** — problemas de automatización del mundo real
-- 👥 **Code Review entre pares**
-- 🎮 **Live Coding**
 
-### Distribución del Tiempo (8h/semana)
+### Distribución del Tiempo (10h/semana)
 
-- **Teoría**: 30 minutos
-- **Prácticas**: 5 horas (5-6 labs × ~50 min)
-- **Proyecto**: 2 horas 30 minutos
+- **Teoría**: 45 minutos
+- **Conocimiento**: 15 minutos (10 preguntas de la rúbrica)
+- **Prácticas**: 6 horas (6 labs × ~60 min)
+- **Proyecto**: 3 horas
 
 ### Evaluación
 
-Cada semana incluye tres tipos de evidencias:
+Cada semana incluye tres evidencias:
 
-1. **Labs completados 💻** (50%): 5-6 labs con outputs verificables (`make <target>`)
-2. **Proyecto semanal funcional 📦** (30%): Makefile integrador que pasa todos los tests
-3. **Calidad del Makefile 🏗️** (20%): `.PHONY`, `help`, estilo, variables correctas
+1. **🧠 Conocimiento** (30%): 10 preguntas conceptuales, respondidas por escrito
+2. **💪 Desempeño** (40%): los 6 labs, verificados con `make` y con el autograding
+3. **📦 Producto** (30%): proyecto semanal — 60 pts automáticos (`checks.json`) + 40 pts de calidad (`.PHONY`, `help`, modo estricto, estilo)
 
-**Criterio de aprobación**: Mínimo 70% en total.
+**Criterio de aprobación**: mínimo **70% en cada evidencia**, no en el promedio.
 
 ---
 
@@ -218,7 +200,7 @@ Ver el archivo [LICENSE](LICENSE) para el texto completo.
 
 ## 🏆 Agradecimientos
 
-- [GNU Make](https://www.gnu.org/software/make/) — Por cuatro décadas siendo el build system más confiable del mundo
+- [GNU Make](https://www.gnu.org/software/make/) — Por casi cuatro décadas siendo el build system más confiable del mundo
 - [GNU Make Manual](https://www.gnu.org/software/make/manual/) — La documentación oficial más completa
 - Comunidad Open Source — Por proyectos reales donde Make sigue siendo el estándar
 - Todos los contribuidores
@@ -229,12 +211,15 @@ Ver el archivo [LICENSE](LICENSE) para el texto completo.
 
 - [📜 Código de Conducta](CODE_OF_CONDUCT.md)
 - [🔒 Política de Seguridad](SECURITY.md)
+- [🛠️ Preparar el entorno](docs/setup-entorno.md)
+- [🤖 Autograding](docs/autograding.md)
+- [📦 Versiones del stack](docs/stack-versions.md)
 
 ---
 
 <p align="center">
-  <strong>🎓 Bootcamp GNU Make — Domina el Build System</strong><br>
-  <em>De usuario básico a experto en automatización en 10 semanas</em>
+  <strong>🎓 Bootcamp GNU Make — Zero to Advanced</strong><br>
+  <em>De cero a avanzado en automatización en 14 semanas</em>
 </p>
 
 <p align="center">

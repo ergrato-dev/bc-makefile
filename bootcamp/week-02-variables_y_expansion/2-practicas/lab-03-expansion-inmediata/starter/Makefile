@@ -5,7 +5,7 @@
 # Objetivo: ver la diferencia entre = y := con $(shell ...)
 # ============================================================
 
-.PHONY: comparar git-info help
+.PHONY: comparar git-info asignar-shell help
 
 .DEFAULT_GOAL := help
 
@@ -27,8 +27,14 @@
 # TODO: define VERSION con := en formato "0.1.0-$(GIT_HASH)"
 # VERSION := ...
 
-## comparar: imprime cada timestamp dos veces para ver si cambia
-comparar:
+# ── Asignación con la shell (!=) ──────────────────────────────
+# TODO (paso 8): define con != (sin $(shell ...)):
+#   KERNEL       != uname -s
+#   PRECIO_BANG  != echo 'cuesta $$5'
+# y con := para comparar:
+#   PRECIO_SHELL := $(shell echo 'cuesta $$5')
+
+comparar: ## imprime cada timestamp dos veces para ver si cambia
 	@echo "--- Con = (lazy, se re-ejecuta) ---"
 	# TODO: @echo "  Primera lectura:  $(TIMESTAMP_LAZY)"
 	# TODO: @echo "  Segunda lectura:  $(TIMESTAMP_LAZY)"
@@ -36,14 +42,18 @@ comparar:
 	# TODO: @echo "  Primera lectura:  $(TIMESTAMP_EAGER)"
 	# TODO: @echo "  Segunda lectura:  $(TIMESTAMP_EAGER)"
 
-## git-info: imprime hash de git y versión del proyecto
-git-info:
+git-info: ## imprime hash de git y versión del proyecto
 	# TODO: @echo "Git hash: $(GIT_HASH)"
 	# TODO: @echo "Versión:  $(VERSION)"
 
-## help: muestra esta ayuda
-help:
-	@echo "Uso: make [comparar|git-info]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+# TODO (paso 8): imprime con comillas SIMPLES (para que la shell no toque el $):
+#   KERNEL:       <valor> [<flavor de KERNEL>]
+#   PRECIO_BANG:  <valor> [<flavor de PRECIO_BANG>]
+#   PRECIO_SHELL: <valor> [<flavor de PRECIO_SHELL>]
+asignar-shell: ## compara != con := $(shell ...)
+	@echo "TODO: implementa asignar-shell"
+
+help: ## muestra esta ayuda
+	@echo "Uso: make [comparar|git-info|asignar-shell]"
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

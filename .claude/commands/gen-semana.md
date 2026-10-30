@@ -25,12 +25,18 @@ Genera **todos** los archivos listados abajo para la semana `$ARGUMENTS`. No omi
 
 ### 1. `bootcamp/<carpeta>/README.md`
 - Título, descripción (2-3 oraciones), objetivos (verbos de acción), prerrequisitos
-- Tabla de contenidos con tiempos: 30min teoría / 5h labs (~6×50min) / 2h30 proyecto
-- Sección "Verificación de completitud" con comandos exactos
+- Tabla de contenidos con tiempos: 45 min teoría / 15 min conocimiento / 6h labs (6×60 min) / 3h proyecto = 10 h
+- Sección "Distribución del tiempo"
+- Sección "Verificación de completitud": `./scripts/verificar-semana.sh NN`
+- Sección `## 🔗 Navegación` (formato en `bootcamp/PLANTILLA-SEMANA.md`) y fila en `bootcamp/README.md`
 
 ### 2. `bootcamp/<carpeta>/rubrica-evaluacion.md`
-- Total: 100 pts. Distribución: 50 labs + 30 proyecto + 20 calidad Makefile
-- Tabla con criterios específicos al tema de la semana
+- Formato de `../bc-curl/bootcamp/week-01-*/rubrica-evaluacion.md`: 🧠 Conocimiento 30% (10 preguntas, 3 pts c/u) / 💪 Desempeño 40% (6 labs) / 📦 Producto 30% (60 pts autograding + 40 calidad)
+- Mínimo 70% en cada evidencia; bandas Sobresaliente/Notable/Aprobado
+
+### 2b. `bootcamp/<carpeta>/checks.json`
+- **Se escribe antes que labs y proyecto.** Contrato en `docs/autograding.md`: 6–18 comprobaciones sobre el proyecto con los marcadores `{make}` y `{proyecto}`, cada una con `pista`
+- Debe fallar contra el starter (`./scripts/verificar-semana.sh NN`) y pasar contra la solución (`ENTREGA=solucion ./scripts/verificar-semana.sh NN`)
 
 ### 3. `bootcamp/<carpeta>/0-assets/` — Diagramas Mermaid (mínimo 3 archivos)
 
@@ -43,17 +49,17 @@ Diagramas mínimos por semana (adapta el contenido al tema):
 
 Usa diagramas `graph TD`, `flowchart`, o `sequenceDiagram` según aplique.
 
-### 4. `bootcamp/<carpeta>/1-teoria/01-contexto.md`
-- Máximo 600 palabras
+### 4. `bootcamp/<carpeta>/1-teoria/` (1–3 archivos, 45 min en total)
+- Máximo 600 palabras de prosa por archivo
 - Abre con "¿Por qué importa esto?" (1 párrafo directo)
 - Referencia rápida: tabla o snippet con los conceptos clave
 - Ejemplo mínimo funcional de Makefile (autoejecutable con solo `make`)
 - Termina con enlace al lab-01: "Listo. Ve al [lab-01](../2-practicas/lab-01-.../README.md) y ponlo en práctica."
 
 ### 5. `bootcamp/<carpeta>/2-practicas/README.md`
-- Tabla con 5–6 labs: número, nombre, objetivo en una línea, duración estimada
+- Tabla con 6 labs: número, nombre, objetivo en una línea, duración estimada (~60 min)
 
-### 6–17. `bootcamp/<carpeta>/2-practicas/lab-0N-<nombre>/` — Todos los labs (5 o 6)
+### 6–17. `bootcamp/<carpeta>/2-practicas/lab-0N-<nombre>/` — Los 6 labs
 
 Para **cada** lab genera 3 archivos:
 
@@ -73,13 +79,15 @@ Para **cada** lab genera 3 archivos:
 **`solucion/Makefile`** con:
 - Solución completa y funcional, sin TODOs
 - Estándares del repo (TABs, PHONY, help, UPPER_SNAKE_CASE, lower-kebab-case)
+- Desde la semana 03: preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`)
 
 ### 18. `bootcamp/<carpeta>/3-proyecto/README.md`
 - Contexto de negocio/técnico concreto (no abstracto)
 - Árbol de archivos del starter
 - Lista de entregables numerados
 - Comandos exactos de verificación con outputs esperados
-- Rúbrica del proyecto (30 pts distribuidos)
+- Sección `✅ Requisitos verificables`: las `descripcion` de `checks.json`, copiadas literalmente
+- Criterios de calidad manual (40 pts)
 - Instrucciones de entrega (mensaje de commit)
 
 ### 19. `bootcamp/<carpeta>/3-proyecto/starter/Makefile`

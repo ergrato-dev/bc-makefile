@@ -1,13 +1,13 @@
 # PLANTILLA DE SEMANA — bc-makefile
 
 > Archivo de referencia. Copia esta estructura al crear contenido nuevo.
-> Ver también: `.claude/commands/gen-semana.md` para generación automática.
+> Reglas completas en `CLAUDE.md`; generación automática con `.claude/commands/gen-semana.md`.
 
 ---
 
 ## README.md de semana (plantilla)
 
-```markdown
+~~~markdown
 # Semana NN — Título del Tema
 
 ## Descripción
@@ -21,52 +21,69 @@ Al terminar esta semana, podrás:
 - Escribir <concepto> usando <técnica>
 - Depurar <problema común> con <herramienta>
 - Construir <artefacto concreto> desde cero
-- Aplicar <patrón> a proyectos reales
 
 ## Prerrequisitos
 
-- Haber completado la Semana NN-1
-- GNU Make ≥ 4.x instalado (`make --version`)
+- Semanas 01–NN-1 completadas
+- GNU Make ≥ 4.3 (`make --version`; en macOS `gmake`)
 - <herramienta específica si aplica>
 
 ## Contenido
 
 | # | Tipo | Tema | Tiempo |
 |---|------|------|--------|
-| — | Contexto | [01-contexto.md](1-teoria/01-contexto.md) | 30 min |
-| 1 | Lab | [lab-01-nombre](2-practicas/lab-01-nombre/) | 50 min |
-| 2 | Lab | [lab-02-nombre](2-practicas/lab-02-nombre/) | 50 min |
-| 3 | Lab | [lab-03-nombre](2-practicas/lab-03-nombre/) | 50 min |
-| 4 | Lab | [lab-04-nombre](2-practicas/lab-04-nombre/) | 50 min |
-| 5 | Lab | [lab-05-nombre](2-practicas/lab-05-nombre/) | 50 min |
-| — | Proyecto | [Proyecto semanal](3-proyecto/) | 2h 30min |
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) | 45 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-nombre](2-practicas/lab-01-nombre/) | 60 min |
+| 2 | Lab | [lab-02-nombre](2-practicas/lab-02-nombre/) | 60 min |
+| 3 | Lab | [lab-03-nombre](2-practicas/lab-03-nombre/) | 60 min |
+| 4 | Lab | [lab-04-nombre](2-practicas/lab-04-nombre/) | 60 min |
+| 5 | Lab | [lab-05-nombre](2-practicas/lab-05-nombre/) | 60 min |
+| 6 | Lab | [lab-06-nombre](2-practicas/lab-06-nombre/) | 60 min |
+| — | Proyecto | [Proyecto semanal](3-proyecto/) | 3 h |
 
-**Total: 8 horas**
+**Total: 10 horas**
+
+## Distribución del tiempo
+
+```
+[45 min] Leer 1-teoria/
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — <tema>
+...
+[60 min] lab-06 — <tema>
+[3 h]    Proyecto: <nombre>
+```
 
 ## Verificación de completitud
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
+Desde la raíz del repositorio:
 
-\`\`\`bash
-cd 3-proyecto/solucion
-make help
-make build
-make clean
-\`\`\`
+```bash
+./scripts/verificar-semana.sh NN
 ```
+
+## 🔗 Navegación
+
+| Anterior | Actual | Siguiente |
+|---|---|---|
+| [Semana NN-1 — Tema](../week-NN-1-slug/README.md) | **Semana NN — Tema** | [Semana NN+1 — Tema](../week-NN+1-slug/README.md) |
+
+[← Volver al índice del bootcamp](../README.md)
+~~~
 
 ---
 
 ## README.md de lab (plantilla)
 
-```markdown
+~~~markdown
 # Lab NN — Título del Lab
 
-⏱ Duración estimada: ~50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
-<Verbo en infinitivo>: implementar/depurar/construir <qué> usando <qué técnica de Make>.
+<Verbo en infinitivo> <qué> usando <qué técnica de Make>.
 
 ## Contexto
 
@@ -75,23 +92,17 @@ make clean
 ## Instrucciones
 
 1. Abre `starter/Makefile` y lee los comentarios `# TODO`
-2. Implementa el target `<nombre>`:
-   \`\`\`makefile
-   # pista si aplica
-   \`\`\`
+2. Implementa el target `<nombre>`
 3. Verifica con:
-   \`\`\`bash
+   ```bash
    make <target>
-   \`\`\`
+   ```
    Debes ver:
-   \`\`\`
+   ```
    <output esperado exacto>
-   \`\`\`
-4. <siguiente paso...>
+   ```
 
 ## Criterios de éxito
-
-Al completar este lab:
 
 - [ ] `make <target1>` imprime `<output>`
 - [ ] `make <target2>` produce `<artefacto>`
@@ -99,8 +110,8 @@ Al completar este lab:
 
 ## Reto extra
 
-<Extensión opcional para ir más lejos. Siempre opcional, nunca requerida.>
-```
+<Extensión opcional para ir más lejos.>
+~~~
 
 ---
 
@@ -111,50 +122,45 @@ Al completar este lab:
 # Lab NN — Título
 # Semana NN: Tema
 # ============================================================
-# Instrucciones:
-#   1. Lee cada TODO y completa la implementación
-#   2. Ejecuta `make help` para ver los targets disponibles
-#   3. Verifica con `make <target>` según el README
-# ============================================================
 
 .PHONY: all help
+.DEFAULT_GOAL := help
 
 # TODO: declara aquí las variables necesarias
 # VARIABLE := valor
 
-.DEFAULT_GOAL := help
-
-## all: ejecuta el flujo principal
-all:
+all: ## Ejecuta el flujo principal
 	@echo "TODO: implementa el target all"
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^##' $(MAKEFILE_LIST) | sed 's/## //'
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
 ---
 
-## Makefile solucion (plantilla)
+## Makefile solución (plantilla, semana 03 en adelante)
 
 ```makefile
 # ============================================================
 # Lab NN — Título (SOLUCIÓN)
 # ============================================================
 
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: all build clean test help
+.DEFAULT_GOAL := help
 
 CC      := gcc
 CFLAGS  := -Wall -Wextra -std=c11
 BUILD   := build
 
-.DEFAULT_GOAL := help
+all: build test ## Compila y ejecuta tests
 
-## all: compila y ejecuta tests
-all: build test
-
-## build: compila el proyecto
-build: $(BUILD)/programa
+build: $(BUILD)/programa ## Compila el proyecto
 
 $(BUILD)/programa: src/main.c | $(BUILD)
 	$(CC) $(CFLAGS) -o $@ $<
@@ -162,17 +168,15 @@ $(BUILD)/programa: src/main.c | $(BUILD)
 $(BUILD):
 	mkdir -p $@
 
-## clean: elimina archivos generados
-clean:
-	rm -rf $(BUILD)
+clean: ## Elimina archivos generados
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
+	rm -rf -- '$(BUILD)'
 
-## test: verifica que el binario funciona
-test: build
-	@./$(BUILD)/programa && echo "OK"
+test: build ## Verifica que el binario funciona
+	./$(BUILD)/programa
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## Muestra los targets disponibles
+	@echo "Targets disponibles:"
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```

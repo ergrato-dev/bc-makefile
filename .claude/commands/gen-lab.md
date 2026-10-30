@@ -24,7 +24,7 @@ Lee `CLAUDE.md` para convenciones. El lab debe:
 **`bootcamp/<semana>/2-practicas/lab-<NN>-<nombre>/README.md`**
 
 Estructura obligatoria en este orden:
-1. `# Lab NN — Título` con `⏱ ~50 min` en la misma línea o justo debajo
+1. `# Lab NN — Título` con `⏱ ~60 min` en la misma línea o justo debajo
 2. `## Objetivo` — una sola oración con verbo en infinitivo
 3. `## Contexto` — máx. 3 párrafos o 5 bullets; referencia al tema de la semana sin repetir la teoría
 4. `## Instrucciones` — pasos numerados con comandos exactos a ejecutar; cada paso tiene un output esperado

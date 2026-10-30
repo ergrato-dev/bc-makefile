@@ -1,0 +1,132 @@
+{
+  "semana": "12",
+  "titulo": "Make como orquestador DevOps",
+  "checks": [
+    {
+      "id": "version-rechaza-inyeccion",
+      "descripcion": "Una VERSION con código de shell hace fallar a Make antes de ejecutar nada",
+      "cmd": "f=$(mktemp); echo '1.0.0$(id)' > $f; {make} -C {proyecto} version VERSION_FILE=$f 2>&1; rm -f $f",
+      "assert": "stdout~VERSION inv",
+      "pista": "3-proyecto/starter/Makefile, TODO 0"
+    },
+    {
+      "id": "version-rechaza-formato",
+      "descripcion": "Una VERSION sin tres componentes numéricos se rechaza",
+      "cmd": "f=$(mktemp); echo 1.2 > $f; {make} -C {proyecto} version VERSION_FILE=$f 2>&1; rm -f $f",
+      "assert": "stdout~VERSION inv",
+      "pista": "3-proyecto/starter/Makefile, TODO 0"
+    },
+    {
+      "id": "bump-patch",
+      "descripcion": "make bump-patch convierte 1.2.9 en 1.2.10",
+      "cmd": "f=$(mktemp); echo 1.2.9 > $f; {make} -C {proyecto} bump-patch VERSION_FILE=$f >/dev/null 2>&1; cat $f; rm -f $f",
+      "assert": "stdout~^1[.]2[.]10$",
+      "pista": "2-practicas/lab-05-release/README.md, paso 3"
+    },
+    {
+      "id": "guard-falla",
+      "descripcion": "guard-VAR falla con un mensaje que nombra la variable si no está definida",
+      "cmd": "out=$({make} -C {proyecto} guard-VARIABLE_INEXISTENTE 2>&1) && exit 1; echo $out",
+      "assert": "stdout~VARIABLE_INEXISTENTE no definida",
+      "pista": "2-practicas/lab-01-env-secrets/README.md, paso 5"
+    },
+    {
+      "id": "env-check-secret-key",
+      "descripcion": "make env-check falla si SECRET_KEY está vacía",
+      "cmd": "{make} -C {proyecto} env-check APP_NAME=a DB_URL=b ENV=c SECRET_KEY=",
+      "assert": "stdout~SECRET_KEY no definida",
+      "pista": "3-proyecto/starter/Makefile, TODO 2"
+    },
+    {
+      "id": "export-selectivo",
+      "descripcion": "Las recetas reciben DB_URL pero no variables que el Makefile no exporta",
+      "cmd": "{make} -C {proyecto} --eval 'SECRETO := filtrado' --eval 'DB_URL := sqlite' --eval '__chk: ; @echo db=/$${DB_URL:-}/ secreto=/$${SECRETO:-}/' __chk",
+      "assert": "stdout~db=/[^ ]+/ secreto=//",
+      "pista": "3-proyecto/starter/Makefile, TODO 1b"
+    },
+    {
+      "id": "hooks-path",
+      "descripcion": "make hooks-install apunta core.hooksPath a scripts/hooks con ruta absoluta",
+      "cmd": "t=$(mktemp -d); cp {proyecto}/Makefile {proyecto}/VERSION $t; cp -r {proyecto}/scripts $t; git -C $t init -q; {make} -C $t hooks-install >/dev/null 2>&1; git -C $t config --get core.hooksPath; rm -rf -- $t",
+      "assert": "stdout~^/.*/scripts/hooks/?$",
+      "pista": "2-practicas/lab-02-git-hooks/README.md, paso 3"
+    },
+    {
+      "id": "hooks-uninstall",
+      "descripcion": "make hooks-uninstall deja core.hooksPath sin configurar",
+      "cmd": "t=$(mktemp -d); cp {proyecto}/Makefile {proyecto}/VERSION $t; cp -r {proyecto}/scripts $t; git -C $t init -q; {make} -C $t hooks-install >/dev/null 2>&1; a=$(git -C $t config --get core.hooksPath); {make} -C $t hooks-uninstall >/dev/null 2>&1; b=$(git -C $t config --get core.hooksPath); rm -rf -- $t; [[ -n $a && -z $b ]]",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-git-hooks/README.md, paso 4"
+    },
+    {
+      "id": "pre-commit-bloquea-env",
+      "descripcion": "Con los hooks instalados, un commit que incluye .env se rechaza",
+      "cmd": "t=$(mktemp -d); cp {proyecto}/Makefile {proyecto}/VERSION $t; cp -r {proyecto}/scripts $t; git -C $t init -q; {make} -C $t hooks-install >/dev/null 2>&1; echo SECRET_KEY=x > $t/.env; git -C $t add -f .env; git -C $t -c user.name=x -c user.email=x@x -c commit.gpgsign=false commit -q -m x 2>&1; rm -rf -- $t",
+      "assert": "stdout~ERROR: archivo .env",
+      "pista": "2-practicas/lab-02-git-hooks/README.md, paso 7"
+    },
+    {
+      "id": "install-locked",
+      "descripcion": "make install sincroniza el entorno con uv sync --locked",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n install VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~^uv sync --locked",
+      "pista": "3-proyecto/starter/Makefile, TODO 3"
+    },
+    {
+      "id": "sentinel-incremental",
+      "descripcion": "make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock",
+      "cmd": "d=$(mktemp -d); touch -t 200001010000 $d/.installed; viejo=$({make} -C {proyecto} -n install VENV=$d 2>&1); touch $d/.installed; nuevo=$({make} -C {proyecto} -n install VENV=$d 2>&1); rm -rf -- $d; grep -qE '^[^#]*uv sync' <<<$viejo && ! grep -q 'uv sync' <<<$nuevo",
+      "assert": "exit0",
+      "pista": "Semana 11: sentinel files; TODO 3 del starter"
+    },
+    {
+      "id": "lint-flake8",
+      "descripcion": "make lint ejecuta flake8 con uv run --no-sync",
+      "cmd": "{make} -C {proyecto} -n lint",
+      "assert": "stdout~^uv run --no-sync flake8",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 4"
+    },
+    {
+      "id": "test-cobertura",
+      "descripcion": "make test ejecuta pytest con cobertura",
+      "cmd": "{make} -C {proyecto} -n test",
+      "assert": "stdout~^uv run --no-sync pytest.*--cov",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 5"
+    },
+    {
+      "id": "build-artefacto",
+      "descripcion": "make build crea dist/mi-api-VERSION.tar.gz con el código de src/",
+      "cmd": "t=$(mktemp -d); echo 3.4.5 > $t/V; {make} -C {proyecto} build VERSION_FILE=$t/V DIST=$t/dist >/dev/null 2>&1; tar -tzf $t/dist/mi-api-3.4.5.tar.gz 2>&1; rm -rf -- $t",
+      "assert": "stdout~src/api[.]py",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 6"
+    },
+    {
+      "id": "ci-orden",
+      "descripcion": "make ci encadena lint, test y build en ese orden",
+      "cmd": "{make} -C {proyecto} -n ci APP_NAME=a DB_URL=b SECRET_KEY=c ENV=d 2>&1 | grep -oE 'flake8|pytest|tar -czf' | paste -sd, -",
+      "assert": "stdout~^flake8,pytest,tar -czf$",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 8"
+    },
+    {
+      "id": "ci-valida-entorno-primero",
+      "descripcion": "make ci se detiene en env-check, antes del lint, si falta SECRET_KEY",
+      "cmd": "out=$({make} -C {proyecto} -n ci APP_NAME=a DB_URL=b ENV=d SECRET_KEY= 2>&1); grep -q 'SECRET_KEY no definida' <<<$out && ! grep -q flake8 <<<$out",
+      "assert": "exit0",
+      "pista": "3-proyecto/starter/Makefile, TODO 9"
+    },
+    {
+      "id": "workflow-solo-make-ci",
+      "descripcion": "El workflow de GitHub Actions tiene un único paso run y ese paso es make ci",
+      "cmd": "f={proyecto}/.github/workflows/ci.yml; grep -E '^ *(- )?run:' $f | sed -E 's/^ *(- )?run: *//' | sort | paste -sd, -",
+      "assert": "stdout~^make ci$",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 10"
+    },
+    {
+      "id": "workflow-acciones-pinneadas",
+      "descripcion": "Todas las acciones del workflow están pinneadas por SHA de 40 caracteres",
+      "cmd": "f={proyecto}/.github/workflows/ci.yml; grep -qE 'uses:' $f && ! grep -E 'uses:' $f | grep -vE 'uses: *[^ @]+@[0-9a-f]{40}( |$)'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-ci-local/README.md, pasos 11 y 12"
+    }
+  ]
+}
