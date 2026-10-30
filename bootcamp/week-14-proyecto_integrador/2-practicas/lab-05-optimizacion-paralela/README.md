@@ -32,7 +32,7 @@ El starter tiene un Makefile que reconstruye todo siempre. Tu tarea es hacerlo i
    ```bash
    make all       # primera vez: instala deps + genera artefactos
    make all       # segunda vez: Nothing to be done
-   touch requirements.txt
+   touch pyproject.toml
    make all       # solo reinstala deps Python, no Node
    ```
 
@@ -50,7 +50,7 @@ El starter tiene un Makefile que reconstruye todo siempre. Tu tarea es hacerlo i
 ## Criterios de éxito
 
 - [ ] `make all` segunda vez → `make: Nothing to be done for 'all'`
-- [ ] `touch requirements.txt && make all` → solo reinstala deps Python
+- [ ] `touch pyproject.toml && make all` → solo reinstala deps Python
 - [ ] `touch package.json && make all` → solo reinstala deps Node
 - [ ] `make -j2 all` produce el mismo resultado que `make all` (no hay condiciones de carrera)
 - [ ] `make clean` elimina stamps y artefactos

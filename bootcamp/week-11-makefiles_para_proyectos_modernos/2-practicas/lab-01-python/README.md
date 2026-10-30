@@ -2,7 +2,7 @@
 
 **Duración estimada:** 50 minutos
 
-**Requisitos:** Python 3.14 con el módulo venv
+**Requisitos:** Python 3.14 y [uv](https://docs.astral.sh/uv/)
 
 ## Objetivo
 
@@ -10,16 +10,17 @@ Gestionar el ciclo de vida completo de un proyecto Python (virtualenv, dependenc
 
 ## Contexto
 
-Sin Make, un desarrollador que clona el repo necesita recordar: `python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pip install -r requirements-dev.txt && pytest tests/ -v`. Con Make: `make install && make test`.
+Sin Make, un desarrollador que clona el repo necesita recordar: qué gestor usa el proyecto, cómo crear el entorno, cómo instalar exactamente lo del lockfile y con qué flags se corren los tests. Con Make: `make install && make test`.
 
-El truco clave es el **sentinel file**: el target `install` depende de `$(VENV)/.installed`, un archivo vacío que Make usa para saber si ya se ejecutó `pip install`. Si `requirements.txt` cambia, Make detecta que el sentinel es más antiguo y reinstala; de lo contrario, no hace nada.
+El truco clave es el **sentinel file**: el target `install` depende de `$(VENV)/.installed`, un archivo vacío que Make usa para saber si ya se ejecutó `uv sync`. Si `pyproject.toml` o `uv.lock` cambian, Make detecta que el sentinel es más antiguo y reinstala; de lo contrario, no hace nada.
 
 ```makefile
-$(VENV)/.installed: requirements.txt
-	python3 -m venv $(VENV)
-	$(PIP) install -r requirements.txt
-	@touch $@   # ← crea el sentinel al terminar
+$(VENV)/.installed: pyproject.toml uv.lock
+	$(UV) sync --locked   # crea .venv/ e instala exactamente uv.lock
+	@touch $@             # ← crea el sentinel al terminar
 ```
+
+Python se gestiona siempre con **uv**, nunca con pip: `pyproject.toml` declara las dependencias, `uv.lock` las fija y se commitea, `uv sync --locked` instala exactamente eso (y falla si el lock no coincide con `pyproject.toml`). Los targets ejecutan las herramientas con `uv run --no-sync`: Make ya decidió si hacía falta instalar.
 
 ## Instrucciones
 
@@ -39,7 +40,7 @@ $(VENV)/.installed: requirements.txt
    ```
 
 4. Implementa los 5 TODOs del `Makefile`:
-   - **TODO 1:** target `$(VENV)/.installed` con dependencia `requirements.txt`, crea venv e instala
+   - **TODO 1:** target `$(VENV)/.installed` con dependencias `pyproject.toml` y `uv.lock`; receta `$(UV) sync --locked` y `touch $@`
    - **TODO 2:** target `install` como alias del sentinel file, con comentario `## ...`
    - **TODO 3:** target `test` que dependa de `install` y ejecute pytest
    - **TODO 4:** target `lint` que dependa de `install` y ejecute flake8
@@ -58,17 +59,17 @@ $(VENV)/.installed: requirements.txt
 
 ```
 $ make install
-python3 -m venv .venv
-.venv/bin/pip install --upgrade pip ...
-.venv/bin/pip install -r requirements.txt ...
+uv sync --locked
+...
+Installed 7 packages in 12ms
 
 $ make install  # segunda ejecución — sentinel sin cambios
-make: '.venv/.installed' is up to date.
+make: Nothing to be done for 'install'.
 ```
 
 ```
 $ make test
-.venv/bin/pytest tests/ -v
+uv run --no-sync pytest tests/ -v
 ...
 tests/test_app.py::test_saludar PASSED
 tests/test_app.py::test_sumar PASSED
@@ -77,7 +78,7 @@ tests/test_app.py::test_sumar PASSED
 
 ```
 $ make lint
-.venv/bin/flake8 src/ --max-line-length=100
+uv run --no-sync flake8 src/ --max-line-length=100
 (sin salida si no hay errores)
 ```
 
@@ -90,4 +91,4 @@ ls: no se puede acceder a '.venv': No existe el archivo o el directorio
 
 ## Reto extra
 
-Agrega un target `test-cov` que ejecute pytest con cobertura: `pytest --cov=src --cov-report=term-missing`. Instala `pytest-cov` añadiéndolo al `requirements.txt`.
+Agrega un target `test-cov` que ejecute pytest con cobertura: `pytest --cov=src --cov-report=term-missing`. Añade `pytest-cov` con `uv add --dev pytest-cov` (actualiza `pyproject.toml` y `uv.lock`; el sentinel se invalida solo).

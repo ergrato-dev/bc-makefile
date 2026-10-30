@@ -27,8 +27,7 @@ La diferencia entre `make ci` local y el CI remoto (GitHub Actions, GitLab CI) e
 
 2. Instala las dependencias de Python:
    ```bash
-   python3 -m venv .venv && source .venv/bin/activate
-   pip install flake8 pytest pytest-cov
+   make install   # uv sync --locked: flake8, pytest y pytest-cov del grupo dev
    ```
 
 3. Examina la estructura del proyecto:

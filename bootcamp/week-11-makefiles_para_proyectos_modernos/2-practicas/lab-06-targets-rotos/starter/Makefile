@@ -17,7 +17,7 @@ build: ## Compilar el proyecto
 	@echo "Build OK"
 
 install: ## Instalar dependencias
-    pip install -r requirements.txt
+    uv sync --locked
 
 # BUG 3: dependencia con typo — 'instal' no existe como target
 # Solución: cambiar 'instal' por 'install'

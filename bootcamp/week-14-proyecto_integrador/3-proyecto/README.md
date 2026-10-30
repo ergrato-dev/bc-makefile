@@ -32,7 +32,8 @@ Tu tarea es construir el build system definitivo de esta plataforma:
 │   ├── Makefile                 # APP_NAME + include
 │   ├── src/app.py
 │   ├── tests/test_app.py
-│   ├── requirements.txt
+│   ├── pyproject.toml
+│   ├── uv.lock
 │   └── Dockerfile
 ├── frontend/
 │   ├── Makefile                 # APP_NAME + include

@@ -1,32 +1,42 @@
+SHELL       := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+
 .PHONY: ci lint test build-image push deps clean help
 .DEFAULT_GOAL := help
 
 IMAGE_NAME := mi-servicio
 VERSION    := $(shell git describe --tags --always 2>/dev/null || echo dev)
-PYTHON     := python3
+UV         := uv
+VENV       := .venv
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN        := $(UV) run --no-sync
 CI         ?= false
 
 .stamps/:
 	mkdir -p $@
 
-.stamps/deps: requirements.txt | .stamps/
-	$(PYTHON) -m pip install -r $< -q
+.stamps/deps: pyproject.toml uv.lock | .stamps/
+	$(UV) sync --locked --quiet
 	touch $@
 
 deps: .stamps/deps ## Instalar dependencias de desarrollo
 
-lint: ## Verificar estilo del código
+lint: .stamps/deps ## Verificar estilo del código
 	@echo "==> Lint"
-	$(PYTHON) -m flake8 src/ --max-line-length=100
+	$(RUN) flake8 src/ --max-line-length=100
 
 test: .stamps/deps ## Ejecutar suite de tests
 	@echo "==> Tests"
-	$(PYTHON) -m pytest tests/ -v
+	$(RUN) pytest tests/ -v
 
 build-image: ## Construir imagen Docker
 	@echo "==> Build Docker $(IMAGE_NAME):$(VERSION)"
 	docker build --tag $(IMAGE_NAME):$(VERSION) .
 
+# CI=true es una salvaguarda contra accidentes, no un control de acceso:
+# `make push CI=true` la salta. El control real es que solo el runner de CI
+# tenga credenciales del registry.
 push: ## Subir imagen al registry (requiere CI=true)
 ifneq ($(CI), true)
 	$(error ERROR: push solo permitido cuando CI=true)
@@ -37,7 +47,7 @@ endif
 ci: lint test build-image ## Ejecutar pipeline completo: lint → test → build-image
 
 clean: ## Eliminar artefactos
-	rm -rf .stamps/ __pycache__ .pytest_cache
+	rm -rf .stamps/ '$(VENV)' __pycache__ .pytest_cache
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

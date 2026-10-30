@@ -4,7 +4,7 @@
 graph TD
     DEV[Desarrollador] -->|make &lt;target&gt;| MAKE[GNU Make]
 
-    MAKE --> PY[Python / pip / pytest]
+    MAKE --> PY[Python / uv / pytest]
     MAKE --> DOC[Docker / docker build]
     MAKE --> PNPM[Node.js / pnpm]
     MAKE --> CMP[docker compose]

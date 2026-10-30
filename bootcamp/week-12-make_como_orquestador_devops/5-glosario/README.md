@@ -13,6 +13,6 @@
 | bump-patch | Incrementar el tercer número de versión; indica corrección de bug sin cambios de API | `make bump-patch` → 0.1.0 → 0.1.1 |
 | changelog | Archivo que registra cambios entre versiones del proyecto de forma legible | `CHANGELOG.md` generado por `make changelog` |
 | fail fast | Propiedad de un pipeline que aborta en la primera etapa que falla | Make aborta en `lint` si su exit code ≠ 0 |
-| sentinel file | Archivo vacío que Make usa para trackear cuándo se ejecutó un comando sin salida | `.venv/.installed: requirements.txt` |
+| sentinel file | Archivo vacío que Make usa para trackear cuándo se ejecutó un comando sin salida | `.venv/.installed: pyproject.toml uv.lock` |
 | análisis estático | Análisis del código fuente sin ejecutarlo para detectar errores o estilo | `flake8 src/` en el target `lint` |
 | `exit code` | Código de retorno de un proceso: 0 = éxito, ≠ 0 = error | `@test -n "$$VAR" \|\| exit 1` |

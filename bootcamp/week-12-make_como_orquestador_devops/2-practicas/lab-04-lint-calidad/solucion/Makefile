@@ -12,11 +12,11 @@ AUTOPEP8   := $(shell command -v autopep8 2>/dev/null)
 check-tools: ## Verificar herramientas de calidad instaladas
 	@echo "=== Herramientas de calidad ==="
 	@printf "  %-20s" "flake8"; \
-		command -v flake8 >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (pip install flake8)"
+		command -v flake8 >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (uv tool install flake8)"
 	@printf "  %-20s" "shellcheck"; \
 		command -v shellcheck >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (apt install shellcheck)"
 	@printf "  %-20s" "autopep8"; \
-		command -v autopep8 >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (pip install autopep8)"
+		command -v autopep8 >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (uv tool install autopep8)"
 	@printf "  %-20s" "mdl"; \
 		command -v mdl >/dev/null 2>&1 && echo "✓ disponible" || echo "✗ no instalado (gem install mdl)"
 
@@ -62,7 +62,7 @@ format-python: ## Formatear código Python automáticamente
 		autopep8 --in-place --recursive $(SRC_DIR); \
 		echo "✓ Formato aplicado a $(SRC_DIR)/"; \
 	else \
-		echo "autopep8 no instalado. Instala con: pip install autopep8"; \
+		echo "autopep8 no instalado. Instala con: uv tool install autopep8"; \
 	fi
 
 help: ## Mostrar ayuda

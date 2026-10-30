@@ -1,6 +1,6 @@
 # Semana 11 — Makefiles para Proyectos Modernos
 
-Make no es solo para proyectos C. Es la interfaz universal que unifica Python, Docker y Node.js bajo un mismo comando. Esta semana conviertes Make en el punto de entrada único de cualquier proyecto moderno: un `make test` que siempre funciona, sin importar si el proyecto usa pip, pnpm o Dockerfile.
+Make no es solo para proyectos C. Es la interfaz universal que unifica Python, Docker y Node.js bajo un mismo comando. Esta semana conviertes Make en el punto de entrada único de cualquier proyecto moderno: un `make test` que siempre funciona, sin importar si el proyecto usa uv, pnpm o Dockerfile.
 
 Al terminar sabrás construir el Makefile que todo equipo de desarrollo quiere: uno que cualquier persona puede clonar y ejecutar sin leer documentación extensa.
 
@@ -18,7 +18,7 @@ Al terminar esta semana serás capaz de:
 ## Prerrequisitos
 
 - Semanas 01–10 del bootcamp
-- Python 3.14 con el módulo venv (labs 01 y 05, proyecto)
+- Python 3.14 y [uv](https://docs.astral.sh/uv/) (labs 01 y 05, proyecto). Nunca pip.
 - Docker Engine 27+ con Compose v2 (labs 02, 04, 05 y proyecto)
 - Node.js 26 LTS y pnpm (labs 03 y 05)
 - GNU Make ≥ 4.x
@@ -50,7 +50,7 @@ Al terminar esta semana serás capaz de:
 Al terminar la semana, estos comandos deben funcionar sin errores:
 
 ```bash
-# Lab 01 — Python (requiere python3 y pip)
+# Lab 01 — Python (requiere uv)
 cd 2-practicas/lab-01-python/solucion && make install && make test
 
 # Lab 02 — Docker (requiere docker)

@@ -85,10 +85,10 @@ doctor() {
   else
     opcional "docker" "no disponible"
   fi
-  if command -v python3 >/dev/null 2>&1; then
-    comprobar "python3" ok "$(python3 --version)"
+  if command -v uv >/dev/null 2>&1; then
+    comprobar "uv" ok "$(uv --version)"
   else
-    opcional "python3" "no instalado"
+    opcional "uv" "no instalado (Python se usa siempre con uv)"
   fi
   if command -v node >/dev/null 2>&1; then
     comprobar "node" ok "$(node --version)"

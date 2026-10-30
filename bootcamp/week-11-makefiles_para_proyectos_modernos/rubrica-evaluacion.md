@@ -21,7 +21,7 @@
 
 | Criterio | Puntos |
 |----------|--------|
-| `make install` usa sentinel file — no reinstala si `requirements.txt` no cambió | 6 |
+| `make install` usa sentinel file — no reinstala si `pyproject.toml` y `uv.lock` no cambiaron | 6 |
 | `make test` y `make lint` funcionan correctamente | 6 |
 | `make build` construye imagen con `VERSION` y `BUILD_DATE` inyectados | 6 |
 | `make info` muestra versión, imagen, fecha y entorno | 6 |

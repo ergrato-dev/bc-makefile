@@ -3,7 +3,7 @@
 | Término | Definición en una línea | Ejemplo en Makefile |
 |---------|------------------------|---------------------|
 | Build system | Conjunto de reglas y herramientas que automatizan la transformación de fuentes en artefactos desplegables | El Makefile raíz que orquesta backend, frontend e infra |
-| Stamp file | Archivo vacío usado como marcador de tiempo para que Make rastree tareas sin artefacto natural | `.stamps/deps: requirements.txt` → `touch $@` |
+| Stamp file | Archivo vacío usado como marcador de tiempo para que Make rastree tareas sin artefacto natural | `.stamps/deps: pyproject.toml uv.lock` → `touch $@` |
 | Pipeline | Secuencia de etapas ordenadas donde el fallo en una detiene las siguientes | `ci: lint test build-image` |
 | Fallo rápido (fail fast) | Principio de abortar el pipeline en cuanto detecta el primer error | Make detiene la ejecución si cualquier receta devuelve código ≠ 0 |
 | Orquestador | Target o Makefile que coordina la ejecución de submakes sin conocer su implementación interna | Makefile raíz con `$(MAKE) -C backend ci` |

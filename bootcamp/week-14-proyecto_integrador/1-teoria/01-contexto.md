@@ -21,21 +21,21 @@ Sabes usar Make. Esta semana dejas de usar Make en labs aislados y construyes al
 
 ## Stamps: el patrón más subestimado
 
-Cuando un target no produce un archivo concreto (ej: `pip install`), Make no puede saber si está al día. La solución es un archivo stamp:
+Cuando un target no produce un archivo concreto (ej: `uv sync`), Make no puede saber si está al día. La solución es un archivo stamp:
 
 ```makefile
 .stamps/:
 	mkdir -p .stamps
 
-.stamps/deps: requirements.txt | .stamps/
-	pip install -r requirements.txt
+.stamps/deps: pyproject.toml uv.lock | .stamps/
+	uv sync --locked
 	touch $@
 
 test: .stamps/deps ## Ejecutar tests (instala deps si es necesario)
-	pytest tests/
+	uv run --no-sync pytest tests/
 ```
 
-Ahora `pip install` solo corre cuando `requirements.txt` cambia. Sin stamp, correría en cada `make test`.
+Ahora `uv sync` solo corre cuando `pyproject.toml` o `uv.lock` cambian. Sin stamp, correría en cada `make test`.
 
 ## El target `ci`: punto de entrada del pipeline
 
@@ -68,15 +68,16 @@ La secuencia `lint test build-image` como dependencias de `ci` garantiza orden y
 APP     := mi-servicio
 VERSION := $(shell git describe --tags --always 2>/dev/null || echo 0.1.0)
 ENV     ?= development
-PYTHON  := python3
+UV      := uv
+RUN     := $(UV) run --no-sync
 
 -include .env
 
 .stamps/:
 	mkdir -p $@
 
-.stamps/deps: requirements.txt | .stamps/
-	$(PYTHON) -m pip install -r $< -q
+.stamps/deps: pyproject.toml uv.lock | .stamps/
+	$(UV) sync --locked --quiet
 	touch $@
 
 all: ci ## Ejecutar pipeline completo
@@ -84,10 +85,10 @@ all: ci ## Ejecutar pipeline completo
 ci: lint test ## Lint + tests
 
 lint: ## Verificar estilo
-	@$(PYTHON) -m flake8 src/ --max-line-length=100
+	@$(RUN) flake8 src/ --max-line-length=100
 
 test: .stamps/deps ## Ejecutar tests
-	@$(PYTHON) -m pytest tests/ -q
+	@$(RUN) pytest tests/ -q
 
 clean: ## Eliminar artefactos
 	rm -rf .stamps/ __pycache__ .pytest_cache

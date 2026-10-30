@@ -1,21 +1,20 @@
 .PHONY: all install test lint clean help
 .DEFAULT_GOAL := help
 
-PYTHON    := python3
+UV        := uv
 VENV      := .venv
-PIP       := $(VENV)/bin/pip
-PYTEST    := $(VENV)/bin/python -m pytest
-FLAKE8    := $(VENV)/bin/flake8
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN       := $(UV) run --no-sync
+PYTEST    := $(RUN) pytest
+FLAKE8    := $(RUN) flake8
 SRC_DIR   := src
 TESTS_DIR := tests
 
-$(VENV)/.installed: requirements.txt
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip
-	$(PIP) install -r requirements.txt
+$(VENV)/.installed: pyproject.toml uv.lock
+	$(UV) sync --locked
 	@touch $@
 
-install: $(VENV)/.installed ## Crear venv e instalar dependencias
+install: $(VENV)/.installed ## Instalar dependencias con uv
 
 test: install ## Ejecutar tests con pytest
 	$(PYTEST) $(TESTS_DIR) -v

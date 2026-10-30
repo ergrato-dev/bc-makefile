@@ -6,10 +6,11 @@ SHELL       := bash
 .DEFAULT_GOAL := help
 
 # ── Backend Python ──────────────────────────────────────────────────────────────
-PYTHON   := python3
+UV       := uv
 VENV     := backend/.venv
-PIP      := $(VENV)/bin/pip
-PYTEST   := $(VENV)/bin/python -m pytest
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN      := $(UV) run --no-sync
+PYTEST   := $(RUN) pytest
 
 # ── Frontend Node.js ────────────────────────────────────────────────────────────
 PNPM     := pnpm
@@ -19,18 +20,16 @@ NODE_MOD := frontend/node_modules
 # Compose v2, integrado en Docker. docker-compose (v1) está en EOL desde 2023.
 COMPOSE  := docker compose
 
-$(VENV)/.installed: backend/requirements.txt
+$(VENV)/.installed: backend/pyproject.toml backend/uv.lock
 	@echo "[backend] Instalando dependencias..."
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip
-	$(PIP) install -r backend/requirements.txt
+	cd backend && $(UV) sync --locked
 	@touch $@
 
 backend-install: $(VENV)/.installed ## Instalar dependencias del backend Python
 
 backend-test: backend-install ## Ejecutar tests del backend
 	@echo "[backend] Ejecutando tests..."
-	cd backend && ../$(PYTEST) tests/ -v
+	cd backend && $(PYTEST) tests/ -v
 
 frontend/node_modules/.installed: frontend/package.json frontend/pnpm-lock.yaml
 	@echo "[frontend] Instalando dependencias..."
@@ -55,7 +54,7 @@ clean: ## Eliminar artefactos de backend y frontend
 
 info: ## Mostrar información del stack
 	@echo "=== Stack multi-lenguaje ==="
-	@echo "Backend:   $(shell $(PYTHON) --version 2>&1) — backend/"
+	@echo "Backend:   $(shell $(UV) --version 2>&1) — backend/"
 	@echo "Frontend:  Node.js $(shell node --version 2>/dev/null || echo 'no instalado') — frontend/"
 	@echo "Docker:    $(COMPOSE) disponible"
 

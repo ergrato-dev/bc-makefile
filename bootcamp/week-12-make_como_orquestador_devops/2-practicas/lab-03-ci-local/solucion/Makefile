@@ -1,11 +1,12 @@
 .PHONY: lint test build report ci ci-fast clean help
 .DEFAULT_GOAL := help
 
-PYTHON   := python3
+UV       := uv
 VENV     := .venv
-PIP      := $(VENV)/bin/pip
-PYTEST   := $(VENV)/bin/pytest
-FLAKE8   := $(VENV)/bin/flake8
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN      := $(UV) run --no-sync
+PYTEST   := $(RUN) pytest
+FLAKE8   := $(RUN) flake8
 APP_NAME := calculadora
 VERSION  := $(shell git describe --tags --always 2>/dev/null || echo 0.0.0)
 DIST_DIR := dist
@@ -13,10 +14,8 @@ SRC_DIR  := src
 TEST_DIR := tests
 DATE     := $(shell date '+%Y-%m-%d %H:%M:%S')
 
-$(VENV)/.installed: requirements.txt
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip -q
-	$(PIP) install -r requirements.txt -q
+$(VENV)/.installed: pyproject.toml uv.lock
+	$(UV) sync --locked --quiet
 	@touch $@
 
 install: $(VENV)/.installed ## Instalar dependencias

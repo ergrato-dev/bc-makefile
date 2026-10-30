@@ -35,9 +35,9 @@ make --version | head -1
 | Herramienta | Versión fijada | Notas |
 |---|---|---|
 | Python | 3.14 | 3.15 salió el 2026-10-09; se adopta cuando el ecosistema la soporte |
-| uv | última estable | Gestor de entornos y dependencias |
+| uv | 0.12.x | Gestor de proyectos Python. **Nunca pip.** `pyproject.toml` + `uv.lock` comiteado, `uv sync --locked`, `uv run`. En Docker: `COPY --from=ghcr.io/astral-sh/uv:0.12.2` |
 | ruff | última estable | Lint + formato |
-| pytest | 8.x | |
+| pytest | 9.x | Grupo `dev` de `pyproject.toml` |
 | Node.js | 26 LTS | Active LTS desde 2026-10-28. 24 sigue en Maintenance LTS |
 | pnpm | 11.x | Gestor de paquetes Node.js. **Nunca npm.** Siempre `ppnpm install --frozen-lockfile` con `pnpm-lock.yaml` comiteado |
 | Docker Engine | 27+ | |

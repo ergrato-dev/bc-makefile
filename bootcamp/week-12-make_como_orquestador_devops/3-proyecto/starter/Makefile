@@ -9,11 +9,12 @@ SHELL       := bash
 # ---------------------------------------------------------------------------
 # Variables — completa las que falten
 # ---------------------------------------------------------------------------
-PYTHON      := python3
+UV          := uv
 VENV        := .venv
-PIP         := $(VENV)/bin/pip
-PYTEST      := $(VENV)/bin/pytest
-FLAKE8      := $(VENV)/bin/flake8
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN         := $(UV) run --no-sync
+PYTEST      := $(RUN) pytest
+FLAKE8      := $(RUN) flake8
 APP_NAME    := mi-api
 VERSION_FILE := VERSION
 # VERSION viene de un archivo del repo: léelo sin shell y valídalo.
@@ -54,8 +55,8 @@ env-check: ## Verificar variables de entorno requeridas
 # ---------------------------------------------------------------------------
 # TODO 3: install — instala dependencias con sentinel file
 # ---------------------------------------------------------------------------
-$(VENV)/.installed: requirements.txt
-	# TODO: crear venv, instalar deps, touch sentinel
+$(VENV)/.installed: pyproject.toml uv.lock
+	# TODO: $(UV) sync --locked y touch del sentinel
 
 install: $(VENV)/.installed ## Instalar dependencias Python
 

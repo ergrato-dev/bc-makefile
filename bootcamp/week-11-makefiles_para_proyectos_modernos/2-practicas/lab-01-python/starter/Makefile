@@ -1,21 +1,20 @@
 .PHONY: all install test lint clean help
 .DEFAULT_GOAL := help
 
-PYTHON    := python3
+UV        := uv
 VENV      := .venv
-PIP       := $(VENV)/bin/pip
-PYTEST    := $(VENV)/bin/python -m pytest
-FLAKE8    := $(VENV)/bin/flake8
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN       := $(UV) run --no-sync
+PYTEST    := $(RUN) pytest
+FLAKE8    := $(RUN) flake8
 SRC_DIR   := src
 TESTS_DIR := tests
 
-# TODO 1: Define el target '$(VENV)/.installed' con dependencia requirements.txt
+# TODO 1: Define el target '$(VENV)/.installed' con dependencias pyproject.toml y uv.lock
 #   Receta:
-#     $(PYTHON) -m venv $(VENV)
-#     $(PIP) install --upgrade pip
-#     $(PIP) install -r requirements.txt
+#     $(UV) sync --locked
 #     @touch $@
-#   Este archivo vacío es el "sentinel file" — rastrea cuándo se ejecutó pip install.
+#   Este archivo vacío es el "sentinel file" — rastrea cuándo se ejecutó uv sync.
 
 
 # TODO 2: Define el target 'install' como alias del sentinel file

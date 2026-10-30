@@ -2,9 +2,9 @@
 
 | Término | Definición en una línea | Ejemplo en Makefile |
 |---------|------------------------|---------------------|
-| sentinel file | Archivo vacío creado al final de una receta para que Make rastree cuándo se ejecutó | `$(VENV)/.installed: requirements.txt` → `@touch $@` |
+| sentinel file | Archivo vacío creado al final de una receta para que Make rastree cuándo se ejecutó | `$(VENV)/.installed: pyproject.toml uv.lock` → `@touch $@` |
 | `$(VENV)/.installed` | Nombre convencional del sentinel file de un virtualenv Python | `install: $(VENV)/.installed` |
-| virtualenv (venv) | Entorno Python aislado con su propio intérprete y paquetes | `$(PYTHON) -m venv $(VENV)` |
+| uv | Gestor de proyectos Python: crea `.venv/`, resuelve y fija dependencias en `uv.lock` | `uv sync --locked` |
 | `--build-arg` | Flag de `docker build` para pasar variables al Dockerfile como `ARG` | `docker build --build-arg VERSION=$(VERSION) .` |
 | `ARG` (Dockerfile) | Variable recibida desde el exterior durante `docker build` | `ARG VERSION=unknown` |
 | `LABEL` (Dockerfile) | Metadatos embebidos en la imagen Docker, consultables con `docker inspect` | `LABEL version="${VERSION}"` |

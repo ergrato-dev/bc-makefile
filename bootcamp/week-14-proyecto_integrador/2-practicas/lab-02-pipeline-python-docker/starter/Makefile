@@ -3,14 +3,17 @@
 
 IMAGE_NAME := mi-servicio
 VERSION    := $(shell git describe --tags --always 2>/dev/null || echo dev)
-PYTHON     := python3
+UV         := uv
+VENV       := .venv
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN        := $(UV) run --no-sync
 CI         ?= false
 
 .stamps/:
 	mkdir -p $@
 
-.stamps/deps: requirements.txt | .stamps/
-	$(PYTHON) -m pip install -r $< -q
+.stamps/deps: pyproject.toml uv.lock | .stamps/
+	$(UV) sync --locked --quiet
 	touch $@
 
 deps: .stamps/deps ## Instalar dependencias de desarrollo
@@ -30,6 +33,9 @@ build-image: ## Construir imagen Docker
 # TODO: implementar target push con guardia CI=true
 # Si CI != "true": $(error ERROR: push solo permitido cuando CI=true)
 # Si CI == "true": docker push $(IMAGE_NAME):$(VERSION)
+# CI=true es una salvaguarda contra accidentes, no un control de acceso:
+# `make push CI=true` la salta. El control real es que solo el runner de CI
+# tenga credenciales del registry.
 push: ## Subir imagen al registry (requiere CI=true)
 
 # TODO: encadenar lint → test → build-image como dependencias de ci

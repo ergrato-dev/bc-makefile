@@ -7,12 +7,12 @@ SHELL       := bash
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 APP_NAME   := notificador
-PYTHON     := python3
+UV         := uv
 VENV       := .venv
-PIP        := $(VENV)/bin/pip
-PYTEST     := $(VENV)/bin/python -m pytest
-FLAKE8     := $(VENV)/bin/flake8
-PY         := $(VENV)/bin/python
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN        := $(UV) run --no-sync
+PYTEST     := $(RUN) pytest
+FLAKE8     := $(RUN) flake8
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
 REGISTRY   := docker.io/miusuario
@@ -32,14 +32,15 @@ COMPOSE    := docker compose
 export ENV LOG_LEVEL SMTP_HOST SMTP_PORT
 
 # ── Instalación ────────────────────────────────────────────────────────────────
-$(VENV)/.installed: requirements.txt
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip
-	$(PIP) install -r requirements.txt
+# Runtime: sin el grupo dev. --inexact no desinstala lo que ya hubiera
+# (si no, `make run` borraría pytest y el sentinel de dev quedaría mintiendo).
+$(VENV)/.installed: pyproject.toml uv.lock
+	$(UV) sync --locked --no-dev --inexact
 	@touch $@
 
-$(VENV)/.installed-dev: requirements-dev.txt $(VENV)/.installed
-	$(PIP) install -r requirements-dev.txt
+# Desarrollo: runtime + grupo dev de pyproject.toml
+$(VENV)/.installed-dev: $(VENV)/.installed
+	$(UV) sync --locked
 	@touch $@
 	@echo "Dependencias de desarrollo instaladas."
 
@@ -55,8 +56,8 @@ lint: install-dev ## Verificar estilo con flake8
 	$(FLAKE8) src/ --max-line-length=100
 
 # ── Ejecución local ────────────────────────────────────────────────────────────
-run: install ## Ejecutar servicio localmente con venv
-	$(PY) src/main.py
+run: install ## Ejecutar servicio localmente con uv
+	$(RUN) python src/main.py
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
 build: ## Construir imagen Docker con metadata de versión

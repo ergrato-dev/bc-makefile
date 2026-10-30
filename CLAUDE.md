@@ -165,7 +165,7 @@ Bandas: Sobresaliente 90–100, Notable 80–89, Aprobado 70–79.
 | 13 | `week-13-seguridad_portabilidad_y_alternativas` | Amenazas, testing de Makefiles, POSIX/BSD make, just/Task/ninja/CMake | Auditoría y endurecimiento de un Makefile real |
 | 14 | `week-14-proyecto_integrador` | Integración de todo lo aprendido | Build system multi-lenguaje con Make |
 
-Versiones del stack (Python, Node, imágenes): `docs/stack-versions.md`. No usar otras. Node.js siempre con **pnpm** (`pnpm-lock.yaml`, `pnpm install --frozen-lockfile`); nunca npm.
+Versiones del stack (Python, Node, imágenes): `docs/stack-versions.md`. No usar otras. Node.js siempre con **pnpm** (`pnpm-lock.yaml`, `pnpm install --frozen-lockfile`); nunca npm. Python siempre con **uv** (`pyproject.toml` + `uv.lock`, `uv sync --locked`, `uv run`); nunca pip ni `requirements.txt`.
 
 ## Comandos útiles durante el desarrollo del bootcamp
 

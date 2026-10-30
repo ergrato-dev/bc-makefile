@@ -9,8 +9,8 @@ DIST_DIR := dist
 all: build-backend build-frontend ## Construir backend y frontend
 
 # TODO: convertir en target con stamp .stamps/deps-python
-# Dependencia real: requirements.txt
-# Acción: pip install -r requirements.txt -q && sleep 1 (simula instalación lenta)
+# Dependencias reales: pyproject.toml uv.lock
+# Acción: uv sync --locked && sleep 1 (simula instalación lenta)
 build-backend: ## Construir backend (Python)
 	@echo "==> Instalando deps Python ..."
 	@sleep 1
@@ -30,7 +30,7 @@ build-frontend: ## Construir frontend (Node.js)
 	@echo "frontend-compiled" > $(DIST_DIR)/frontend.out
 	@echo "✓ Frontend listo"
 
-# TODO: crear archivos vacíos requirements.txt y package.json para que Make pueda rastrear cambios
+# TODO: crear archivos vacíos pyproject.toml, uv.lock y package.json para que Make pueda rastrear cambios
 # (ya existen en el starter — no los borres)
 
 clean: ## Eliminar artefactos y stamps

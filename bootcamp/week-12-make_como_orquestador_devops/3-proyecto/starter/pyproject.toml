@@ -1,0 +1,12 @@
+[project]
+name = "pipeline-local"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = ["flask>=3.1.3"]
+
+[dependency-groups]
+dev = ["pytest>=9.2.0", "pytest-cov>=7.1.0", "flake8>=7.5.0"]
+
+[tool.pytest.ini_options]
+# Los tests importan `from src...`: la raíz del proyecto va en sys.path
+pythonpath = ["."]

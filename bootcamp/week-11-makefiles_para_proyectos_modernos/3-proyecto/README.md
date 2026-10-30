@@ -19,8 +19,8 @@ starter/
 │   └── main.py           ← servicio Python (no modificar)
 ├── tests/
 │   └── test_main.py      ← tests (no modificar)
-├── requirements.txt      ← dependencias de runtime
-├── requirements-dev.txt  ← dependencias de desarrollo (pytest, flake8)
+├── pyproject.toml        ← dependencias (runtime + grupo dev: pytest, flake8)
+├── uv.lock               ← versiones exactas, generado por uv (commitear)
 ├── Dockerfile            ← imagen del servicio (no modificar)
 ├── docker-compose.yml    ← stack local (no modificar)
 └── .env.example          ← variables de entorno de referencia
@@ -29,11 +29,11 @@ starter/
 ## Entregables
 
 1. `Makefile` con los siguientes targets funcionales:
-   - `make install` — venv + `requirements.txt` (sentinel file)
-   - `make install-dev` — venv + `requirements.txt` + `requirements-dev.txt` (sentinel file)
+   - `make install` — `uv sync --locked --no-dev --inexact`, solo runtime (sentinel file)
+   - `make install-dev` — `uv sync --locked`, runtime + grupo dev (sentinel file)
    - `make test` — pytest, depende de `install-dev`
    - `make lint` — flake8, depende de `install-dev`
-   - `make run` — ejecuta `src/main.py` con el venv local
+   - `make run` — ejecuta `src/main.py` con `uv run`
    - `make build` — `docker build` con `VERSION` y `BUILD_DATE` como `--build-arg`
    - `make docker-run` — `docker run` con variables de `.env`
    - `make up` — `docker compose up -d`
@@ -70,12 +70,14 @@ Outputs esperados:
 
 ```
 $ make install-dev
-python3 -m venv .venv
+uv sync --locked --no-dev --inexact
+[...]
+uv sync --locked
 [...]
 Dependencias de desarrollo instaladas.
 
 $ make test
-.venv/bin/pytest tests/ -v
+uv run --no-sync pytest tests/ -v
 ...
 tests/test_main.py::test_notificar PASSED
 tests/test_main.py::test_notificar_vacio PASSED
@@ -104,7 +106,7 @@ make: *** [Makefile:XX: deploy-prod] Error 1
 
 | Criterio | Pts |
 |----------|-----|
-| `make install` usa sentinel file — no reinstala sin cambios en `requirements.txt` | 6 |
+| `make install` usa sentinel file — no reinstala sin cambios en `pyproject.toml` o `uv.lock` | 6 |
 | `make test` y `make lint` pasan sin errores | 6 |
 | `make build` inyecta `VERSION` y `BUILD_DATE` como build args | 6 |
 | `make info` muestra versión, imagen, fecha y entorno en formato legible | 6 |

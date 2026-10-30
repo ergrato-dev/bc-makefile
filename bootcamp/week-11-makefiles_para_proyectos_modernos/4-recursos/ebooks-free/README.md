@@ -4,5 +4,5 @@
 |--------|---------|-------------|--------|
 | GNU Make Manual | HTML/PDF | Sección 5 (Writing Recipes) y sección 6 (Variables) — referencia directa para wrappear herramientas externas | https://www.gnu.org/software/make/manual/ |
 | Docker Documentation | HTML | Guía oficial de Dockerfile y docker build, incluyendo build args y labels | https://docs.docker.com/engine/reference/builder/ |
-| Python Packaging User Guide | HTML | Cubre virtualenvs, pip y requirements.txt — base para los labs de Python | https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/ |
+| uv — Working on projects | HTML | `pyproject.toml`, `uv.lock`, `uv sync` y `uv run` — base para los labs de Python | https://docs.astral.sh/uv/guides/projects/ |
 | pnpm Docs — `pnpm run` | HTML | Referencia de scripts de package.json con pnpm, base para el lab de Node.js | https://pnpm.io/cli/run |

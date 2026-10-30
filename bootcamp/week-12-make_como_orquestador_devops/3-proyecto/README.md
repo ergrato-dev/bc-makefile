@@ -21,7 +21,8 @@ starter/
 ├── VERSION               ← versión inicial: 0.1.0
 ├── .env.example          ← plantilla de variables
 ├── .gitignore
-├── requirements.txt
+├── pyproject.toml        ← dependencias (uv)
+├── uv.lock               ← versiones exactas (commitear)
 ├── src/
 │   └── api.py            ← API Flask simple
 ├── tests/

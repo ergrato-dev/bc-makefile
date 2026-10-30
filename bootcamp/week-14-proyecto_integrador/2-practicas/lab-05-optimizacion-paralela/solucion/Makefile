@@ -7,7 +7,7 @@ STAMPS_DIR := .stamps
 $(STAMPS_DIR)/:
 	mkdir -p $@
 
-$(STAMPS_DIR)/deps-python: requirements.txt | $(STAMPS_DIR)/
+$(STAMPS_DIR)/deps-python: pyproject.toml uv.lock | $(STAMPS_DIR)/
 	@echo "==> Instalando deps Python ..."
 	@sleep 1
 	touch $@

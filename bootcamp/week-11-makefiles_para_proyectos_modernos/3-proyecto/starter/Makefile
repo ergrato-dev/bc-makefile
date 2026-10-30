@@ -3,12 +3,12 @@
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 APP_NAME   := notificador
-PYTHON     := python3
+UV         := uv
 VENV       := .venv
-PIP        := $(VENV)/bin/pip
-PYTEST     := $(VENV)/bin/python -m pytest
-FLAKE8     := $(VENV)/bin/flake8
-PY         := $(VENV)/bin/python
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN        := $(UV) run --no-sync
+PYTEST     := $(RUN) pytest
+FLAKE8     := $(RUN) flake8
 
 # ── Docker ─────────────────────────────────────────────────────────────────────
 REGISTRY   := docker.io/miusuario
@@ -28,13 +28,14 @@ COMPOSE    := docker compose
 
 
 # ── Instalación ────────────────────────────────────────────────────────────────
-# TODO 1: Target '$(VENV)/.installed' con dependencia requirements.txt
-#   - crea el venv, actualiza pip, instala requirements.txt
+# TODO 1: Target '$(VENV)/.installed' con dependencias pyproject.toml y uv.lock
+#   - $(UV) sync --locked --no-dev --inexact   (solo runtime; --inexact no
+#     desinstala las herramientas de dev si ya estaban)
 #   - termina con @touch $@
 
 
-# TODO 2: Target '$(VENV)/.installed-dev' con dependencia requirements-dev.txt y $(VENV)/.installed
-#   - instala requirements-dev.txt sobre el venv existente
+# TODO 2: Target '$(VENV)/.installed-dev' con dependencia $(VENV)/.installed
+#   - $(UV) sync --locked   (runtime + grupo dev de pyproject.toml)
 #   - termina con @touch $@
 
 
@@ -52,7 +53,7 @@ COMPOSE    := docker compose
 
 
 # ── Ejecución ──────────────────────────────────────────────────────────────────
-# TODO 7: Target 'run' que dependa de 'install' y ejecute $(PY) src/main.py
+# TODO 7: Target 'run' que dependa de 'install' y ejecute $(RUN) python src/main.py
 
 
 # ── Docker ─────────────────────────────────────────────────────────────────────

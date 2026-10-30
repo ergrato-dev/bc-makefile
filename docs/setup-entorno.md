@@ -54,7 +54,7 @@ xcode-select --install
 
 ## 4. Desde la semana 11
 
-Docker con Compose v2, Python 3.14 con `uv`, y Node.js 26 LTS con **pnpm** (nunca npm). Versiones exactas
+Docker con Compose v2, Python 3.14 con **uv** (nunca pip), y Node.js 26 LTS con **pnpm** (nunca npm). Versiones exactas
 en [`stack-versions.md`](stack-versions.md).
 
 ```bash
@@ -65,13 +65,19 @@ node --version
 pnpm --version
 ```
 
-pnpm sin pasar por npm: en macOS `brew install pnpm`; en Linux/WSL descarga el instalador oficial, **léelo** y luego ejecútalo (nunca `curl | sh`):
+uv y pnpm sin pasar por pip ni npm: en macOS `brew install uv pnpm`; en Linux/WSL descarga cada instalador oficial, **léelo** y luego ejecútalo (nunca `curl | sh`):
 
 ```bash
+curl -fsSL https://astral.sh/uv/install.sh -o /tmp/install-uv.sh
+less /tmp/install-uv.sh
+sh /tmp/install-uv.sh
+
 curl -fsSL https://get.pnpm.io/install.sh -o /tmp/install-pnpm.sh
 less /tmp/install-pnpm.sh
 sh /tmp/install-pnpm.sh
 ```
+
+Con uv no necesitas el paquete `python3-venv` ni pip: `uv sync` crea `.venv/` y, si falta Python 3.14, lo descarga.
 
 ## 5. Comprobar todo
 

@@ -16,7 +16,7 @@ build: ## Compilar el proyecto
 # FIX 2: TAB correcto en la receta de install
 install: ## Instalar dependencias
 	@echo "Instalando dependencias..."
-	@echo "pip install -r requirements.txt  (simulado)"
+	@echo "uv sync --locked  (simulado)"
 
 # FIX 3: dependencia corregida 'install' (no 'instal')
 test: install ## Ejecutar tests

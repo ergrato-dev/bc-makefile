@@ -6,11 +6,12 @@ SHELL       := bash
         lint test build report ci version bump-patch clean help
 .DEFAULT_GOAL := help
 
-PYTHON       := python3
+UV           := uv
 VENV         := .venv
-PIP          := $(VENV)/bin/pip
-PYTEST       := $(VENV)/bin/pytest
-FLAKE8       := $(VENV)/bin/flake8
+# --no-sync: Make decide cuándo instalar (sentinel); uv run solo ejecuta
+RUN          := $(UV) run --no-sync
+PYTEST       := $(RUN) pytest
+FLAKE8       := $(RUN) flake8
 APP_NAME     := mi-api
 VERSION_FILE := VERSION
 # VERSION viene de un archivo del repo: un PR puede cambiarlo. Se lee sin
@@ -43,10 +44,8 @@ guard-%:
 env-check: guard-APP_NAME guard-DB_URL guard-SECRET_KEY guard-ENV ## Verificar variables de entorno requeridas
 	@echo "Variables de entorno OK"
 
-$(VENV)/.installed: requirements.txt
-	$(PYTHON) -m venv $(VENV)
-	$(PIP) install --upgrade pip -q
-	$(PIP) install -r requirements.txt -q
+$(VENV)/.installed: pyproject.toml uv.lock
+	$(UV) sync --locked --quiet
 	@touch $@
 
 install: $(VENV)/.installed ## Instalar dependencias Python

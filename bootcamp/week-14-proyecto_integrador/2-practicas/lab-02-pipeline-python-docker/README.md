@@ -25,7 +25,7 @@ El target `ci` actúa como punto de entrada que encadena todo. El target `push` 
 2. Instala dependencias del proyecto:
    ```bash
    make deps
-   # Instala flake8 y pytest vía pip
+   # uv sync --locked: crea .venv/ con flake8 y pytest (nunca pip)
    ```
 
 3. Implementa el target `lint`:
