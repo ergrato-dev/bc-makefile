@@ -11,7 +11,7 @@
 | **`.DEFAULT_GOAL`** | Target ejecutado cuando se invoca `make` sin argumentos | `.DEFAULT_GOAL := help` |
 | **`$(shell ...)`** | Captura el output de un comando de shell como string | `DATE := $(shell date +%F)` |
 | **`@`** | Prefijo que suprime la impresión del comando antes de ejecutarlo | `@echo "Hola"` |
-| **`$(MAKEFILE_LIST)`** | Variable automática con la lista de Makefiles cargados | `grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST)` |
+| **`$(MAKEFILE_LIST)`** | Variable automática con la lista de Makefiles cargados | `grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST)` |
 | **`make -n`** | Dry-run: muestra qué ejecutaría make sin ejecutarlo | `make -n build` |
 | **`make -B`** | Fuerza re-ejecución aunque los targets estén al día | `make -B build` |
 | **`MAKE_VERSION`** | Variable que Make define con su propia versión | `@echo "GNU Make $(MAKE_VERSION)"` |

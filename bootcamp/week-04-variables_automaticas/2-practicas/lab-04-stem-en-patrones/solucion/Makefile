@@ -42,5 +42,5 @@ limpiar: ## elimina los archivos generados
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [target | <nombre>.resultado]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

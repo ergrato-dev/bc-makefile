@@ -61,5 +61,5 @@ limpiar: ## elimina el directorio de artefactos completo
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [target] [DIST=directorio]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -118,7 +118,7 @@ clean: ## Eliminar venv y cachés de Python
 help: ## Mostrar ayuda
 	@echo "$(APP_NAME) — Targets disponibles:"
 	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 	@echo ""
 	@echo "  Versión: $(VERSION)"

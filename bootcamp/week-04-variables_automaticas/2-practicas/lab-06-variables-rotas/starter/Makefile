@@ -65,5 +65,5 @@ limpiar: ## borra los archivos de prueba y build/
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [target]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

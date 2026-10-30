@@ -51,5 +51,5 @@ diagnostico: ## muestra el sabor de cada variable sin expandirla
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [check-image|check-flags|check-url|check-version]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

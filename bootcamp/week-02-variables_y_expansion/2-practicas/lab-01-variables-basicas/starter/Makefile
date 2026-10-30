@@ -46,5 +46,5 @@ tipos: ## muestra el sabor (flavor) de cada variable
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|prod]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

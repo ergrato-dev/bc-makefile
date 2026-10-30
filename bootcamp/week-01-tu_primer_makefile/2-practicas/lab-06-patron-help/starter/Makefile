@@ -41,4 +41,4 @@ status:
 # TODO: implementa este target con el patrón grep+awk
 help: ## muestra esta ayuda
 	@echo "TODO: implementa el patrón help aquí"
-	@echo "(pista: grep -E '^[a-zA-Z_-]+:.*?## ' ... | awk ...)"
+	@echo "(pista: grep -hE '^[a-zA-Z_-]+:.*?## ' ... | awk ...)"

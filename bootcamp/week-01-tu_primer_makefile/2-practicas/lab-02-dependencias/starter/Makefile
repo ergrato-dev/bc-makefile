@@ -46,5 +46,5 @@ clean: ## limpia el estado (sin archivos reales en este lab)
 	@echo "Nada que limpiar en este lab."
 
 help: ## muestra esta ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

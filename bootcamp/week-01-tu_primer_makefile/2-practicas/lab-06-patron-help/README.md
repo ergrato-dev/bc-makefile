@@ -15,7 +15,7 @@ build: ## compila el proyecto       ← este comentario aparece en `make help`
 	...
 ```
 
-El truco: `grep -E '^[a-zA-Z_-]+:.*?## '` extrae las líneas de target que llevan `## `, `awk` corta por `:.*?## ` y formatea las dos columnas.
+El truco: `grep -hE '^[a-zA-Z_-]+:.*?## '` extrae las líneas de target que llevan `## `, `awk` corta por `:.*?## ` y formatea las dos columnas.
 
 ## Instrucciones
 
@@ -27,7 +27,7 @@ El truco: `grep -E '^[a-zA-Z_-]+:.*?## '` extrae las líneas de target que lleva
    ```makefile
    help: ## muestra esta ayuda
    	@echo "Targets disponibles:"
-   	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+   	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
    		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
    ```
    `$$` es un `$` para el shell: Make se come uno. En la expresión regular,

@@ -28,5 +28,5 @@ status: ## muestra el estado actual del proyecto
 	@ls output/ 2>/dev/null && echo "  output/ existe" || echo "  output/ no existe"
 
 help: ## muestra esta ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

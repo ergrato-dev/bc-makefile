@@ -40,5 +40,5 @@ asignar-shell: ## compara != con := $(shell ...)
 
 help: ## muestra esta ayuda
 	@echo "Uso: make [comparar|git-info|asignar-shell]"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
