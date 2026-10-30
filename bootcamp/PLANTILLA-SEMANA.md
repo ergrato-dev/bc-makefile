@@ -169,7 +169,7 @@ $(BUILD):
 	mkdir -p $@
 
 clean: ## Elimina archivos generados
-	$(if $(BUILD),,$(error BUILD esta vacio))
+	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
 	rm -rf -- '$(BUILD)'
 
 test: build ## Verifica que el binario funciona

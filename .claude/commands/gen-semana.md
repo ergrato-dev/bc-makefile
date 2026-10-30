@@ -35,8 +35,8 @@ Genera **todos** los archivos listados abajo para la semana `$ARGUMENTS`. No omi
 - Mínimo 70% en cada evidencia; bandas Sobresaliente/Notable/Aprobado
 
 ### 2b. `bootcamp/<carpeta>/checks.json`
-- **Se escribe antes que labs y proyecto.** Contrato en `docs/autograding.md`: 6–18 comprobaciones sobre `3-proyecto/starter`, marcador `{make}`, cada una con `pista`
-- Debe fallar contra el starter y pasar contra la solución
+- **Se escribe antes que labs y proyecto.** Contrato en `docs/autograding.md`: 6–18 comprobaciones sobre el proyecto con los marcadores `{make}` y `{proyecto}`, cada una con `pista`
+- Debe fallar contra el starter (`./scripts/verificar-semana.sh NN`) y pasar contra la solución (`ENTREGA=solucion ./scripts/verificar-semana.sh NN`)
 
 ### 3. `bootcamp/<carpeta>/0-assets/` — Diagramas Mermaid (mínimo 3 archivos)
 

@@ -237,7 +237,7 @@ Entre 8 y 15 términos por semana. Solo términos nuevos de esa semana.
 - Recursión siempre con subdirectorios como targets phony, nunca `for d in ...; do $(MAKE) -C $$d; done`.
 - Nunca `export` sin argumentos, nunca `include .env` sin advertir que se parsea como Makefile, nunca `rm -rf $(VAR)` sin guarda.
 - Cada semana nueva o refactorizada lleva `checks.json` escrito antes que el contenido, y pasa `./scripts/verificar-enlaces.sh`.
-- Los labs deben poder ejecutarse con solo `make` y GNU Make ≥ 4.x instalado; sin dependencias extra salvo lo que indique explícitamente la semana.
+- Los labs deben poder ejecutarse con solo `make` y GNU Make ≥ 4.3 instalado; sin dependencias extra salvo lo que indique explícitamente la semana.
 - Al generar teoría, máximo 600 palabras. Preferir ejemplos concretos de Makefile sobre explicaciones abstractas.
 - Cada ejemplo de Makefile en documentación debe ser autoejecutable (pegar y funciona).
 - No generar contenido de semanas futuras si no se pidió explícitamente.

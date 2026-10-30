@@ -40,7 +40,7 @@ By the end of the bootcamp, students will be able to:
 
 > **Modern Make from day 1** — No legacy antipatterns, only current best practices.
 
-GNU Make has been the backbone of the world's most critical build systems for over 40 years. This bootcamp demonstrates that Make is not an old tool: it is the most ubiquitous, portable, and powerful automation tool available on any Unix system. Students learn directly the patterns they will encounter in real Linux, Open Source, and DevOps projects.
+Make was born in 1976 and GNU Make in 1988: nearly four decades as the backbone of the world's most critical build systems. This bootcamp demonstrates that Make is not an old tool: it is the most ubiquitous, portable, and powerful automation tool available on any Unix system. Students learn directly the patterns they will encounter in real Linux, Open Source, and DevOps projects.
 
 ---
 
@@ -98,7 +98,7 @@ bootcamp/week-NN-topic_name/
 | Tool | Version | Usage |
 |------|---------|-------|
 | GNU Make    | **≥ 4.3** (4.4.1 recommended) | Core tool of the bootcamp |
-| GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Weeks 4-10 (C projects) |
+| GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Weeks 4-10 and 14 (C projects) |
 | Python      | **3.14** + uv (never pip) | Weeks 11-14 |
 | Docker      | Engine 27+ with Compose v2 | Weeks 11-14 |
 | Node.js     | **26 LTS** + pnpm (never npm) | Weeks 11-14 |
@@ -117,10 +117,9 @@ Exact versions and rationale: [docs/stack-versions.md](docs/stack-versions.md).
 git clone https://github.com/ergrato-dev/bc-makefile.git
 cd bc-makefile
 ./scripts/verificar-semana.sh --doctor     # check your environment
-cd bootcamp/week-01-tu_primer_makefile     # start here
 ```
 
-When you finish a week:
+Start with [bootcamp/week-01-tu_primer_makefile](bootcamp/week-01-tu_primer_makefile/README.md). You work in the `starter/` folders; when you finish a week, from the repository root:
 
 ```bash
 ./scripts/verificar-semana.sh 01
@@ -181,7 +180,7 @@ See the [LICENSE](LICENSE) file for the full text.
 
 ## 🏆 Acknowledgments
 
-- [GNU Make](https://www.gnu.org/software/make/) — For four decades as the world's most reliable build system
+- [GNU Make](https://www.gnu.org/software/make/) — For nearly four decades as the world's most reliable build system
 - [GNU Make Manual](https://www.gnu.org/software/make/manual/) — The most comprehensive official documentation
 - Open Source Community — For real projects where Make remains the standard
 - All contributors

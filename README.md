@@ -38,7 +38,7 @@ Al finalizar el bootcamp, los estudiantes serán capaces de:
 
 > **Make moderno desde el día 1** — Sin antipatrones legacy, solo las mejores prácticas actuales.
 
-GNU Make lleva más de 40 años siendo la columna vertebral de los build systems más críticos del mundo. Este bootcamp demuestra que Make no es una herramienta antigua: es la herramienta de automatización más ubicua, portable y poderosa disponible en cualquier sistema Unix. Los estudiantes aprenden directamente los patrones que encontrarán en proyectos reales de Linux, Open Source y DevOps.
+Make nació en 1976 y GNU Make en 1988: casi cuatro décadas como columna vertebral de los build systems más críticos del mundo. Este bootcamp demuestra que Make no es una herramienta antigua: es la herramienta de automatización más ubicua, portable y poderosa disponible en cualquier sistema Unix. Los estudiantes aprenden directamente los patrones que encontrarán en proyectos reales de Linux, Open Source y DevOps.
 
 ---
 
@@ -109,7 +109,7 @@ bootcamp/week-NN-nombre_del_tema/
 | Herramienta | Versión | Uso |
 |-------------|---------|-----|
 | GNU Make    | **≥ 4.3** (4.4.1 recomendada) | Herramienta central del bootcamp |
-| GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Semanas 4-10 (proyectos C) |
+| GCC / Clang | gcc ≥ 11 / clang ≥ 14 | Semanas 4-10 y 14 (proyectos C) |
 | Python      | **3.14** + uv (nunca pip) | Semanas 11-14 |
 | Docker      | Engine 27+ con Compose v2 | Semanas 11-14 |
 | Node.js     | **26 LTS** + pnpm (nunca npm) | Semanas 11-14 |
@@ -128,10 +128,9 @@ Versiones exactas y por qué: [docs/stack-versions.md](docs/stack-versions.md).
 git clone https://github.com/ergrato-dev/bc-makefile.git
 cd bc-makefile
 ./scripts/verificar-semana.sh --doctor     # comprueba tu entorno
-cd bootcamp/week-01-tu_primer_makefile     # empieza aquí
 ```
 
-Cada semana contiene un `README.md` con instrucciones, tiempo estimado y criterios de éxito verificables. Al terminarla:
+Empieza por [bootcamp/week-01-tu_primer_makefile](bootcamp/week-01-tu_primer_makefile/README.md). Cada semana contiene un `README.md` con instrucciones, tiempo estimado y criterios de éxito verificables. Trabajas en las carpetas `starter/`; al terminar la semana, desde la raíz del repositorio:
 
 ```bash
 ./scripts/verificar-semana.sh 01
@@ -201,7 +200,7 @@ Ver el archivo [LICENSE](LICENSE) para el texto completo.
 
 ## 🏆 Agradecimientos
 
-- [GNU Make](https://www.gnu.org/software/make/) — Por cuatro décadas siendo el build system más confiable del mundo
+- [GNU Make](https://www.gnu.org/software/make/) — Por casi cuatro décadas siendo el build system más confiable del mundo
 - [GNU Make Manual](https://www.gnu.org/software/make/manual/) — La documentación oficial más completa
 - Comunidad Open Source — Por proyectos reales donde Make sigue siendo el estándar
 - Todos los contribuidores

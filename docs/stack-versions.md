@@ -23,7 +23,7 @@ Comprueba la tuya:
 make --version | head -1
 ```
 
-## Toolchain C (semanas 04–10)
+## Toolchain C (semanas 04–10 y 14)
 
 | Herramienta | Versión mínima |
 |---|---|
@@ -39,7 +39,7 @@ make --version | head -1
 | ruff | última estable | Lint + formato |
 | pytest | 9.x | Grupo `dev` de `pyproject.toml` |
 | Node.js | 26 LTS | Active LTS desde 2026-10-28. 24 sigue en Maintenance LTS |
-| pnpm | 11.x | Gestor de paquetes Node.js. **Nunca npm.** Siempre `ppnpm install --frozen-lockfile` con `pnpm-lock.yaml` comiteado |
+| pnpm | 11.x | Gestor de paquetes Node.js. **Nunca npm.** Siempre `pnpm install --frozen-lockfile` con `pnpm-lock.yaml` comiteado |
 | Docker Engine | 27+ | |
 | Docker Compose | v2 (`docker compose`) | v1 (`docker-compose`) está en EOL desde 2023 |
 

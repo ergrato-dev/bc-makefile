@@ -25,7 +25,7 @@ Lee `CLAUDE.md` y luego revisa todos los archivos de `bootcamp/<semana>/`. Repor
 - [ ] Existen todos los directorios: `0-assets/`, `1-teoria/`, `2-practicas/`, `3-proyecto/`, `4-recursos/`, `5-glosario/`
 - [ ] `README.md` de la semana tiene todas las secciones requeridas
 - [ ] `rubrica-evaluacion.md` usa 30/40/30 con 10 preguntas de Conocimiento y 70% por evidencia
-- [ ] `checks.json` existe, es válido y `./scripts/verificar-semana.sh NN` falla contra starter y pasa contra solución
+- [ ] `checks.json` existe, es válido; `./scripts/verificar-semana.sh NN` falla contra el starter y `ENTREGA=solucion ./scripts/verificar-semana.sh NN` pasa N/N
 - [ ] README tiene `## 🔗 Navegación` y la semana figura en `bootcamp/README.md`
 - [ ] Hay 6 labs en `2-practicas/`
 - [ ] Cada lab tiene `README.md`, `starter/Makefile` y `solucion/Makefile`
