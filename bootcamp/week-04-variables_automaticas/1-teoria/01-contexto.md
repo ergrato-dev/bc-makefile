@@ -43,8 +43,7 @@ SRCS   := main.c utils.c
 OBJS   := $(SRCS:%.c=$(BUILD)/%.o)
 APP    := $(BUILD)/programa
 
-## all: compila el programa
-all: $(APP)
+all: $(APP) ## compila el programa
 
 $(APP): $(OBJS)
 	$(CC) $^ -o $@
@@ -53,16 +52,13 @@ $(BUILD)/%.o: %.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-## clean: elimina build/
-clean:
+clean: ## elimina build/
 	$(if $(BUILD),,$(error BUILD vacía: rm -rf no se ejecuta))
 	@rm -rf -- '$(BUILD)'
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
 Las tres primeras líneas son el preámbulo estricto y `clean` lleva la guarda de `rm -rf`, ambos de la semana 03. La regla `$(BUILD)/%.o: %.c` aplica a `main.c` y a `utils.c` con el mismo código. Make resuelve para cada uno:

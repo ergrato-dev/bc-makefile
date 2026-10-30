@@ -8,29 +8,30 @@ Implementar el patrón `help` con documentación inline usando `grep` y `awk`, p
 
 ## Contexto
 
-Un Makefile sin `help` es una caja negra. El patrón estándar usa comentarios `##` en la misma línea del target para generar ayuda automática. Así el Makefile se documenta a sí mismo: cambian los targets, cambia la ayuda.
+Un Makefile sin `help` es una caja negra. El patrón estándar usa comentarios `##` en la misma línea del target para generar ayuda automática. Así el Makefile se documenta a sí mismo: cambian los targets, cambia la ayuda. Es la convención que usan todos los Makefiles del bootcamp.
 
 ```makefile
-## build: compila el proyecto       ← este comentario aparece en `make help`
-build:
+build: ## compila el proyecto       ← este comentario aparece en `make help`
 	...
 ```
 
-El truco: `grep -E '^## '` extrae esas líneas, `awk` las formatea.
+El truco: `grep -E '^[a-zA-Z_-]+:.*?## '` extrae las líneas de target que llevan `## `, `awk` corta por `:.*?## ` y formatea las dos columnas.
 
 ## Instrucciones
 
 1. Abre `starter/Makefile`. Tiene 5 targets sin documentación `##`.
 
-2. Agrega comentarios `## target: descripción` a cada target (ver TODO).
+2. Añade ` ## descripción` al final de la línea de cada target (ver TODO), por ejemplo `build: ## construye el proyecto en output/`.
 
 3. Implementa el target `help` completo usando el patrón grep+awk:
    ```makefile
-   help:
-   	@grep -E '^## ' $(MAKEFILE_LIST) \
-   		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-   		| sed 's/## //'
+   help: ## muestra esta ayuda
+   	@echo "Targets disponibles:"
+   	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+   		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
    ```
+   `$$` es un `$` para el shell: Make se come uno. En la expresión regular,
+   `.*?## ` deja pasar prerrequisitos entre los dos puntos y el comentario.
 
 4. Verifica:
    ```bash
@@ -46,7 +47,7 @@ El truco: `grep -E '^## '` extrae esas líneas, `awk` las formatea.
    target que solo exista en la copia:
    ```bash
    cp Makefile otro.mk
-   printf '\n## deploy: despliega (solo en otro.mk)\ndeploy:\n\t@echo deploy\n' >> otro.mk
+   printf '\ndeploy: ## despliega (solo en otro.mk)\n\t@echo deploy\n' >> otro.mk
    make -f otro.mk help
    ```
    La última línea debe ser `deploy            despliega (solo en otro.mk)`:
@@ -72,19 +73,17 @@ El truco: `grep -E '^## '` extrae esas líneas, `awk` las formatea.
 
 ## Reto extra
 
-Hay una segunda convención muy extendida, la que usa este bootcamp
-desde la semana 07: la descripción va **en la misma línea** que el target.
+Muchos proyectos usan otra convención: el comentario va en una línea propia,
+**encima** del target.
 
 ```makefile
-build: ## construye el proyecto en output/
+## build: construye el proyecto en output/
+build:
 	@echo "Construyendo..."
-
-help: ## muestra esta ayuda
-	@echo "Targets disponibles:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
-Reescribe tu Makefile con esta convención en un archivo `inline.mk` y
-compruébalo con `make -f inline.mk help`. ¿Qué ventaja tiene que la descripción
-viva en la línea del target? ¿Qué pasa con un target como `build: test lint ## ...`?
+Escribe un `arriba.mk` con esta convención y un `help` que la lea con
+`grep -E '^## '`, `sed 's/^## //'` y `awk -F ': '`. Compruébalo con
+`make -f arriba.mk help`. ¿Qué pasa si renombras `build` y olvidas el
+comentario? ¿Y si una descripción contiene `: `? ¿Por qué la convención en la
+misma línea no tiene ninguno de los dos problemas?

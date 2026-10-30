@@ -43,8 +43,7 @@ Make expone su propia versión en la variable `MAKE_VERSION`. Pega esto en un
 .PHONY: check-make
 .DEFAULT_GOAL := check-make
 
-## check-make: falla si GNU Make es anterior a 4.3
-check-make:
+check-make: ## falla si GNU Make es anterior a 4.3
 	@echo "Usando GNU Make $(MAKE_VERSION)"
 	@printf '%s\n' 4.3 $(MAKE_VERSION) | sort -V -C \
 		|| (echo "Error: necesitas GNU Make >= 4.3" && exit 1)

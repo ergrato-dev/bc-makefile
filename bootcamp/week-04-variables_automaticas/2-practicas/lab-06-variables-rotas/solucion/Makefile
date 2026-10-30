@@ -18,8 +18,7 @@ SHELL       := bash
 # o usar el nombre del target directamente vía $@ en la receta.
 # ────────────────────────────────────────────────────────────
 
-## info-etiqueta: muestra la etiqueta de build
-info-etiqueta:
+info-etiqueta: ## muestra la etiqueta de build
 	@echo "Etiqueta: build-$@"
 
 # ────────────────────────────────────────────────────────────
@@ -27,8 +26,7 @@ info-etiqueta:
 # Con $<, gcc solo enlaza main.o → "undefined reference" para símbolos
 # definidos en utils.o y math.o.
 # ────────────────────────────────────────────────────────────
-## enlazar: simula enlazar tres objetos
-enlazar: main.o utils.o math.o
+enlazar: main.o utils.o math.o ## simula enlazar tres objetos
 	@echo "[ld] Enlazando: $^"
 
 # ────────────────────────────────────────────────────────────
@@ -36,8 +34,7 @@ enlazar: main.o utils.o math.o
 # Si el target se renombra (ej: construir-debug), $@ actualiza
 # automáticamente; el nombre literal "mi-app" no.
 # ────────────────────────────────────────────────────────────
-## construir: simula compilar y enlazar en un solo paso
-construir: main.c utils.c
+construir: main.c utils.c ## simula compilar y enlazar en un solo paso
 	@echo "[cc+ld] Fuentes: $^"
 	@echo "[cc+ld] Binario: $@"
 
@@ -61,21 +58,17 @@ build/main.o: main.c
 	@echo "[cc] Compilando $< → $@"
 	@touch $@
 
-## setup: crea los archivos de prueba que usan los targets
-setup:
+setup: ## crea los archivos de prueba que usan los targets
 	@touch main.c utils.c alfa.md
 	@touch main.o utils.o math.o
 	@echo "[setup] Listo: main.c utils.c alfa.md main.o utils.o math.o"
 
-## limpiar: borra los archivos de prueba y build/
-limpiar:
+limpiar: ## borra los archivos de prueba y build/
 	@rm -f main.c utils.c alfa.md alfa.html main.o utils.o math.o
 	@rm -rf -- build
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

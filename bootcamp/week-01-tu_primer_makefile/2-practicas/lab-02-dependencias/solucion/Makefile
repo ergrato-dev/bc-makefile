@@ -6,41 +6,31 @@
 
 .DEFAULT_GOAL := help
 
-## run: ejecuta el pipeline completo
-run: link
+run: link ## ejecuta el pipeline completo
 	@echo "[4/4] Ejecutando programa..."
 	@echo ">>> ¡Programa corriendo!"
 
-## link: vincula los objetos compilados
-link: compile
+link: compile ## vincula los objetos compilados
 	@echo "[3/4] Vinculando objetos..."
 
-## compile: compila los fuentes
-compile: prepare
+compile: prepare ## compila los fuentes
 	@echo "[2/4] Compilando fuentes..."
 
-## prepare: prepara el entorno de build
-prepare:
+prepare: ## prepara el entorno de build
 	@echo "[1/4] Preparando entorno..."
 
-## test: ejecuta las pruebas (necesita el código compilado)
-test: compile
+test: compile ## ejecuta las pruebas (necesita el código compilado)
 	@echo "[test] Pruebas OK."
 
-## lint: revisa el estilo (necesita el código compilado)
-lint: compile
+lint: compile ## revisa el estilo (necesita el código compilado)
 	@echo "[lint] Estilo OK."
 
-## check: pruebas y estilo; compile se ejecuta una sola vez
-check: test lint
+check: test lint ## pruebas y estilo; compile se ejecuta una sola vez
 	@echo "[check] Todo verificado."
 
-## clean: limpia el estado
-clean:
+clean: ## limpia el estado
 	@echo "Nada que limpiar en este lab."
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

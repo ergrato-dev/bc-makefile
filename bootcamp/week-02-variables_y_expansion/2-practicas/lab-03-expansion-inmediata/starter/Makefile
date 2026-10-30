@@ -34,8 +34,7 @@
 # y con := para comparar:
 #   PRECIO_SHELL := $(shell echo 'cuesta $$5')
 
-## comparar: imprime cada timestamp dos veces para ver si cambia
-comparar:
+comparar: ## imprime cada timestamp dos veces para ver si cambia
 	@echo "--- Con = (lazy, se re-ejecuta) ---"
 	# TODO: @echo "  Primera lectura:  $(TIMESTAMP_LAZY)"
 	# TODO: @echo "  Segunda lectura:  $(TIMESTAMP_LAZY)"
@@ -43,8 +42,7 @@ comparar:
 	# TODO: @echo "  Primera lectura:  $(TIMESTAMP_EAGER)"
 	# TODO: @echo "  Segunda lectura:  $(TIMESTAMP_EAGER)"
 
-## git-info: imprime hash de git y versión del proyecto
-git-info:
+git-info: ## imprime hash de git y versión del proyecto
 	# TODO: @echo "Git hash: $(GIT_HASH)"
 	# TODO: @echo "Versión:  $(VERSION)"
 
@@ -52,13 +50,10 @@ git-info:
 #   KERNEL:       <valor> [<flavor de KERNEL>]
 #   PRECIO_BANG:  <valor> [<flavor de PRECIO_BANG>]
 #   PRECIO_SHELL: <valor> [<flavor de PRECIO_SHELL>]
-## asignar-shell: compara != con := $(shell ...)
-asignar-shell:
+asignar-shell: ## compara != con := $(shell ...)
 	@echo "TODO: implementa asignar-shell"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [comparar|git-info|asignar-shell]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

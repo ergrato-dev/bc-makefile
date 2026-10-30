@@ -27,14 +27,14 @@ Los cuatro errores en `starter/Makefile`:
    ```
    Debes ver:
    ```
-   Makefile:25: *** missing separator.  Stop.
+   Makefile:23: *** missing separator.  Stop.
    ```
    El número tras `Makefile:` es la línea exacta donde Make dejó de entender
    el archivo.
 
 2. **Error 1 — separador faltante.** Antes de editar, haz visibles los TAB:
    ```bash
-   cat -A Makefile | sed -n '22,27p'
+   cat -A Makefile | sed -n '21,26p'
    ```
    Una receta correcta empieza por `^I` (un TAB); las líneas rotas empiezan con
    cuatro espacios:

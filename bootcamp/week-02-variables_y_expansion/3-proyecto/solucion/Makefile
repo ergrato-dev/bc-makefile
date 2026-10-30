@@ -34,8 +34,7 @@ DB_URL      = postgres://$(DB_HOST):5432/$(DB_NAME)
 BUILD_ARGS ?=
 override BUILD_ARGS += --pull
 
-## config: muestra la configuración completa del entorno actual
-config:
+config: ## muestra la configuración completa del entorno actual
 	@echo "Entorno:    $(ENV)"
 	@echo "Versión:    $(VERSION)"
 	@echo "Fecha:      $(BUILD_DATE)"
@@ -44,34 +43,28 @@ config:
 	@echo "Log level:  $(LOG_LEVEL)"
 	@echo "Origen ENV: $(origin ENV)"
 
-## build: construye la imagen de la aplicación
-build:
+build: ## construye la imagen de la aplicación
 	@echo "[build] Construyendo $(APP_NAME):$(VERSION)-$(ENV)..."
 	@echo "[build] Flags: $(BUILD_ARGS)"
 	@echo "[build] Compilación OK."
 	@echo "[build] Imagen lista: $(IMAGE_TAG)"
 
-## test: ejecuta la suite de pruebas
-test:
+test: ## ejecuta la suite de pruebas
 	@echo "[test] Ejecutando suite de pruebas en entorno: $(ENV)"
 	@echo "[test] Tests OK."
 
-## deploy: construye, prueba y despliega en el entorno configurado
-deploy: build test
+deploy: build test ## construye, prueba y despliega en el entorno configurado
 	@echo "[deploy] Desplegando en $(ENV)..."
 	@echo "[deploy]   Imagen: $(IMAGE_TAG)"
 	@echo "[deploy]   DB:     $(DB_URL)"
 	@echo "[deploy] Deploy OK."
 
-## clean: elimina artefactos de build
-clean:
+clean: ## elimina artefactos de build
 	@echo "[clean] Limpiando artefactos..."
 	@rm -rf dist/
 	@echo "[clean] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|staging|prod] [VERSION=x.y.z]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

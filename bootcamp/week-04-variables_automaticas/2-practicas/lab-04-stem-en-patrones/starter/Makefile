@@ -19,8 +19,7 @@
 ENTRADAS := alfa.entrada beta.entrada gamma.entrada
 SALIDAS  := $(ENTRADAS:.entrada=.resultado)
 
-## all: procesa todos los archivos .entrada → .resultado
-all: $(SALIDAS)
+all: $(SALIDAS) ## procesa todos los archivos .entrada → .resultado
 
 # ── Regla de patrón ───────────────────────────────────────────
 # El % en %.resultado coincide con: alfa, beta, gamma
@@ -35,8 +34,7 @@ all: $(SALIDAS)
 
 # ── Targets de utilidad ───────────────────────────────────────
 
-## setup: crea archivos .entrada de prueba
-setup:
+setup: ## crea archivos .entrada de prueba
 	@echo "datos de alfa"  > alfa.entrada
 	@echo "datos de beta"  > beta.entrada
 	@echo "datos de gamma" > gamma.entrada
@@ -44,15 +42,12 @@ setup:
 	@echo "datos de delta" > sub/delta.entrada
 	@echo "[setup] Archivos creados: $(ENTRADAS)"
 
-## limpiar: elimina los archivos generados
-limpiar:
+limpiar: ## elimina los archivos generados
 	# TODO: elimina todos los archivos .resultado y .entrada
 	# TODO (paso 7): elimina también los directorios logs y sub (rm -rf -- logs sub)
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target | <nombre>.resultado]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

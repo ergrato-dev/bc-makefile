@@ -20,8 +20,7 @@ ARTEFACTOS := \
     $(DIST)/docs/guia.md \
     $(DIST)/docs/faq.md
 
-## all: genera todos los artefactos en sus subdirectorios
-all: $(ARTEFACTOS) $(DIST)/indice.txt
+all: $(ARTEFACTOS) $(DIST)/indice.txt ## genera todos los artefactos en sus subdirectorios
 
 # $(@D) = directorio del target (ej: dist/reportes)
 # $(@F) = nombre del archivo del target (ej: informe-q1.txt)
@@ -50,15 +49,12 @@ $(DIST)/indice.txt: $(ARTEFACTOS)
 	@printf '%s\n' $^ > $@
 	@echo "[indice] $@ listo."
 
-## limpiar: elimina el directorio de artefactos completo
-limpiar:
+limpiar: ## elimina el directorio de artefactos completo
 	$(if $(DIST),,$(error DIST vacía: rm -rf no se ejecuta))
 	@rm -rf -- '$(DIST)'
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [DIST=directorio]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

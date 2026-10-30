@@ -12,8 +12,7 @@
 
 .DEFAULT_GOAL := help
 
-## preparar: crea datos.csv con datos de ejemplo
-preparar:
+preparar: ## crea datos.csv con datos de ejemplo
 	@echo "nombre,edad,ciudad" > datos.csv
 	@echo "Ana,30,Bogotá" >> datos.csv
 	@echo "Luis,25,Medellín" >> datos.csv
@@ -22,8 +21,7 @@ preparar:
 
 # TODO: agrega 'datos.csv' como dependencia de este target
 #       →  reporte.txt: datos.csv
-## reporte.txt: genera el reporte a partir de datos.csv
-reporte.txt:
+reporte.txt: ## genera el reporte a partir de datos.csv
 	@echo "Generando reporte.txt..."
 	@echo "=== REPORTE ===" > reporte.txt
 	@echo "Generado: $(shell date)" >> reporte.txt
@@ -32,21 +30,16 @@ reporte.txt:
 	@echo "reporte.txt generado."
 
 # TODO (paso 8): agrega 'reporte.txt' como dependencia  →  resumen.txt: reporte.txt
-## resumen.txt: cuenta las líneas de reporte.txt
-resumen.txt:
+resumen.txt: ## cuenta las líneas de reporte.txt
 	@echo "Generando resumen.txt..."
 	@echo "Líneas del reporte: $$(wc -l < reporte.txt)" > resumen.txt
 
-## all: prepara datos y genera reporte
-all: preparar reporte.txt
+all: preparar reporte.txt ## prepara datos y genera reporte
 
-## clean: elimina archivos generados
-clean:
+clean: ## elimina archivos generados
 	@rm -f datos.csv reporte.txt resumen.txt
 	@echo "Limpio."
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## muestra esta ayuda
+	@grep -E '^[a-zA-Z0-9_.-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

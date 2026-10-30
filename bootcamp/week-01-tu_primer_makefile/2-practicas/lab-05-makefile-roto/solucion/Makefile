@@ -12,36 +12,28 @@
 
 .DEFAULT_GOAL := help
 
-## all: ejecuta build y test
-all: build test
+all: build test ## ejecuta build y test
 
-## build: simula compilación
-build:
+build: ## simula compilación
 	@echo "Compilando..."
 	@mkdir -p output
 	@echo "binario" > output/app
 	@echo "Build OK"
 
-## test: ejecuta las pruebas
-test:
+test: ## ejecuta las pruebas
 	@echo "Ejecutando tests..."
 	@echo "Tests OK"
 
-## clean: elimina output/
-clean:
+clean: ## elimina output/
 	@rm -rf output
 	@echo "Limpio."
 
-## verify: verifica el binario generado
-verify: build
+verify: build ## verifica el binario generado
 	@test -f output/app && echo "Binario encontrado." || echo "ERROR: binario no encontrado"
 
-## validate-output: valida la salida del build
-validate-output: verify
+validate-output: verify ## valida la salida del build
 	@echo "Salida validada."
 
-## help: muestra esta ayuda
-help:
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+help: ## muestra esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -27,30 +27,24 @@
 # TODO: agrega "-lpthread" a LIBS con +=
 #       Resultado esperado: LIBS = "-lm -lpthread"
 
-## info-compilador: imprime CC y CFLAGS
-info-compilador:
+info-compilador: ## imprime CC y CFLAGS
 	# TODO: @echo "CC:     $(CC)"
 	# TODO: @echo "CFLAGS: $(CFLAGS)"
 
-## info-entorno: imprime el entorno actual
-info-entorno:
+info-entorno: ## imprime el entorno actual
 	# TODO: @echo "Entorno: $(ENV)"
 
-## info-libs: imprime las bibliotecas enlazadas
-info-libs:
+info-libs: ## imprime las bibliotecas enlazadas
 	# TODO: @echo "LIBS: $(LIBS)"
 	# Resultado esperado: "LIBS: -lm -lpthread"
 
 # TODO (paso 8): imprime el sabor de cada variable con la función flavor.
 #   Formato:  CC:     <flavor de CC>   (una línea para CC, CFLAGS, ENV, LIBS)
 #   Añade una quinta línea para NADA, una variable que no existe.
-## tipos: muestra el sabor (flavor) de cada variable
-tipos:
+tipos: ## muestra el sabor (flavor) de cada variable
 	@echo "TODO: implementa tipos"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|prod]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -36,8 +36,7 @@
 #       siguiente añade --pull con += de forma que se aplique aunque
 #       BUILD_FLAGS llegue por la línea de comandos (pista: override)
 
-## info: muestra la configuración actual del build
-info:
+info: ## muestra la configuración actual del build
 	@echo "Configuración de build:"
 	# TODO: @echo "  ENV:       $(ENV)"
 	# TODO: @echo "  VERSION:   $(VERSION)"
@@ -45,22 +44,18 @@ info:
 	# TODO: @echo "  IMAGE_TAG: $(IMAGE_TAG)"
 	# TODO (paso 6): una línea "  Origen de ENV: " con el resultado de la función origin
 
-## build: simula la construcción de la imagen
-build:
+build: ## simula la construcción de la imagen
 	@echo "Construyendo imagen..."
 	# TODO: @echo "  Tag: $(IMAGE_TAG)"
 	# TODO (paso 7): una línea "  Flags: " con BUILD_FLAGS
 	@echo "Build OK."
 
-## deploy: despliega la imagen en el entorno configurado
-deploy: build
+deploy: build ## despliega la imagen en el entorno configurado
 	@echo "Desplegando en entorno: $(ENV)"
 	# TODO: @echo "  Imagen: $(IMAGE_TAG)"
 	@echo "Deploy OK."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|staging|prod] [VERSION=x.y.z]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

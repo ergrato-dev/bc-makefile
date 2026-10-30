@@ -22,8 +22,7 @@ ARTEFACTOS := \
     $(DIST)/docs/guia.md \
     $(DIST)/docs/faq.md
 
-## all: genera todos los artefactos en sus subdirectorios
-all: $(ARTEFACTOS) $(DIST)/indice.txt
+all: $(ARTEFACTOS) $(DIST)/indice.txt ## genera todos los artefactos en sus subdirectorios
 
 # ── Reglas de patrón ──────────────────────────────────────────
 
@@ -56,14 +55,11 @@ $(DIST)/docs/%.md: plantillas/%.md
 $(DIST)/indice.txt: $(ARTEFACTOS)
 	@echo "TODO: implementa el índice"
 
-## limpiar: elimina el directorio de artefactos completo
-limpiar:
+limpiar: ## elimina el directorio de artefactos completo
 	# TODO: borrado con guarda (semana 03); las dos líneas van con TAB, sin #
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [DIST=directorio]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

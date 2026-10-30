@@ -16,23 +16,20 @@
 ETIQUETA := build-$@
 # FIX: ...
 
-## info-etiqueta: muestra la etiqueta de build
-info-etiqueta:
+info-etiqueta: ## muestra la etiqueta de build
 	@echo "Etiqueta: $(ETIQUETA)"
 
 # ────────────────────────────────────────────────────────────
 # BUG B: linker usa $< en lugar de $^ → solo enlaza main.o
 # ────────────────────────────────────────────────────────────
-## enlazar: simula enlazar tres objetos
-enlazar: main.o utils.o math.o
+enlazar: main.o utils.o math.o ## simula enlazar tres objetos
 	@echo "[ld] Enlazando: $<"
 # FIX: ...
 
 # ────────────────────────────────────────────────────────────
 # BUG C: nombre del binario hardcodeado en vez de $@
 # ────────────────────────────────────────────────────────────
-## construir: simula compilar y enlazar en un solo paso
-construir: main.c utils.c
+construir: main.c utils.c ## simula compilar y enlazar en un solo paso
 	@echo "[cc+ld] Fuentes: $^"
 	@echo "[cc+ld] Binario: mi-app"
 # FIX: ...
@@ -56,21 +53,17 @@ build/main.o: main.c
 	@touch $@
 # FIX: ...
 
-## setup: crea los archivos de prueba que usan los targets
-setup:
+setup: ## crea los archivos de prueba que usan los targets
 	@touch main.c utils.c alfa.md
 	@touch main.o utils.o math.o
 	@echo "[setup] Listo: main.c utils.c alfa.md main.o utils.o math.o"
 
-## limpiar: borra los archivos de prueba y build/
-limpiar:
+limpiar: ## borra los archivos de prueba y build/
 	@rm -f main.c utils.c alfa.md alfa.html main.o utils.o math.o
 	@rm -rf -- build
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

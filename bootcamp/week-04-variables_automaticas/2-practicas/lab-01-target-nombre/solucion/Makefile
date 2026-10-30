@@ -13,42 +13,34 @@ SHELL       := bash
 
 FECHA := $(shell date +%F)
 
-## reporte-html: genera el informe en formato HTML
-reporte-html:
+reporte-html: ## genera el informe en formato HTML
 	@echo "[generando] $@"
 	@echo "[listo] Archivo: $(FECHA)-$@.html"
 
-## reporte-pdf: genera el informe en formato PDF
-reporte-pdf:
+reporte-pdf: ## genera el informe en formato PDF
 	@echo "[generando] $@"
 	@echo "[listo] Archivo: $(FECHA)-$@.pdf"
 
-## reporte-csv: genera el informe en formato CSV
-reporte-csv:
+reporte-csv: ## genera el informe en formato CSV
 	@echo "[generando] $@"
 	@echo "[listo] Archivo: $(FECHA)-$@.csv"
 
-## reporte-json: genera el informe en formato JSON
-reporte-json:
+reporte-json: ## genera el informe en formato JSON
 	@echo "[generando] $@"
 	@echo "[listo] Archivo: $(FECHA)-$@.json"
 
-## archivos: genera ventas.txt y gastos.txt con una sola regla
-archivos: ventas.txt gastos.txt
+archivos: ventas.txt gastos.txt ## genera ventas.txt y gastos.txt con una sola regla
 
 # Una regla, dos targets: Make la ejecuta una vez por cada uno y $@ cambia
 ventas.txt gastos.txt:
 	@echo "Informe $@ del $(FECHA)" > $@
 	@echo "[listo] $@ creado"
 
-## limpiar: borra los archivos generados
-limpiar:
+limpiar: ## borra los archivos generados
 	@rm -f ventas.txt gastos.txt
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -35,26 +35,20 @@ PELIGROSO = $(PELIGROSO)-snapshot
 #   primera:  valor "v1.0"
 #   segunda:  VERSION_RELEASE := <valor anterior de VERSION_RELEASE>-snapshot
 
-## lazy: = evalúa al usar la variable, DESTINATARIO puede definirse después
-lazy:
+lazy: ## = evalúa al usar la variable, DESTINATARIO puede definirse después
 	# TODO: @echo "SALUDO_LAZY: $(SALUDO_LAZY)"
 
-## eager: := evalúa al asignar; DESTINATARIO estaba vacío en ese momento
-eager:
+eager: ## := evalúa al asignar; DESTINATARIO estaba vacío en ese momento
 	# TODO: @echo "SALUDO_EAGER: $(SALUDO_EAGER)"
 
-## peligro: demuestra el error de recursión infinita con =
-peligro:
+peligro: ## demuestra el error de recursión infinita con =
 	@echo "Intentando expandir PELIGROSO..."
 	@echo "$(PELIGROSO)"
 
-## corregido: muestra VERSION_RELEASE sin recursión
-corregido:
+corregido: ## muestra VERSION_RELEASE sin recursión
 	@echo "VERSION_RELEASE: $(VERSION_RELEASE)"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [lazy|eager|peligro|corregido]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

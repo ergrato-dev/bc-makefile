@@ -11,8 +11,7 @@ SHELL       := bash
 
 .DEFAULT_GOAL := help
 
-## enlazar: demuestra que $^ elimina duplicados de la lista de prereqs
-enlazar: main.o utils.o math.o main.o utils.o
+enlazar: main.o utils.o math.o main.o utils.o ## demuestra que $^ elimina duplicados de la lista de prereqs
 	@echo "[ld] Lista con duplicados: main.o utils.o math.o main.o utils.o"
 	@echo "[ld] \$$^ (deduplicado):     $^"
 	@echo "[ld] \$$+ (con duplicados):  $+"
@@ -29,8 +28,7 @@ cambios.log: seccion-a.txt seccion-b.txt seccion-c.txt
 	@echo "[log] Cambiaron: $?"
 	@echo "$$(date +%T) $?" >> $@
 
-## setup: crea archivos de prueba con timestamps en el pasado
-setup:
+setup: ## crea archivos de prueba con timestamps en el pasado
 	@echo "contenido a" > seccion-a.txt
 	@echo "contenido b" > seccion-b.txt
 	@echo "contenido c" > seccion-c.txt
@@ -40,14 +38,11 @@ setup:
 	@echo "[setup] Archivos creados (main.o, utils.o y math.o vacíos). manual.txt es más reciente."
 	@echo "[setup] Siguiente paso: touch seccion-b.txt && make manual.txt"
 
-## limpiar: elimina archivos de prueba
-limpiar:
+limpiar: ## elimina archivos de prueba
 	@rm -f seccion-a.txt seccion-b.txt seccion-c.txt manual.txt cambios.log main.o utils.o math.o
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

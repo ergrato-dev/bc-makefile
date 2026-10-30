@@ -13,8 +13,7 @@ SHELL       := bash
 
 CC := gcc
 
-## setup: crea los fuentes y headers del lab (src/ e include/)
-setup:
+setup: ## crea los fuentes y headers del lab (src/ e include/)
 	@mkdir -p src include
 	@echo 'int saludo(void);' > include/utils.h
 	@echo 'int suma(int a, int b);' > include/math.h
@@ -30,24 +29,20 @@ setup:
 
 # ── Simulación con echo ───────────────────────────────────────
 
-## compilar-main: muestra $< y $^ para main.c y sus headers
-compilar-main: src/main.c include/utils.h include/math.h
+compilar-main: src/main.c include/utils.h include/math.h ## muestra $< y $^ para main.c y sus headers
 	@echo "[cc] Compilando (solo fuente): $<"
 	@echo "[cc] Todos los prereqs:        $^"
 
-## compilar-utils: muestra $< y $^ para utils.c
-compilar-utils: src/utils.c include/utils.h
+compilar-utils: src/utils.c include/utils.h ## muestra $< y $^ para utils.c
 	@echo "[cc] Compilando (solo fuente): $<"
 	@echo "[cc] Todos los prereqs:        $^"
 
-## compilar-todos: ejecuta compilar-main y compilar-utils
-compilar-todos: compilar-main compilar-utils
+compilar-todos: compilar-main compilar-utils ## ejecuta compilar-main y compilar-utils
 	@echo "[resumen] Módulos compilados: $^"
 
-## enlazar: muestra $< y $^ para la lista de objetos
 # $< = build/main.o (incorrecto para el linker: "undefined reference")
 # $^ = los tres objetos (correcto: el linker los necesita todos)
-enlazar: build/main.o build/utils.o build/math.o
+enlazar: build/main.o build/utils.o build/math.o ## muestra $< y $^ para la lista de objetos
 	@echo "[ld] Primer objeto (incorrecto para linker): $<"
 	@echo "[ld] TODOS los objetos (correcto):           $^"
 
@@ -71,14 +66,11 @@ build/math.o: src/math.c include/math.h
 build/app: build/main.o build/utils.o build/math.o
 	$(CC) $^ -o $@
 
-## limpiar: borra build/, src/ e include/ generados por setup
-limpiar:
+limpiar: ## borra build/, src/ e include/ generados por setup
 	@rm -rf -- build src include
 	@echo "[limpiar] Listo."
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make setup, luego make [target]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

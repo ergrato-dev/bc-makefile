@@ -35,20 +35,17 @@ IMAGE_TAG   = myapp:$(VERSION)-$(ENV)
 CFLAGS     := -Wall
 CFLAGS     += -Wextra
 
-## info: muestra configuración actual
-info:
+info: ## muestra configuración actual
 	@echo "Fecha build: $(BUILD_DATE)"
 	@echo "Entorno:     $(ENV)"
 	@echo "Versión:     $(VERSION)"
 	@echo "Imagen:      $(IMAGE_TAG)"
 	@echo "CFLAGS:      $(CFLAGS)"
 
-## help: muestra esta ayuda
-help:
+help: ## muestra esta ayuda
 	@echo "Uso: make [target] [ENV=dev|prod] [VERSION=x.y.z]"
-	@grep -E '^## ' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ": "}; {printf "  %-20s %s\n", $$1, $$2}' \
-		| sed 's/## //'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
 Ejecuta y observa:
