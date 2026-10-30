@@ -40,9 +40,9 @@ starter/
    - `make down` — `docker compose down`
    - `make info` — muestra versión, imagen, fecha, entorno activo
    - `make deploy-prod` — pide confirmación antes de ejecutar
-   - `make clean` — elimina `.venv/` y cachés Python
+   - `make clean` — elimina `.venv/` y cachés Python, con guarda si `VENV` está vacía
 
-2. `-include .env` con `export` al inicio del Makefile
+2. Preámbulo estricto (`SHELL := bash`, `.SHELLFLAGS := -eu -o pipefail -c`, `.DELETE_ON_ERROR:`) y `-include .env` con `export` solo de las variables que lee la app (nunca `export` a secas)
 
 3. `make help` documentado con `##` en todos los targets
 
@@ -92,7 +92,8 @@ Entorno:    dev
 
 $ make build
 docker build --build-arg VERSION=0.0.0 ...
-Successfully built XXXXXXXXXX
+...
+ => => naming to docker.io/library/notificador:0.0.0
 ```
 
 ```
@@ -102,15 +103,29 @@ make: *** [Makefile:XX: deploy-prod] Error 1
 (correcto — canceló sin desplegar)
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make install` usa sentinel file — no reinstala sin cambios en `pyproject.toml` o `uv.lock` | 6 |
-| `make test` y `make lint` pasan sin errores | 6 |
-| `make build` inyecta `VERSION` y `BUILD_DATE` como build args | 6 |
-| `make info` muestra versión, imagen, fecha y entorno en formato legible | 6 |
-| `make deploy-prod` pide confirmación interactiva antes de ejecutar | 6 |
+Los comprueba `./scripts/verificar-semana.sh 11` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30). Ninguna comprobación necesita
+red ni Docker: los targets de Docker y Compose se verifican con `make -n`.
+
+- [ ] El Makefile ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile declara .DELETE_ON_ERROR
+- [ ] make install sincroniza solo las dependencias de runtime con uv sync --locked --no-dev
+- [ ] make install-dev sincroniza el grupo dev con uv sync --locked
+- [ ] make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock
+- [ ] make test instala antes el grupo dev si falta
+- [ ] make test ejecuta pytest con uv run --no-sync
+- [ ] make build pasa VERSION a docker build como --build-arg
+- [ ] make build pasa BUILD_DATE a docker build como --build-arg
+- [ ] La imagen se etiqueta con la versión y nunca con latest
+- [ ] Las recetas reciben LOG_LEVEL pero no variables que el Makefile no exporta
+- [ ] make info muestra la imagen con la versión
+- [ ] make up usa Compose v2 (docker compose, no docker-compose)
+- [ ] Responder n a make deploy-prod cancela el despliegue sin llamar a docker
+- [ ] make clean se niega a borrar si VENV está vacía
+- [ ] make clean elimina el directorio del entorno virtual
 
 ## Entrega
 

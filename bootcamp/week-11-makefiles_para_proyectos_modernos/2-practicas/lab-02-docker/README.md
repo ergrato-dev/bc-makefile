@@ -2,7 +2,7 @@
 
 **Duración estimada:** 50 minutos
 
-**Requisitos:** Docker 24+
+**Requisitos:** Docker Engine 27+
 
 ## Objetivo
 

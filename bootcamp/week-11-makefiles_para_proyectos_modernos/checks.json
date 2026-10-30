@@ -1,0 +1,118 @@
+{
+  "semana": "11",
+  "titulo": "Makefiles para proyectos modernos",
+  "checks": [
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO 0 del starter"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; TODO 0 del starter"
+    },
+    {
+      "id": "install-runtime",
+      "descripcion": "make install sincroniza solo las dependencias de runtime con uv sync --locked --no-dev",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n install VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~uv sync --locked --no-dev",
+      "pista": "3-proyecto/starter/Makefile, TODO 1 y 3"
+    },
+    {
+      "id": "install-dev-completo",
+      "descripcion": "make install-dev sincroniza el grupo dev con uv sync --locked",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n install-dev VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~uv sync --locked *$",
+      "pista": "3-proyecto/starter/Makefile, TODO 2 y 4"
+    },
+    {
+      "id": "sentinel-incremental",
+      "descripcion": "make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock",
+      "cmd": "d=$(mktemp -d); touch -t 200001010000 $d/.installed; viejo=$({make} -C {proyecto} -n install VENV=$d 2>&1); touch $d/.installed; nuevo=$({make} -C {proyecto} -n install VENV=$d 2>&1); rm -rf -- $d; grep -q 'uv sync' <<<$viejo && ! grep -q 'uv sync' <<<$nuevo",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-01-python/README.md, TODO 1"
+    },
+    {
+      "id": "test-instala-dev",
+      "descripcion": "make test instala antes el grupo dev si falta",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n test VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~uv sync --locked *$",
+      "pista": "3-proyecto/starter/Makefile, TODO 5"
+    },
+    {
+      "id": "test-sin-sync",
+      "descripcion": "make test ejecuta pytest con uv run --no-sync",
+      "cmd": "d=$(mktemp -d); {make} -C {proyecto} -n test VENV=$d 2>&1; rm -rf -- $d",
+      "assert": "stdout~uv run --no-sync pytest",
+      "pista": "1-teoria/01-contexto.md, ejemplo mínimo funcional"
+    },
+    {
+      "id": "build-version",
+      "descripcion": "make build pasa VERSION a docker build como --build-arg",
+      "cmd": "{make} -C {proyecto} -n build VERSION=1.2.3",
+      "assert": "stdout~build-arg VERSION=1[.]2[.]3",
+      "pista": "2-practicas/lab-02-docker/README.md, TODO 1"
+    },
+    {
+      "id": "build-fecha",
+      "descripcion": "make build pasa BUILD_DATE a docker build como --build-arg",
+      "cmd": "{make} -C {proyecto} -n build VERSION=1.2.3",
+      "assert": "stdout~build-arg BUILD_DATE=[0-9]{4}-[0-9]{2}-[0-9]{2}T",
+      "pista": "2-practicas/lab-02-docker/README.md, TODO 1"
+    },
+    {
+      "id": "build-sin-latest",
+      "descripcion": "La imagen se etiqueta con la versión y nunca con latest",
+      "cmd": "out=$({make} -C {proyecto} -n build VERSION=1.2.3 2>&1); grep -q 'notificador:1.2.3' <<<$out && ! grep -q 'latest' <<<$out",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-02-docker/README.md, TODO 1"
+    },
+    {
+      "id": "export-selectivo",
+      "descripcion": "Las recetas reciben LOG_LEVEL pero no variables que el Makefile no exporta",
+      "cmd": "{make} -C {proyecto} --eval 'SECRETO := filtrado' --eval 'LOG_LEVEL := DEBUG' --eval '__chk: ; @echo log=/$${LOG_LEVEL:-}/ secreto=/$${SECRETO:-}/' __chk",
+      "assert": "stdout~log=/[A-Z]+/ secreto=//",
+      "pista": "3-proyecto/starter/Makefile, TODO A"
+    },
+    {
+      "id": "info-imagen",
+      "descripcion": "make info muestra la imagen con la versión",
+      "cmd": "{make} -C {proyecto} info VERSION=9.9.9",
+      "assert": "stdout~Imagen: +notificador:9[.]9[.]9",
+      "pista": "3-proyecto/starter/Makefile, TODO 12"
+    },
+    {
+      "id": "compose-v2",
+      "descripcion": "make up usa Compose v2 (docker compose, no docker-compose)",
+      "cmd": "{make} -C {proyecto} -n up",
+      "assert": "stdout~^docker compose up -d",
+      "pista": "2-practicas/lab-04-compose/README.md, TODO 1"
+    },
+    {
+      "id": "deploy-cancela",
+      "descripcion": "Responder n a make deploy-prod cancela el despliegue sin llamar a docker",
+      "cmd": "out=$(echo n | {make} -C {proyecto} -o build deploy-prod 2>&1) && exit 1; grep -q 'PRODUCCI' <<<$out && ! grep -q 'docker' <<<$out",
+      "assert": "exit0",
+      "pista": "3-proyecto/starter/Makefile, TODO 13"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean se niega a borrar si VENV está vacía",
+      "cmd": "{make} -C {proyecto} clean VENV=",
+      "assert": "stdout~VENV vac",
+      "pista": "Semana 03: guardas de rm -rf; TODO 14 del starter"
+    },
+    {
+      "id": "clean-borra-venv",
+      "descripcion": "make clean elimina el directorio del entorno virtual",
+      "cmd": "d=$(mktemp -d); touch $d/.installed; {make} -C {proyecto} clean VENV=$d >/dev/null 2>&1; test ! -e $d; r=$?; rm -rf -- $d; exit $r",
+      "assert": "exit0",
+      "pista": "3-proyecto/starter/Makefile, TODO 14"
+    }
+  ]
+}

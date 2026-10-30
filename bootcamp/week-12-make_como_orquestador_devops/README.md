@@ -1,5 +1,7 @@
 # Semana 12 — Make como Orquestador DevOps
 
+## Descripción
+
 Un Makefile bien diseñado puede reemplazar scripts de CI/CD, instalar git hooks, gestionar secretos de entorno y ejecutar un pipeline completo antes de que el código llegue al servidor. Esta semana conviertes Make en la columna vertebral del flujo DevOps local: un `make ci` que cualquier desarrollador puede ejecutar y que replica exactamente lo que corre en el servidor.
 
 Al terminar sabrás construir el pipeline local que los equipos de alto rendimiento usan para detectar problemas antes del `git push`.
@@ -48,7 +50,13 @@ Al terminar esta semana serás capaz de:
 
 ## Verificación de completitud
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
+El proyecto se comprueba desde la raíz del repositorio (sin red):
+
+```bash
+./scripts/verificar-semana.sh 12
+```
+
+Además, estos comandos de los labs deben funcionar sin errores:
 
 ```bash
 # Lab 01 — env-secrets

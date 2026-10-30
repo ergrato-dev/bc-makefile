@@ -14,12 +14,12 @@ El sentinel file para Node.js es `node_modules/.installed`, igual que en Python.
 
 ```makefile
 node_modules/.installed: package.json pnpm-lock.yaml
-	ppnpm install --frozen-lockfile
+	pnpm install --frozen-lockfile
 	@mkdir -p $(@D)
 	@touch $@
 ```
 
-Usa `ppnpm install --frozen-lockfile`: instala exactamente lo que dice el lockfile y falla si no coincide con `package.json`. Sin el flag, pnpm puede reescribir el lockfile y cada máquina acabar con versiones distintas. En este bootcamp Node.js se usa siempre con **pnpm**, nunca con npm.
+Usa `pnpm install --frozen-lockfile`: instala exactamente lo que dice el lockfile y falla si no coincide con `package.json`. Sin el flag, pnpm puede reescribir el lockfile y cada máquina acabar con versiones distintas. En este bootcamp Node.js se usa siempre con **pnpm**, nunca con npm.
 
 La ventaja: Make usa la fecha de modificación del archivo ya existente — no hay que crear nada extra.
 
@@ -43,7 +43,7 @@ La ventaja: Make usa la fecha de modificación del archivo ya existente — no h
    ```
 
 4. Implementa los 6 TODOs del `Makefile`:
-   - **TODO 1:** target `node_modules/.installed` con dependencias `package.json` y `pnpm-lock.yaml`; receta: `ppnpm install --frozen-lockfile`, `mkdir -p $(@D)` y `touch $@`
+   - **TODO 1:** target `node_modules/.installed` con dependencias `package.json` y `pnpm-lock.yaml`; receta: `pnpm install --frozen-lockfile`, `mkdir -p $(@D)` y `touch $@`
    - **TODO 2:** target `install` como alias del sentinel
    - **TODO 3:** target `build` que dependa de `install` y ejecute `pnpm run build`
    - **TODO 4:** target `test` que dependa de `install` y ejecute `pnpm test`
@@ -63,7 +63,7 @@ La ventaja: Make usa la fecha de modificación del archivo ya existente — no h
 
 ```
 $ make install
-ppnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
 ...
 
 $ make install   # segunda ejecución

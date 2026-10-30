@@ -19,8 +19,8 @@ Antes de mirar la solución, intenta reproducir cada error, leer el mensaje que 
 | Bug 1 | `make build` dice "is up to date" sin hacer nada | `build` no está en `.PHONY` y existe un directorio `build/` |
 | Bug 2 | `make install` falla con "missing separator" | Una línea de receta usa espacios en vez de TAB |
 | Bug 3 | `make test` falla con "No rule to make target 'instal'" | Dependencia con typo: `instal` en vez de `install` |
-| Bug 4 | `make` se cuelga o lanza "Circular variable dependency" | Variable `SOURCES` definida con `=` referenciándose a sí misma |
-| Bug 5 | `make info` imprime "Versión: " (string vacío) | `$(shell git describe --tags)` falla sin tags y no tiene fallback |
+| Bug 4 | `make info` falla con "Recursive variable 'SOURCES' references itself" | Variable `SOURCES` definida con `=` referenciándose a sí misma |
+| Bug 5 | `make info` imprime "Versión: " (string vacío) y un `fatal: No names found` | `$(shell git describe --tags)` falla sin tags y no tiene fallback |
 
 ## Instrucciones
 
@@ -29,13 +29,17 @@ Antes de mirar la solución, intenta reproducir cada error, leer el mensaje que 
    cd lab-06-targets-rotos/starter
    ```
 
-2. Ejecuta cada target y observa el error:
+2. Ejecuta cualquier target y observa el error:
+   ```bash
+   make build               # bug 2: missing separator
+   ```
+   El bug 2 es un error de sintaxis: Make no llega a leer el resto del archivo,
+   así que tapa a los demás. Corrígelo primero y después observa los otros cuatro:
    ```bash
    mkdir -p build           # prepara el escenario del bug 1
    make build               # bug 1
-   make install             # bug 2
    make test                # bug 3
-   make info                # bugs 4 y 5
+   make info                # bug 4; tras corregirlo, bug 5
    ```
 
 3. Corrige cada bug en el Makefile:
@@ -62,7 +66,7 @@ Install:  TAB correcto
 Test dep: install correcto
 ```
 
-No debe haber errores de `missing separator`, `Circular variable dependency`, ni targets bloqueados por directorios existentes.
+No debe haber errores de `missing separator`, `Recursive variable ... references itself`, ni targets bloqueados por directorios existentes.
 
 ## Reto extra
 

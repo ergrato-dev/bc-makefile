@@ -1,0 +1,118 @@
+{
+  "semana": "14",
+  "titulo": "Proyecto integrador",
+  "checks": [
+    {
+      "id": "shellflags-estrictas",
+      "descripcion": "El Makefile raíz ejecuta las recetas con bash -eu -o pipefail",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -E '^[.]SHELLFLAGS :?= -eu -o pipefail'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; primer TODO del Makefile raíz"
+    },
+    {
+      "id": "delete-on-error",
+      "descripcion": "El Makefile raíz declara .DELETE_ON_ERROR",
+      "cmd": "{make} -C {proyecto} -p __nada__ 2>/dev/null | grep -q '^[.]DELETE_ON_ERROR:'",
+      "assert": "exit0",
+      "pista": "Semana 03: preámbulo estricto; primer TODO del Makefile raíz"
+    },
+    {
+      "id": "all-tres-servicios",
+      "descripcion": "make all construye backend, frontend e infra",
+      "cmd": "{make} -C {proyecto} all 2>&1 | grep -cE '^.(backend|frontend|infra). Build 1[.]0[.]0$'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregables 1 y 9"
+    },
+    {
+      "id": "ci-servicio-orden",
+      "descripcion": "make ci en un servicio ejecuta lint, test y build en ese orden",
+      "cmd": "{make} -C {proyecto}/backend ci 2>&1 | grep -oE 'Lint OK|Ejecutando tests|Build' | paste -sd, -",
+      "assert": "stdout~^Lint OK,Ejecutando tests,Build$",
+      "pista": "2-practicas/lab-04-modulos-compartidos/README.md; TODO de shared-mk/ci.mk"
+    },
+    {
+      "id": "ci-raiz-tres-servicios",
+      "descripcion": "make ci desde la raíz termina bien y construye los tres servicios",
+      "cmd": "f=$(mktemp); {make} -C {proyecto} ci >$f 2>&1 && grep -c 'Build 1' $f; rm -f $f",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregable 9"
+    },
+    {
+      "id": "fallo-propaga",
+      "descripcion": "Si los tests del primer servicio fallan, make ci sale con error",
+      "cmd": "out=$({make} -C {proyecto} ci FAIL=backend 2>&1) && exit 1; grep -q 'backend. ✗ Tests fallidos' <<<$out",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-06-debug-produccion/README.md; TODO de shared-mk/test.mk"
+    },
+    {
+      "id": "fallo-detiene-resto",
+      "descripcion": "Tras el fallo de backend, make ci no sigue con los demás servicios",
+      "cmd": "out=$({make} -C {proyecto} ci FAIL=backend 2>&1); grep -q 'Tests fallidos' <<<$out && ! grep -q 'frontend. Build' <<<$out",
+      "assert": "exit0",
+      "pista": "1-teoria/01-contexto.md, sección El target ci"
+    },
+    {
+      "id": "target-por-servicio",
+      "descripcion": "make infra/test ejecuta solo los tests de infra",
+      "cmd": "{make} -C {proyecto} infra/test 2>&1",
+      "assert": "stdout~^.infra. Ejecutando tests",
+      "pista": "3-proyecto/README.md, entregable 9"
+    },
+    {
+      "id": "deploy-prod-sin-confirm",
+      "descripcion": "make deploy ENV=production sin CONFIRM=yes falla con un error claro",
+      "cmd": "out=$({make} -C {proyecto} deploy ENV=production 2>&1) && exit 1; echo $out",
+      "assert": "stdout~producción requiere CONFIRM=yes",
+      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md; TODO de shared-mk/deploy.mk"
+    },
+    {
+      "id": "deploy-prod-confirm",
+      "descripcion": "make deploy ENV=production CONFIRM=yes despliega los tres servicios",
+      "cmd": "{make} -C {proyecto} deploy ENV=production CONFIRM=yes 2>&1 | grep -c 'Desplegando en production'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregable 4"
+    },
+    {
+      "id": "push-requiere-ci",
+      "descripcion": "make push se niega a publicar si CI no es true",
+      "cmd": "{make} -C {proyecto}/backend push CI=false 2>&1",
+      "assert": "stdout~push solo permitido cuando CI=true",
+      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md; TODO de shared-mk/docker.mk"
+    },
+    {
+      "id": "push-con-ci",
+      "descripcion": "Con CI=true, make push publica la imagen con su IMAGE_NAME y VERSION",
+      "cmd": "{make} -C {proyecto}/backend -n push CI=true 2>&1",
+      "assert": "stdout~^docker push mi-plataforma-backend:1[.]0[.]0$",
+      "pista": "3-proyecto/README.md, entregable 3"
+    },
+    {
+      "id": "build-image-tag",
+      "descripcion": "make build-image etiqueta la imagen como IMAGE_NAME:VERSION",
+      "cmd": "{make} -C {proyecto}/frontend -n build-image 2>&1",
+      "assert": "stdout~docker build --tag mi-plataforma-frontend:1[.]0[.]0 [.]",
+      "pista": "2-practicas/lab-04-modulos-compartidos/README.md, paso 5"
+    },
+    {
+      "id": "hooks-path",
+      "descripcion": "make hooks-install apunta core.hooksPath al directorio hooks/ del proyecto",
+      "cmd": "t=$(mktemp -d); cp {proyecto}/Makefile $t; cp -r {proyecto}/hooks $t; git -C $t init -q; {make} -C $t hooks-install >/dev/null 2>&1; git -C $t config --get core.hooksPath; rm -rf -- $t",
+      "assert": "stdout~^/.*/hooks/?$",
+      "pista": "2-practicas/lab-03-ci-local/README.md"
+    },
+    {
+      "id": "check-lint",
+      "descripcion": "make check ejecuta el lint de los tres servicios",
+      "cmd": "{make} -C {proyecto} check 2>&1 | grep -c 'Lint OK'",
+      "assert": "stdout~^3$",
+      "pista": "3-proyecto/README.md, entregable 10"
+    },
+    {
+      "id": "jobserver-compartido",
+      "descripcion": "make -j3 all reparte el jobserver con los sub-makes",
+      "cmd": "f=$(mktemp); {make} -C {proyecto} -j3 all >$f 2>&1; n=$(grep -c 'Build 1' $f); grep -q jobserver $f; j=$?; rm -f $f; [[ $n == 3 && $j != 0 ]]",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-05-optimizacion-paralela/README.md"
+    }
+  ]
+}

@@ -8,16 +8,16 @@ Sabes usar Make. Esta semana dejas de usar Make en labs aislados y construyes al
 
 | Situación | Técnica | Semana de origen |
 |-----------|---------|-----------------|
-| Compilar N archivos `.c` → `.o` | Pattern rules + `$<` `$@` | 03–04 |
-| Descubrir fuentes automáticamente | `$(wildcard ...)` | 05 |
-| Transformar listas de archivos | `$(patsubst ...)` `$(addprefix ...)` | 05 |
-| Lógica reutilizable entre targets | `$(call fn, arg)` | 06 |
+| Compilar N archivos `.c` → `.o` | Pattern rules + `$<` `$@` | 04–05 |
+| Descubrir fuentes automáticamente | `$(wildcard ...)` | 07 |
+| Transformar listas de archivos | `$(patsubst ...)` `$(addprefix ...)` | 07 |
+| Lógica reutilizable entre targets | `$(call fn, arg)` | 08 |
 | Adaptar a `dev`/`staging`/`prod` | `ifeq` / `ifdef` | 09 |
 | Compartir lógica entre proyectos | `include shared-mk/build.mk` | 09 |
-| Orquestar múltiples servicios | `$(MAKE) -C servicio` | 09 |
-| Marcar tareas sin artefacto natural | archivo `.stamp` | 05 |
+| Orquestar múltiples servicios | un target phony por servicio con `$(MAKE) -C` | 10 |
+| Marcar tareas sin artefacto natural | archivo `.stamp` | 11 |
 | Tareas siempre ejecutables | `.PHONY` | 01 |
-| Pipeline en un comando | target `ci` que llama a otros | 08 |
+| Pipeline en un comando | target `ci` que llama a otros | 12 |
 
 ## Stamps: el patrón más subestimado
 
@@ -46,18 +46,18 @@ ci: lint test build-image ## Pipeline completo (lint → test → build)
 
 lint: ## Verificar estilo del código
 	@echo "==> Lint"
-	flake8 src/ --max-line-length=100
+	uv run --no-sync flake8 src/ --max-line-length=100
 
 test: .stamps/deps ## Ejecutar suite de tests
 	@echo "==> Tests"
-	pytest tests/ -v --tb=short
+	uv run --no-sync pytest tests/ -v --tb=short
 
 build-image: ## Construir imagen Docker
 	@echo "==> Build Docker"
 	docker build --tag $(IMAGE_NAME):$(VERSION) .
 ```
 
-La secuencia `lint test build-image` como dependencias de `ci` garantiza orden y fallo rápido: si `lint` falla, `test` no corre. Cada target es independientemente invocable.
+En modo serie, la secuencia `lint test build-image` como dependencias de `ci` da orden y fallo rápido: si `lint` falla, `test` no corre. Con `make -j` el orden de la lista ya no se respeta: si `test` necesita que `lint` haya terminado, decláralo (`test: lint`). Cada target es independientemente invocable.
 
 ## Ejemplo mínimo funcional
 

@@ -1,3 +1,8 @@
+# TODO 0: Preámbulo estricto (Semana 03), antes de cualquier otra línea:
+#         SHELL := bash
+#         .SHELLFLAGS := -eu -o pipefail -c
+#         .DELETE_ON_ERROR:
+
 .PHONY: all install install-dev test lint run build docker-run up down info deploy-prod clean help
 .DEFAULT_GOAL := help
 
@@ -91,6 +96,8 @@ COMPOSE    := docker compose
 
 # ── Limpieza ───────────────────────────────────────────────────────────────────
 # TODO 14: Target 'clean' que elimine .venv/, cachés Python y __pycache__
+#   - primera línea de la receta, la guarda: $(if $(VENV),,$(error VENV vacía))
+#   - después: rm -rf -- '$(VENV)' __pycache__ .pytest_cache
 
 
 help: ## Mostrar ayuda

@@ -39,6 +39,8 @@ starter/
 2. `.env` creado a partir de `.env.example` con valores de desarrollo
 3. Hooks activos con `git config core.hooksPath` (versionados en `scripts/hooks/`)
 4. Pipeline `make ci` ejecutándose sin errores
+5. `VERSION` leída sin shell (`$(file <)`) y validada: cualquier target falla si no es `MAYOR.MENOR.PARCHE`
+6. `export` solo de `APP_NAME ENV DB_URL SECRET_KEY`, nunca `export` a secas
 
 ## Targets requeridos
 
@@ -86,14 +88,30 @@ make help
 # Esperado: tabla con todos los targets y descripciones
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make ci` ejecuta pipeline completo sin errores | 10 |
-| `make env-check` valida todas las variables con mensajes claros | 8 |
-| `make hooks-install` + `make hooks-status` funcionan | 7 |
-| `make bump-patch` actualiza VERSION correctamente | 5 |
+Los comprueba `./scripts/verificar-semana.sh 12` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30). Ninguna comprobación toca la
+red ni la configuración git de tu repositorio: los hooks se prueban en un repo
+temporal y los targets que instalan dependencias, con `make -n`.
+
+- [ ] Una VERSION con código de shell hace fallar a Make antes de ejecutar nada
+- [ ] Una VERSION sin tres componentes numéricos se rechaza
+- [ ] make bump-patch convierte 1.2.9 en 1.2.10
+- [ ] guard-VAR falla con un mensaje que nombra la variable si no está definida
+- [ ] make env-check falla si SECRET_KEY está vacía
+- [ ] Las recetas reciben DB_URL pero no variables que el Makefile no exporta
+- [ ] make hooks-install apunta core.hooksPath a scripts/hooks con ruta absoluta
+- [ ] make hooks-uninstall deja core.hooksPath sin configurar
+- [ ] Con los hooks instalados, un commit que incluye .env se rechaza
+- [ ] make install sincroniza el entorno con uv sync --locked
+- [ ] make install no vuelve a ejecutar uv sync si el sentinel es más nuevo que pyproject.toml y uv.lock
+- [ ] make lint ejecuta flake8 con uv run --no-sync
+- [ ] make test ejecuta pytest con cobertura
+- [ ] make build crea dist/mi-api-VERSION.tar.gz con el código de src/
+- [ ] make ci encadena lint, test y build en ese orden
+- [ ] make ci se detiene en env-check, antes del lint, si falta SECRET_KEY
 
 ## Instrucciones de entrega
 

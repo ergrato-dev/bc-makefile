@@ -1,5 +1,7 @@
 # Semana 11 — Makefiles para Proyectos Modernos
 
+## Descripción
+
 Make no es solo para proyectos C. Es la interfaz universal que unifica Python, Docker y Node.js bajo un mismo comando. Esta semana conviertes Make en el punto de entrada único de cualquier proyecto moderno: un `make test` que siempre funciona, sin importar si el proyecto usa uv, pnpm o Dockerfile.
 
 Al terminar sabrás construir el Makefile que todo equipo de desarrollo quiere: uno que cualquier persona puede clonar y ejecutar sin leer documentación extensa.
@@ -47,7 +49,13 @@ Al terminar esta semana serás capaz de:
 
 ## Verificación de completitud
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
+El proyecto se comprueba desde la raíz del repositorio (sin red ni Docker):
+
+```bash
+./scripts/verificar-semana.sh 11
+```
+
+Además, estos comandos de los labs deben funcionar sin errores:
 
 ```bash
 # Lab 01 — Python (requiere uv)

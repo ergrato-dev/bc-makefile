@@ -46,7 +46,7 @@ test: backend-test frontend-test ## Ejecutar todos los tests
    - **TODO 1:** `$(VENV)/.installed` (`VENV` ya incluye `backend/`) — sentinel para backend Python
    - **TODO 2:** `backend-install` — alias del sentinel
    - **TODO 3:** `backend-test` — pytest en backend/
-   - **TODO 4:** `frontend/node_modules/.installed` — sentinel para frontend Node (`ppnpm install --frozen-lockfile` + `mkdir -p $(@D)` + `touch $@`)
+   - **TODO 4:** `frontend/node_modules/.installed` — sentinel para frontend Node (`pnpm install --frozen-lockfile` + `mkdir -p $(@D)` + `touch $@`)
    - **TODO 5:** `frontend-install` — alias del sentinel
    - **TODO 6:** `frontend-test` — pnpm test en frontend/
    - **TODO 7:** `install` — depende de `backend-install frontend-install`

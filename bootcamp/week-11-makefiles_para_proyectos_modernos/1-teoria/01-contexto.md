@@ -27,7 +27,7 @@ Python se gestiona siempre con **uv**, nunca con pip: `pyproject.toml` declara l
 | Ecosistema | Sentinel file | Herramienta | Patrón |
 |-----------|---------------|-------------|--------|
 | Python | `.venv/.installed` | uv | depende de `pyproject.toml` y `uv.lock` |
-| Node.js | `node_modules/.installed` | ppnpm install --frozen-lockfile | depende de `package.json` y `pnpm-lock.yaml` |
+| Node.js | `node_modules/.installed` | pnpm install --frozen-lockfile | depende de `package.json` y `pnpm-lock.yaml` |
 | Docker | ninguno (imagen en registry) | docker | siempre reconstruye o usa `--cache-from` |
 | Compose v2 | ninguno | `docker compose` | targets PHONY, orquestación |
 

@@ -1,5 +1,7 @@
 # Semana 14 — Proyecto Integrador
 
+## Descripción
+
 Diez semanas de Make confluyen aquí. Esta semana no introduces conceptos nuevos: construyes un build system multi-lenguaje completo que integra variables automáticas, pattern rules, funciones avanzadas, módulos con `include`, recursión, condicionales, hooks de CI y orquestación DevOps. El resultado es un sistema de build profesional que podrías llevar a producción mañana.
 
 Al terminar tendrás un build system reutilizable que gestiona servicios en Python, Node.js e infraestructura desde un único punto de control, con pipeline CI local, módulos compartidos y diagnóstico integrado.
@@ -48,7 +50,13 @@ Al terminar esta semana serás capaz de:
 
 ## Verificación de completitud
 
-Al terminar la semana, estos comandos deben funcionar sin errores:
+El proyecto se comprueba desde la raíz del repositorio (sin red ni Docker):
+
+```bash
+./scripts/verificar-semana.sh 14
+```
+
+Además, estos comandos de los labs deben funcionar sin errores:
 
 ```bash
 # Lab 01 — build C completo

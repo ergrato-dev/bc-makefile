@@ -48,7 +48,7 @@ Tu tarea es construir el build system definitivo de esta plataforma:
 ## Entregables
 
 1. `shared-mk/build.mk` — targets `build`, `clean`, `package` que usan `APP_NAME` y `VERSION`
-2. `shared-mk/test.mk` — target `test` con reporte por servicio
+2. `shared-mk/test.mk` — target `test` con reporte por servicio; con `FAIL=<servicio>` los tests de ese servicio fallan (`exit 1`) para comprobar que el fallo se propaga
 3. `shared-mk/docker.mk` — `build-image` y `push`; push protegido con guardia `CI=true`
 4. `shared-mk/deploy.mk` — `deploy` y `rollback` con `ifeq` para entornos; producción requiere `CONFIRM=yes`
 5. `shared-mk/ci.mk` — `ci` y `lint` que encadenan las etapas del pipeline
@@ -83,8 +83,8 @@ make ENV=production CONFIRM=yes deploy
 make -C backend test
 # Esperado: [backend] Ejecutando tests ... ✓
 
-make -C frontend build-image
-# Esperado: docker build --tag frontend:1.0.0 .
+make -C frontend -n build-image
+# Esperado: docker build --tag mi-plataforma-frontend:1.0.0 .
 
 # Git hooks
 make hooks-install
@@ -97,18 +97,34 @@ make -j3 all
 # Esperado: los tres servicios se construyen en paralelo
 
 # Un fallo en cualquier servicio detiene el pipeline
-make ENV=production deploy; echo "exit=$?"
-# Esperado: exit=2 (no 0)
+make ci FAIL=backend; echo "exit=$?"
+# Esperado: [backend] ✗ Tests fallidos, frontend e infra no se ejecutan, exit=2 (no 0)
 ```
 
-## Rúbrica del proyecto (30 pts)
+## ✅ Requisitos verificables
 
-| Criterio | Pts |
-|----------|-----|
-| `make ci` desde raíz ejecuta el pipeline completo de los 3 servicios | 10 |
-| Los módulos `shared-mk/*.mk` son importables sin modificación en cualquier proyecto nuevo | 8 |
-| `make ENV=production CONFIRM=yes deploy` funciona; sin `CONFIRM=yes` falla con error claro | 7 |
-| `make hooks-install` activa los hooks con `core.hooksPath`; pre-commit aborta el commit si `make check` falla | 5 |
+Los comprueba `./scripts/verificar-semana.sh 14` desde la raíz del repositorio
+(60 de los 100 puntos del Producto). Los otros 40 son de calidad: ver la
+[rúbrica](../rubrica-evaluacion.md#-producto-30). Ninguna comprobación necesita
+red ni Docker: `build-image` y `push` se verifican con `make -n`, y los hooks en
+un repositorio temporal.
+
+- [ ] El Makefile raíz ejecuta las recetas con bash -eu -o pipefail
+- [ ] El Makefile raíz declara .DELETE_ON_ERROR
+- [ ] make all construye backend, frontend e infra
+- [ ] make ci en un servicio ejecuta lint, test y build en ese orden
+- [ ] make ci desde la raíz termina bien y construye los tres servicios
+- [ ] Si los tests del primer servicio fallan, make ci sale con error
+- [ ] Tras el fallo de backend, make ci no sigue con los demás servicios
+- [ ] make infra/test ejecuta solo los tests de infra
+- [ ] make deploy ENV=production sin CONFIRM=yes falla con un error claro
+- [ ] make deploy ENV=production CONFIRM=yes despliega los tres servicios
+- [ ] make push se niega a publicar si CI no es true
+- [ ] Con CI=true, make push publica la imagen con su IMAGE_NAME y VERSION
+- [ ] make build-image etiqueta la imagen como IMAGE_NAME:VERSION
+- [ ] make hooks-install apunta core.hooksPath al directorio hooks/ del proyecto
+- [ ] make check ejecuta el lint de los tres servicios
+- [ ] make -j3 all reparte el jobserver con los sub-makes
 
 ## Instrucciones de entrega
 

@@ -36,7 +36,7 @@ Cada servicio define solo sus variables (`APP_NAME`, `IMAGE_NAME`) e importa los
    make -C service-a build
    # Debe imprimir: [service-a] Build 1.0.0
    make -C service-b build
-   # Debe imprimir: [service-b] Build 1.0.0
+   # Debe imprimir: [service-b] Build 2.3.1
    ```
 
 4. Implementa `shared-mk/test.mk` con target `test`:
@@ -45,10 +45,10 @@ Cada servicio define solo sus variables (`APP_NAME`, `IMAGE_NAME`) e importa los
    make -C service-b test
    ```
 
-5. Implementa `shared-mk/docker.mk` con target `build-image`:
+5. Implementa `shared-mk/docker.mk` con target `build-image` (con `-n` no necesitas Docker):
    ```bash
-   make -C service-a build-image
-   # Debe ejecutar: docker build --tag service-a:dev .
+   make -C service-a -n build-image
+   # Debe mostrar: docker build --tag service-a:1.0.0 .
    ```
 
 6. Verifica que cambiar un módulo afecta ambos servicios:
@@ -61,7 +61,7 @@ Cada servicio define solo sus variables (`APP_NAME`, `IMAGE_NAME`) e importa los
 ## Criterios de éxito
 
 - [ ] `make -C service-a build` → `[service-a] Build 1.0.0`
-- [ ] `make -C service-b build` → `[service-b] Build 1.0.0`
+- [ ] `make -C service-b build` → `[service-b] Build 2.3.1` (cada servicio conserva su `VERSION` aunque el módulo declare `VERSION ?= 1.0.0`)
 - [ ] `make -C service-a test` y `make -C service-b test` funcionan
 - [ ] Los módulos no producen output al ser importados (sin `$(info)` en el nivel raíz de los `.mk`)
 - [ ] Las variables en los módulos usan `?=` para permitir override desde el Makefile importador
@@ -69,4 +69,4 @@ Cada servicio define solo sus variables (`APP_NAME`, `IMAGE_NAME`) e importa los
 
 ## Reto extra
 
-Agrega un Makefile raíz que orqueste ambos servicios con `$(MAKE) -C service-a` y `$(MAKE) -C service-b`, exponiendo targets `all`, `test`, `clean` que corren en ambos servicios.
+Agrega un Makefile raíz que orqueste ambos servicios exponiendo `all`, `test` y `clean`. Usa un target phony por servicio y meta (`service-a/test`, `service-b/test`...) cuya receta sea `$(MAKE) -C $(@D) $(@F)`, y haz que `test` dependa de ellos; nunca un bucle `for`. Comprueba que si `service-a` falla, `make test` sale con error.

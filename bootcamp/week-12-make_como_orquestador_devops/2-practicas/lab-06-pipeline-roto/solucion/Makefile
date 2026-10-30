@@ -1,21 +1,24 @@
 # Solución: los 5 errores corregidos
 #
-# Error 1: .PHONY no incluía build ni ci → agregados
-# Error 2: REPORT_FILE usaba = (lazy) → cambiado a :=
-# Error 3: build no estaba en .PHONY → agregado
-# Error 4: receta en report usaba espacios → corregido a TAB
-# Error 5: ci no encadenaba lint→test→build→report en orden → corregido
+# Error 1: ci no incluía report → el pipeline terminaba sin reporte
+# Error 2: REPORT_FILE se definía con := antes que DIST y DATE → valía
+#          "/report-.txt" y la escritura fallaba con "Permission denied"
+# Error 3: build no estaba en .PHONY y DIST es build/ → en la segunda
+#          ejecución Make veía el directorio "al día" y se saltaba el build
+# Error 4: la receta de report usaba espacios en vez de TAB → missing separator
+# Error 5: clean era el primer target y no había .DEFAULT_GOAL → "make" a
+#          secas borraba los artefactos en lugar de mostrar la ayuda
 
 SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: lint test build report ci help
+.PHONY: lint test build report ci clean help
 .DEFAULT_GOAL := help
 
 APP_NAME    := pipeline-demo
 VERSION     := $(shell cat VERSION 2>/dev/null || echo "0.0.0")
-DIST        := dist
+DIST        := build
 DATE        := $(shell date '+%Y-%m-%d')
 REPORT_FILE := $(DIST)/report-$(DATE).txt
 
@@ -23,22 +26,27 @@ lint: ## Verificar estilo
 	@echo "→ Lint..."
 	@echo "✓ Lint OK"
 
-test: lint ## Ejecutar tests
+test: ## Ejecutar tests
 	@echo "→ Tests..."
 	@echo "✓ Tests OK"
 
-build: test ## Construir artefacto
+build: ## Construir artefacto
 	@mkdir -p $(DIST)
-	@echo "Build: $(APP_NAME) $(VERSION)" > $(DIST)/build.txt
+	@echo "Build $(APP_NAME) $(VERSION)" > $(DIST)/app.txt
 	@echo "✓ Build OK"
 
 report: ## Generar reporte
 	@mkdir -p $(DIST)
-	@echo "Reporte: $(APP_NAME) $(VERSION) $(DATE)" > $(REPORT_FILE)
+	@echo "Reporte $(APP_NAME) $(VERSION) $(DATE)" > $(REPORT_FILE)
 	@echo "✓ Reporte generado: $(REPORT_FILE)"
 
 ci: lint test build report ## Ejecutar pipeline completo
 	@echo "✓ CI OK"
+
+clean: ## Eliminar artefactos
+	$(if $(DIST),,$(error DIST vacía))
+	@rm -rf -- '$(DIST)'
+	@echo "Limpiado."
 
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

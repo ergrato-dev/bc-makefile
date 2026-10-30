@@ -9,7 +9,7 @@
 # Solución: cambiar '=' por ':=' y eliminar la autorreferencia
 SOURCES = $(SOURCES) src/main.py
 
-VERSION := $(shell git describe --tags 2>/dev/null || echo 0.0.0)
+VERSION := $(shell git describe --tags)
 
 build: ## Compilar el proyecto
 	@mkdir -p build

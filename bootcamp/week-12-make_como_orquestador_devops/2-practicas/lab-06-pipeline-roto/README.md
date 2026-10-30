@@ -28,13 +28,20 @@ make -p          # dump de todas las reglas y variables
    ```bash
    make ci
    ```
-   Observa el primer error.
+   Observa el primer error. Algunos errores no rompen la ejecución: solo se ven
+   comparando lo que pasa con los criterios de éxito.
 
 3. Sin leer la solución, usa `make -n`, `make --debug=v` o `make -p` para diagnosticar el problema.
 
 4. Corrige el error y vuelve a ejecutar `make ci`.
 
-5. Repite hasta que `make ci` complete sin errores. Son exactamente **5 errores**.
+5. Cuando `make ci` termine con `✓ CI OK`, comprueba también estos tres casos:
+   ```bash
+   ls build/          # ¿hay un report-AAAA-MM-DD.txt?
+   make ci            # segunda ejecución: ¿se ejecutaron las cuatro etapas?
+   make               # sin argumentos: ¿qué hizo?
+   ```
+   Son exactamente **5 errores**. Repite hasta que se cumplan todos los criterios de éxito.
 
 6. Documenta cada error que encontraste: ¿qué era? ¿por qué fallaba? ¿cómo lo diagnosticaste?
 
@@ -50,10 +57,11 @@ make -p          # dump de todas las reglas y variables
 
 ## Criterios de éxito
 
-- [ ] `make ci` en la solución corregida termina con `✓ CI OK`
-- [ ] Puedes explicar qué era cada uno de los 5 errores
+- [ ] `make ci` imprime `✓ Lint OK`, `✓ Tests OK`, `✓ Build OK` y `✓ Reporte generado: build/report-AAAA-MM-DD.txt`, en ese orden, y termina con `✓ CI OK`
+- [ ] Una segunda ejecución de `make ci` vuelve a imprimir `✓ Build OK`
+- [ ] `make` sin argumentos muestra la ayuda y no borra nada
+- [ ] Puedes explicar qué era cada uno de los 5 errores y qué síntoma producía
 - [ ] Usaste al menos una de las herramientas de depuración (`-n`, `--debug`, `-p`)
-- [ ] La solución no tiene TODOs ni errores intencionales
 
 ## Reto extra
 

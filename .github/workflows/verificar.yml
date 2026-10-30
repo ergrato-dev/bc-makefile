@@ -20,3 +20,12 @@ jobs:
 
       - name: shellcheck de scripts/
         run: shellcheck -S warning scripts/*.sh
+
+      # Cada solución de referencia tiene que pasar el autograding de su semana.
+      # Cuando las soluciones se muden al repo del instructor, este paso va con ellas.
+      - name: Las soluciones pasan su checks.json
+        run: |
+          for f in bootcamp/week-*/checks.json; do
+            semana=$(basename "$(dirname "$f")" | cut -d- -f2)
+            ENTREGA=solucion ./scripts/verificar-semana.sh "$semana"
+          done
