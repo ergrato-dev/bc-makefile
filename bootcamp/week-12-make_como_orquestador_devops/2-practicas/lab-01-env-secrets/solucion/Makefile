@@ -50,5 +50,5 @@ _show-env:
 	@echo "Archivo: $(if $(wildcard $(ENV_FILE)),$(ENV_FILE),no encontrado (usando valores por defecto))"
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

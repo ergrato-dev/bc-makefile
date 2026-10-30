@@ -61,7 +61,8 @@ $(VENV)/.installed: pyproject.toml uv.lock
 install: $(VENV)/.installed ## Instalar dependencias Python
 
 # ---------------------------------------------------------------------------
-# TODO 4: hooks-install, hooks-uninstall, hooks-status
+# TODO 4: hooks-install, hooks-uninstall, hooks-status. Deja un comentario
+#         que recuerde que `git commit --no-verify` salta los hooks.
 # ---------------------------------------------------------------------------
 hooks-install: ## Instalar git hooks (core.hooksPath)
 	# TODO: chmod +x a HOOKS_SRC/* y git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
@@ -106,6 +107,7 @@ ci: ## Pipeline completo
 # ---------------------------------------------------------------------------
 # TODO 10: version y bump-patch
 # ---------------------------------------------------------------------------
+# TODO 11 está en .github/workflows/ci.yml: el workflow solo llama a make ci.
 version: ## Mostrar versión actual
 	@echo "Versión actual: $(VERSION)"
 
@@ -121,5 +123,5 @@ clean: ## Eliminar artefactos
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

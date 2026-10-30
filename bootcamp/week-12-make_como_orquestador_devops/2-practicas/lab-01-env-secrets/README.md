@@ -1,6 +1,6 @@
 # Lab 01 — Variables de Entorno y Secretos
 
-**Duración estimada:** 60 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 

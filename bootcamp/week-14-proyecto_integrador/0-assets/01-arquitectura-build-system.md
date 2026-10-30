@@ -2,34 +2,22 @@
 
 ```mermaid
 graph TD
-    ROOT["Makefile raíz<br/>(orquestador)"]
-    ROOT -->|"$(MAKE) -C backend"| BE["backend/Makefile"]
-    ROOT -->|"$(MAKE) -C frontend"| FE["frontend/Makefile"]
-    ROOT -->|"$(MAKE) -C infra"| INF["infra/Makefile"]
+    ROOT["Makefile raíz<br/>modo estricto · SERVICE_TARGETS"]
+    ROOT -->|"backend/ci<br/>$(MAKE) -C backend ci"| BE["backend/Makefile<br/>solo variables + include"]
+    ROOT -->|"frontend/ci"| FE["frontend/Makefile"]
+    ROOT -->|"infra/ci"| INF["infra/Makefile"]
 
-    BE -->|include| MK1["shared-mk/build.mk"]
-    BE -->|include| MK2["shared-mk/test.mk"]
-    BE -->|include| MK3["shared-mk/docker.mk"]
+    BE --> PY["python.mk<br/>stamp: uv sync --locked"]
+    FE --> NODE["node.mk<br/>stamp: pnpm install --frozen-lockfile"]
+    INF --> C["c.mk<br/>-MMD -MP · obj/ order-only"]
 
-    FE -->|include| MK1
-    FE -->|include| MK2
-    FE -->|include| MK3
-
-    INF -->|include| MK4["shared-mk/deploy.mk"]
-    INF -->|include| MK5["shared-mk/ci.mk"]
-
-    MK1 --> ART1["artefactos de build"]
-    MK2 --> ART2["reportes de test"]
-    MK3 --> ART3["Docker images"]
-    MK4 --> ART4["entornos desplegados"]
-    MK5 --> ART5["pipeline CI/CD"]
+    BE & FE & INF --> COMMON["build.mk · test.mk · ci.mk · deploy.mk<br/>(docker.mk solo backend y frontend)"]
 
     style ROOT fill:#2d6a4f,color:#fff
-    style MK1 fill:#1b4332,color:#fff
-    style MK2 fill:#1b4332,color:#fff
-    style MK3 fill:#1b4332,color:#fff
-    style MK4 fill:#1b4332,color:#fff
-    style MK5 fill:#1b4332,color:#fff
+    style PY fill:#1b4332,color:#fff
+    style NODE fill:#1b4332,color:#fff
+    style C fill:#1b4332,color:#fff
+    style COMMON fill:#1b4332,color:#fff
 ```
 
-El Makefile raíz no sabe cómo compilar Python ni Node.js — solo orquesta. Cada servicio importa los módulos `.mk` compartidos y define sus variables locales. La librería `shared-mk/` es el único lugar donde se actualiza la lógica de build, test y deploy.
+El Makefile raíz no sabe compilar Python, Node.js ni C: solo convierte cada `servicio/meta` en un nodo del grafo y delega con `$(MAKE)`, así que `-j3` comparte el jobserver y un fallo llega hasta arriba. Cada servicio importa `build.mk` primero (define `BUILD_DIR` y `STAMPS`), luego su módulo de lenguaje y después los genéricos. Las metas `lint` y `test` son comunes; lo que cambia por stack es `LINT_CMD`, `TEST_CMD` y el stamp de dependencias.

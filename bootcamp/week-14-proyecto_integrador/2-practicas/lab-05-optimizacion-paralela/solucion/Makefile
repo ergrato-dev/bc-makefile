@@ -11,12 +11,15 @@ STAMPS_DIR := .stamps
 $(STAMPS_DIR)/:
 	mkdir -p $@
 
+# Las instalaciones se simulan con sleep para que el lab no necesite red. En
+# un proyecto real la receta sería `uv sync --locked` y
+# `pnpm install --frozen-lockfile`: el stamp depende de los mismos archivos.
 $(STAMPS_DIR)/deps-python: pyproject.toml uv.lock | $(STAMPS_DIR)/
 	@echo "==> Instalando deps Python ..."
 	@sleep 1
 	touch $@
 
-$(STAMPS_DIR)/deps-node: package.json | $(STAMPS_DIR)/
+$(STAMPS_DIR)/deps-node: package.json pnpm-lock.yaml | $(STAMPS_DIR)/
 	@echo "==> Instalando deps Node ..."
 	@sleep 1
 	touch $@
@@ -46,5 +49,5 @@ clean: ## Eliminar artefactos y stamps
 	rm -rf -- '$(DIST_DIR)' '$(STAMPS_DIR)'
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -10,8 +10,7 @@ RUN uv sync --locked --no-dev --no-cache
 ENV PATH="/app/.venv/bin:$PATH"
 COPY src/ ./src/
 EXPOSE 8000
-# Nunca como root: si la app se compromete, el atacante no es root en el contenedor
-RUN useradd --system --uid 10001 app
-USER app
+# TODO: el contenedor no puede correr como root. Declara un USER sin
+# privilegios antes del CMD (lab-02, pasos 7 y 8).
 
 CMD ["python", "src/app.py"]

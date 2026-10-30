@@ -2,20 +2,18 @@
 
 ```mermaid
 flowchart TD
-    START([make all]) --> CHECK_TARGET{¿Target existe<br/>como archivo?}
-    CHECK_TARGET -->|No existe| BUILD[Ejecutar receta]
-    CHECK_TARGET -->|Sí existe| CHECK_DEPS{¿Alguna dependencia<br/>más nueva que el target?}
-    CHECK_DEPS -->|Sí| BUILD
-    CHECK_DEPS -->|No| SKIP[Saltar — ya al día]
-    BUILD --> DONE([Target actualizado])
-    SKIP --> DONE
-
-    CHECK_TARGET2{¿Target es .PHONY?} -->|Sí| BUILD
-    CHECK_TARGET -->|Es .PHONY| CHECK_TARGET2
+    START([make target]) --> PHONY{¿Está en .PHONY?}
+    PHONY -->|Sí| BUILD[Ejecutar receta]
+    PHONY -->|No| EXISTS{¿Existe el archivo?}
+    EXISTS -->|No| BUILD
+    EXISTS -->|Sí| NEWER{¿Algún prerrequisito normal<br/>es más nuevo?}
+    NEWER -->|Sí| BUILD
+    NEWER -->|No| SKIP[Al día: no hace nada]
+    OO["Prerrequisito order-only<br/>build/obj/"] -.->|solo tiene que existir| EXISTS
+    DEP["build/obj/main.d<br/>(-MMD -MP)"] -.->|añade los headers| NEWER
 
     style BUILD fill:#d62828,color:#fff
     style SKIP fill:#2d6a4f,color:#fff
-    style DONE fill:#1b4332,color:#fff
 ```
 
-Make compara timestamps: si el target es más nuevo que todas sus dependencias, no hay trabajo que hacer. Los targets `.PHONY` (como `clean`, `test`, `deploy`) nunca se consideran al día — siempre se ejecutan. Los archivos `.stamp` (archivos vacíos usados como marcadores de tiempo) permiten aplicar esta lógica a tareas que no producen un artefacto natural, como `uv sync` o `pnpm install`.
+Make compara fechas: si el archivo existe y ningún prerrequisito normal es más nuevo, no hay trabajo. Los targets `.PHONY` siempre se ejecutan, por eso `deps` es un phony sin receta que depende de un stamp con fecha (`.stamps/deps: uv.lock`). Los directorios van como order-only porque su fecha cambia cada vez que se escribe dentro, y los `.d` de `-MMD -MP` añaden los headers a la comparación.

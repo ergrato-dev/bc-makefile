@@ -10,7 +10,7 @@ all: build-backend build-frontend ## Construir backend y frontend
 
 # TODO: convertir en target con stamp .stamps/deps-python
 # Dependencias reales: pyproject.toml uv.lock
-# Acción: uv sync --locked && sleep 1 (simula instalación lenta)
+# Acción simulada: sleep 1 (en un proyecto real, uv sync --locked)
 build-backend: ## Construir backend (Python)
 	@echo "==> Instalando deps Python ..."
 	@sleep 1
@@ -20,8 +20,8 @@ build-backend: ## Construir backend (Python)
 	@echo "✓ Backend listo"
 
 # TODO: convertir en target con stamp .stamps/deps-node
-# Dependencia real: package.json
-# Acción: pnpm install --silent && sleep 1 (simula instalación lenta)
+# Dependencias reales: package.json pnpm-lock.yaml
+# Acción simulada: sleep 1 (en un proyecto real, pnpm install --frozen-lockfile)
 build-frontend: ## Construir frontend (Node.js)
 	@echo "==> Instalando deps Node ..."
 	@sleep 1
@@ -30,8 +30,8 @@ build-frontend: ## Construir frontend (Node.js)
 	@echo "frontend-compiled" > $(DIST_DIR)/frontend.out
 	@echo "✓ Frontend listo"
 
-# TODO: crear archivos vacíos pyproject.toml, uv.lock y package.json para que Make pueda rastrear cambios
-# (ya existen en el starter — no los borres)
+# pyproject.toml, uv.lock, package.json y pnpm-lock.yaml ya existen en el
+# starter: son los archivos cuya fecha compara Make. No los borres.
 
 clean: ## Eliminar artefactos y stamps
 	$(if $(DIST_DIR),,$(error DIST_DIR vacía: rm -rf no se ejecuta))
@@ -39,5 +39,5 @@ clean: ## Eliminar artefactos y stamps
 	# TODO: también eliminar el directorio .stamps/
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

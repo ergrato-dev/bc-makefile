@@ -13,8 +13,8 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 COPY src/ ./src/
 
-# Nunca como root: si la app se compromete, el atacante no es root en el contenedor
-RUN useradd --system --uid 10001 app
-USER app
+# TODO: crea un usuario de sistema (useradd --system --uid 10001 app) y
+# cámbiate a él con USER antes del CMD. Sin USER, el contenedor corre como
+# root y  falla.
 
 CMD ["python", "src/app.py"]

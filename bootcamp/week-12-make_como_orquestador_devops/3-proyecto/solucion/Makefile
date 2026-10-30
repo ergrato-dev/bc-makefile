@@ -50,6 +50,9 @@ $(VENV)/.installed: pyproject.toml uv.lock
 
 install: $(VENV)/.installed ## Instalar dependencias Python
 
+# core.hooksPath: git lee los hooks de scripts/hooks/ (versionado). Son una
+# ayuda, no un control: `git commit --no-verify` los salta. El control que no
+# se puede saltar es `make ci` en el workflow de CI.
 hooks-install: ## Instalar git hooks (core.hooksPath)
 	chmod +x $(addprefix $(HOOKS_SRC)/,$(HOOKS))
 	git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
@@ -115,5 +118,5 @@ clean: ## Eliminar artefactos
 	@echo "Limpiado."
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

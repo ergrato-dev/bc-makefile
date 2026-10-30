@@ -1,6 +1,6 @@
 # Lab 05 — Releases con Versionado Semántico
 
-**Duración estimada:** 60 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 

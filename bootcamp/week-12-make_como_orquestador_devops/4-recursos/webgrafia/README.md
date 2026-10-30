@@ -2,8 +2,9 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make — Error Handling](https://www.gnu.org/software/make/manual/make.html#Errors) | Documentación oficial sobre códigos de salida, `-`, `||` y comportamiento ante errores en recetas |
-| [Customizing Git Hooks](https://git-scm.com/docs/githooks) | Referencia oficial de todos los hooks de git, cuándo se ejecutan y qué argumentos reciben |
-| [flake8 — documentación oficial](https://flake8.pycqa.org/en/latest/) | Configuración, plugins y selectores de errores para el linter Python más usado |
-| [shellcheck — Wiki](https://github.com/koalaman/shellcheck/wiki) | Wiki con explicación de cada error y advertencia que genera shellcheck |
-| [keepachangelog.com](https://keepachangelog.com/es/1.1.0/) | Convención para mantener un CHANGELOG legible por humanos y máquinas |
+| [GNU Make — Options Summary](https://www.gnu.org/software/make/manual/html_node/Options-Summary.html) | Referencia oficial de `-k`, `-n`, `--debug` y `--warn-undefined-variables` |
+| [git-config — core.hooksPath](https://git-scm.com/docs/git-config#Documentation/git-config.txt-corehooksPath) | Documentación oficial de la opción que apunta git a un directorio de hooks versionado |
+| [githooks](https://git-scm.com/docs/githooks) | Referencia oficial de todos los hooks de git, cuándo se ejecutan y cuáles salta `--no-verify` |
+| [GitHub Actions — Secure use reference](https://docs.github.com/es/actions/reference/security/secure-use) | Guía oficial: acciones pinneadas por SHA, permisos mínimos del token y manejo de secretos |
+| [uv — Using uv in GitHub Actions](https://docs.astral.sh/uv/guides/integration/github/) | Cómo instalar uv en el runner con `astral-sh/setup-uv` |
+| [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) | Convención para un `CHANGELOG.md` legible por personas (en español) |

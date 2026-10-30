@@ -1,6 +1,6 @@
 # Lab 02 — Git Hooks desde Make
 
-**Duración estimada:** 60 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -23,7 +23,12 @@ Tres reglas de oro para hooks en Make:
    ```bash
    cp -r starter/ mi-lab-02 && cd mi-lab-02
    git init
+   git rev-parse --show-toplevel   # debe terminar en /mi-lab-02
+   git add . && git commit -m "init"   # el paso 8 necesita un commit previo
    ```
+   > [!WARNING]
+   > Sin el `git init`, `git config core.hooksPath` modificaría el repositorio
+   > del bootcamp, no el del lab. Comprueba `--show-toplevel` antes de seguir.
 
 2. Revisa los scripts de hook disponibles:
    ```bash

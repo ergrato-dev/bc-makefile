@@ -2,17 +2,18 @@
 
 | Término | Definición en una línea | Ejemplo en Makefile |
 |---------|------------------------|---------------------|
-| pipeline | Secuencia de etapas donde cada una depende del éxito de la anterior | `ci: lint test build report` |
-| git hook | Script ejecutado por git antes o después de operaciones como commit o push | `cp scripts/hooks/pre-commit .git/hooks/pre-commit` |
-| pre-commit | Hook que git ejecuta antes de crear el commit; si sale con ≠ 0, el commit no ocurre | `hooks-install: @cp ... && chmod +x ...` |
-| pre-push | Hook que git ejecuta antes de enviar commits al remoto; más lento que pre-commit | `$(HOOKS_DIR)/pre-push: $(HOOKS_SRC)/pre-push` |
-| guard target | Patrón Make para validar que una variable esté definida antes de continuar | `guard-%: @test -n "${$*}" \|\| (echo "ERROR: $*"; exit 1)` |
-| `-include` | Directiva Make que carga un archivo sin abortar si no existe | `-include .env` |
-| `export` | Directiva Make que propaga todas las variables al entorno del shell de las recetas | `export` (sin argumentos = exporta todo) |
-| SemVer | Versionado semántico: MAJOR.MINOR.PATCH con reglas de compatibilidad | `VERSION := 1.4.2` |
-| bump-patch | Incrementar el tercer número de versión; indica corrección de bug sin cambios de API | `make bump-patch` → 0.1.0 → 0.1.1 |
-| changelog | Archivo que registra cambios entre versiones del proyecto de forma legible | `CHANGELOG.md` generado por `make changelog` |
-| fail fast | Propiedad de un pipeline que aborta en la primera etapa que falla | Make aborta en `lint` si su exit code ≠ 0 |
-| sentinel file | Archivo vacío que Make usa para trackear cuándo se ejecutó un comando sin salida | `.venv/.installed: pyproject.toml uv.lock` |
-| análisis estático | Análisis del código fuente sin ejecutarlo para detectar errores o estilo | `flake8 src/` en el target `lint` |
-| `exit code` | Código de retorno de un proceso: 0 = éxito, ≠ 0 = error | `@test -n "$$VAR" \|\| exit 1` |
+| `.env` | Archivo local de configuración que Make lee como si fuera un Makefile (`$` se expande, comillas literales, `#` corta) | `-include .env` |
+| `.env.example` | Plantilla versionada con los nombres de variable y sin valores reales | `cp .env.example .env` antes de `make env-check` |
+| export selectivo | `export` con lista: solo esas variables llegan al entorno de las recetas | `export DB_URL API_KEY` (nunca `export` a secas) |
+| guard target | Regla de patrón que valida en Make que una variable existe, sin pasar su valor por el shell | `guard-%: ; @$(if $($*),:,$(error $* no definida))` |
+| git hook | Script que git ejecuta en un evento (commit, push) y que puede abortarlo saliendo con ≠ 0 | `scripts/hooks/pre-commit` |
+| `core.hooksPath` | Opción de git que indica de qué directorio leer los hooks, en lugar de `.git/hooks/` | `git config core.hooksPath '$(CURDIR)/scripts/hooks'` |
+| `--no-verify` | Flag de `git commit`/`git push` que salta los hooks: por eso son ayuda, no control | `git commit --no-verify -m wip` |
+| paridad local/CI | El runner ejecuta exactamente el mismo target que el desarrollador | `- run: make ci` como único paso del workflow |
+| pin por SHA | Fijar una acción de GitHub Actions al hash de 40 caracteres de su commit, que no se puede mover | `uses: actions/checkout@3d3c42e5...b1 # v7.0.1` |
+| `permissions` | Bloque del workflow que limita lo que puede hacer el token del job | `permissions: contents: read` |
+| keep going (`-k`) | Make sigue con los targets que no dependen del que falló y sale igualmente con ≠ 0 | `lint-all: ; @$(MAKE) -k lint` |
+| SemVer | Versionado `MAYOR.MENOR.PARCHE` con reglas de compatibilidad | `VERSION := $(strip $(file < VERSION))` |
+| bump | Incrementar una componente de la versión y reiniciar las de la derecha | `make bump-minor` → `1.4.2` pasa a `1.5.0` |
+| tag anotado | Etiqueta de git con autor, fecha y mensaje que marca un release | `git tag -a "v$(VERSION)" -m "Release v$(VERSION)"` |
+| `--warn-undefined-variables` | Opción de Make que avisa cada vez que se expande una variable no definida | `make --warn-undefined-variables -n ci` |

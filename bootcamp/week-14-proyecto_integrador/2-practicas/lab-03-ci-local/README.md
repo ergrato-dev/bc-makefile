@@ -1,6 +1,6 @@
 # Lab 03 — CI Local con Git Hooks Gestionados por Make
 
-**Duración estimada:** 60 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -20,56 +20,75 @@ El hook invoca `make check` (no tiene lógica propia), así que la lógica vive 
 
 ## Instrucciones
 
-1. Copia el starter:
+1. Copia el starter **sin** ejecutar todavía `git init`:
    ```bash
    cp -r starter/ mi-lab-03 && cd mi-lab-03
+   git rev-parse --show-toplevel   # la raíz del repo del bootcamp, no mi-lab-03
+   ```
+
+   > [!WARNING]
+   > Ahora mismo `git config core.hooksPath ...` escribiría en el repositorio del
+   > bootcamp, y todos tus commits allí pasarían a ejecutar estos hooks. El primer
+   > TODO es una guarda que lo impide.
+
+2. Revisa los scripts de `hooks/`. No tienen lógica: solo `exec make -C ... check`.
+   ```bash
+   cat hooks/pre-commit hooks/pre-push
+   ```
+
+3. Implementa la guarda de `hooks-install` (paso 0 del TODO) y compruébala
+   antes de crear el repositorio:
+   ```bash
+   make hooks-install; echo "exit=$?"
+   # ✗ .../mi-lab-03 no es la raíz de un repositorio git (raíz actual: .../bc-makefile). Ejecuta git init aquí.
+   # exit=2
+   ```
+
+4. Crea el repositorio del lab y completa `hooks-install`:
+   ```bash
    git init
+   make hooks-install                # ✓ Hooks activos desde <ruta>/hooks
+   git config --get core.hooksPath   # <ruta>/mi-lab-03/hooks
    ```
 
-2. Revisa los scripts de hook en `hooks/`:
+5. Implementa `check` y el primer commit:
    ```bash
-   cat hooks/pre-commit
-   cat hooks/pre-push
+   make check                        # ✓ Checks OK
+   git add . && git commit -m "init" # el hook imprime ✓ Checks OK antes del commit
    ```
 
-3. Implementa `hooks-install`:
+6. Rompe el check y comprueba que el commit se aborta:
    ```bash
-   make hooks-install
-   # Debe imprimir: ✓ Hooks activos desde <ruta>/hooks
-   git config --get core.hooksPath   # la ruta de hooks/
+   printf '# comentario con espacio final \n' >> Makefile
+   git add . && git commit -m "roto"; echo "exit=$?"
+   # Makefile:NN:# comentario con espacio final
+   # ✗ Trailing whitespace encontrado
+   # exit=1
    ```
 
-4. Implementa el target `check` que el hook invoca:
+7. Salta el hook y mira por qué no es un control:
    ```bash
-   make check
-   # Debe ejecutar lint y una comprobación básica
+   git commit -m "roto" --no-verify; echo "exit=$?"   # exit=0
+   git log --oneline                                  # 2 commits
    ```
+   El commit roto ya está en el historial. Lo único que lo pararía es el mismo
+   `make check` dentro de `make ci` en el runner de CI. Deshazlo con
+   `git reset --hard HEAD~1`.
 
-5. Prueba que el hook funciona:
+8. Implementa `hooks-status` y `hooks-uninstall`:
    ```bash
-   git add .
-   git commit -m "test"
-   # El hook debe ejecutar make check antes de crear el commit
-   ```
-
-6. Implementa `hooks-uninstall`:
-   ```bash
+   make hooks-status                 # core.hooksPath y ✓ pre-commit ejecutable, ✓ pre-push ejecutable
    make hooks-uninstall
-   git config --get core.hooksPath   # ya no devuelve nada
-   ```
-
-7. Implementa `hooks-status`:
-   ```bash
-   make hooks-status
-   # Muestra core.hooksPath y si cada hook es ejecutable
+   git config --get core.hooksPath; echo "exit=$?"   # exit=1: ya no hay hooks
    ```
 
 ## Criterios de éxito
 
+- [ ] Sin `git init`, `make hooks-install` sale con error y no cambia la configuración de ningún repositorio
 - [ ] `make hooks-install` configura `core.hooksPath` y deja los hooks ejecutables
 - [ ] `make check` ejecuta sin errores con el código del starter
 - [ ] Al hacer `git commit`, el hook pre-commit ejecuta `make check` automáticamente
-- [ ] Si `make check` falla, el commit es abortado
+- [ ] Con un espacio final en el `Makefile`, el commit se aborta; con `--no-verify`, no
 - [ ] `make hooks-uninstall` elimina `core.hooksPath`
 - [ ] `make hooks-status` muestra el estado de cada hook
 

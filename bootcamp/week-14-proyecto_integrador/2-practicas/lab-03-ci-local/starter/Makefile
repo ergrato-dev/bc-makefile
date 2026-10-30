@@ -8,6 +8,8 @@ HOOK_FILES := pre-commit pre-push
 
 # TODO: implementar hooks-install
 # Debe:
+#   0. Guarda: si `git rev-parse --show-toplevel` no es $(CURDIR), imprimir
+#      ✗ ... no es la raíz de un repositorio git ... y salir con exit 1
 #   1. chmod +x a cada hook de $(HOOKS_SRC)
 #   2. git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
 #   3. Imprimir: ✓ Hooks activos desde <ruta>
@@ -28,5 +30,5 @@ hooks-status: ## Ver estado de los hooks
 check: ## Ejecutar checks de calidad (invocado por los hooks)
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

@@ -8,7 +8,15 @@ SHELL       := bash
 HOOKS_SRC  := hooks
 HOOK_FILES := pre-commit pre-push
 
+# Guarda: si este directorio no es la raíz de su propio repositorio, git
+# config escribiría en el repositorio que lo contiene (por ejemplo, el del
+# bootcamp) y sus commits pasarían a ejecutar estos hooks.
 hooks-install: ## Activar los git hooks de hooks/
+	@top=$$(git rev-parse --show-toplevel 2>/dev/null || true); \
+	if [ "$$top" != "$(CURDIR)" ]; then \
+		echo "✗ $(CURDIR) no es la raíz de un repositorio git (raíz actual: $${top:-ninguna}). Ejecuta git init aquí."; \
+		exit 1; \
+	fi
 	chmod +x $(addprefix $(HOOKS_SRC)/,$(HOOK_FILES))
 	git config core.hooksPath '$(CURDIR)/$(HOOKS_SRC)'
 	@echo "✓ Hooks activos desde $(CURDIR)/$(HOOKS_SRC)"
@@ -31,5 +39,5 @@ check: ## Ejecutar checks de calidad (invocado por los hooks)
 	@echo "✓ Checks OK"
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

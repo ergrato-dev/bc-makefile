@@ -113,6 +113,20 @@
       "cmd": "out=$({make} -C {proyecto} -n ci APP_NAME=a DB_URL=b ENV=d SECRET_KEY= 2>&1); grep -q 'SECRET_KEY no definida' <<<$out && ! grep -q flake8 <<<$out",
       "assert": "exit0",
       "pista": "3-proyecto/starter/Makefile, TODO 9"
+    },
+    {
+      "id": "workflow-solo-make-ci",
+      "descripcion": "El workflow de GitHub Actions tiene un único paso run y ese paso es make ci",
+      "cmd": "f={proyecto}/.github/workflows/ci.yml; grep -E '^ *(- )?run:' $f | sed -E 's/^ *(- )?run: *//' | sort | paste -sd, -",
+      "assert": "stdout~^make ci$",
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 10"
+    },
+    {
+      "id": "workflow-acciones-pinneadas",
+      "descripcion": "Todas las acciones del workflow están pinneadas por SHA de 40 caracteres",
+      "cmd": "f={proyecto}/.github/workflows/ci.yml; grep -qE 'uses:' $f && ! grep -E 'uses:' $f | grep -vE 'uses: *[^ @]+@[0-9a-f]{40}( |$)'",
+      "assert": "exit0",
+      "pista": "2-practicas/lab-03-ci-local/README.md, pasos 11 y 12"
     }
   ]
 }

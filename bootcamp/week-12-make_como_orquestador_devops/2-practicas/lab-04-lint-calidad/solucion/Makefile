@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: lint lint-python lint-shell lint-docs format-python check-tools help
+.PHONY: lint lint-all lint-python lint-shell lint-docs format-python check-tools help
 .DEFAULT_GOAL := help
 
 SRC_DIR    := src
@@ -61,6 +61,11 @@ lint-docs: ## Verificar documentación Markdown
 lint: lint-python lint-shell lint-docs ## Ejecutar todos los linters
 	@echo "✓ Lint OK"
 
+# -k (keep going): Make sigue con los linters que no dependen del que falló,
+# así ves todos los errores de una pasada; el código de salida sigue siendo != 0.
+lint-all: ## Ejecutar todos los linters aunque alguno falle
+	@$(MAKE) --no-print-directory -k lint
+
 format-python: ## Formatear código Python automáticamente
 	@if [ -n "$(AUTOPEP8)" ]; then \
 		autopep8 --in-place --recursive $(SRC_DIR); \
@@ -70,5 +75,5 @@ format-python: ## Formatear código Python automáticamente
 	fi
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

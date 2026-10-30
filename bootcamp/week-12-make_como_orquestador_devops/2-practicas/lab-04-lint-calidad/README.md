@@ -1,6 +1,6 @@
 # Lab 04 — Targets de Calidad y Análisis Estático
 
-**Duración estimada:** 50 min
+⏱ Duración estimada: ~60 min
 
 ## Objetivo
 
@@ -48,6 +48,35 @@ El patrón Make para esto: un target padre `lint` que depende de `lint-python li
    make check-tools
    make lint
    ```
+   Debe terminar con `✓ Lint OK`.
+
+10. Rompe a propósito dos dominios a la vez y compara `make` con `make -k`:
+    ```bash
+    cp src/app.py app.py.bak && cp scripts/deploy.sh deploy.sh.bak
+    echo 'def roto(:' >> src/app.py
+    echo 'if [ ; then' >> scripts/deploy.sh
+    make lint; echo "exit=$?"
+    make -k lint; echo "exit=$?"
+    ```
+    Con `make lint` solo verás el error de Python: Make se detiene en
+    `lint-python` y nunca ejecuta `lint-shell`. Con `make -k lint` (*keep going*)
+    verás los dos errores, `✓ Lint Docs OK` y al final:
+    ```
+    make: Target 'lint' not remade because of errors.
+    exit=2
+    ```
+    `-k` sigue con todo lo que no depende de lo que falló, pero el código de
+    salida sigue siendo ≠ 0: sirve para ver todos los problemas de una pasada
+    sin que el pipeline pase en verde.
+
+11. Añade el target `lint-all` (`## Ejecutar todos los linters aunque alguno falle`)
+    cuya receta sea `@$(MAKE) --no-print-directory -k lint`, y restaura los
+    archivos:
+    ```bash
+    make lint-all; echo "exit=$?"     # dos errores, exit=2
+    mv app.py.bak src/app.py && mv deploy.sh.bak scripts/deploy.sh
+    make lint-all; echo "exit=$?"     # ✓ Lint OK, exit=0
+    ```
 
 ## Criterios de éxito
 
@@ -57,6 +86,8 @@ El patrón Make para esto: un target padre `lint` que depende de `lint-python li
 - [ ] `make lint-docs` → detecta líneas largas en archivos .md
 - [ ] `make lint` → ejecuta los tres lint y reporta resultado final
 - [ ] Si una herramienta no está instalada, el target muestra advertencia pero no aborta
+- [ ] Con errores en Python y en shell, `make lint` muestra solo el primero y `make -k lint` muestra los dos; ambos salen con código 2
+- [ ] `make lint-all` reporta todos los errores y sale con ≠ 0; sin errores, sale con 0
 - [ ] `make help` → lista todos los targets
 
 ## Reto extra

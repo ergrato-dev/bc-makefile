@@ -17,74 +17,53 @@
       "pista": "Semana 03: preámbulo estricto; primer TODO del Makefile raíz"
     },
     {
-      "id": "all-tres-servicios",
-      "descripcion": "make all construye backend, frontend e infra",
-      "cmd": "{make} -C {proyecto} all 2>&1 | grep -cE '^.(backend|frontend|infra). Build 1[.]0[.]0$'",
-      "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregables 1 y 9"
-    },
-    {
       "id": "ci-servicio-orden",
       "descripcion": "make ci en un servicio ejecuta lint, test y build en ese orden",
-      "cmd": "{make} -C {proyecto}/backend ci 2>&1 | grep -oE 'Lint OK|Ejecutando tests|Build' | paste -sd, -",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; {make} -C $t/backend ci UV=: PNPM=: 2>&1 | grep -oE 'Lint OK|Ejecutando tests|Build' | paste -sd, -; rm -rf -- $t",
       "assert": "stdout~^Lint OK,Ejecutando tests,Build$",
-      "pista": "2-practicas/lab-04-modulos-compartidos/README.md; TODO de shared-mk/ci.mk"
-    },
-    {
-      "id": "ci-raiz-tres-servicios",
-      "descripcion": "make ci desde la raíz termina bien y construye los tres servicios",
-      "cmd": "f=$(mktemp); {make} -C {proyecto} ci >$f 2>&1 && grep -c 'Build 1' $f; rm -f $f",
-      "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregable 9"
+      "pista": "3-proyecto/README.md, entregable 5; TODO de shared-mk/ci.mk"
     },
     {
       "id": "fallo-propaga",
       "descripcion": "Si los tests del primer servicio fallan, make ci sale con error",
-      "cmd": "out=$({make} -C {proyecto} ci FAIL=backend 2>&1) && exit 1; grep -q 'backend. ✗ Tests fallidos' <<<$out",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; out=$({make} -C $t ci FAIL=backend UV=: PNPM=: 2>&1); r=$?; rm -rf -- $t; [[ $r != 0 ]] && grep -q 'backend. ✗ Tests fallidos' <<<$out",
       "assert": "exit0",
-      "pista": "2-practicas/lab-06-debug-produccion/README.md; TODO de shared-mk/test.mk"
+      "pista": "2-practicas/lab-04-modulos-compartidos/README.md, paso 8; TODO de shared-mk/test.mk"
     },
     {
       "id": "fallo-detiene-resto",
       "descripcion": "Tras el fallo de backend, make ci no sigue con los demás servicios",
-      "cmd": "out=$({make} -C {proyecto} ci FAIL=backend 2>&1); grep -q 'Tests fallidos' <<<$out && ! grep -q 'frontend. Build' <<<$out",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; out=$({make} -C $t ci FAIL=backend UV=: PNPM=: 2>&1); rm -rf -- $t; grep -q 'Tests fallidos' <<<$out && ! grep -q 'frontend. Build' <<<$out",
       "assert": "exit0",
       "pista": "1-teoria/01-contexto.md, sección El target ci"
     },
     {
       "id": "target-por-servicio",
       "descripcion": "make infra/test ejecuta solo los tests de infra",
-      "cmd": "{make} -C {proyecto} infra/test 2>&1",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; {make} -C $t infra/test 2>&1; rm -rf -- $t",
       "assert": "stdout~^.infra. Ejecutando tests",
-      "pista": "3-proyecto/README.md, entregable 9"
+      "pista": "3-proyecto/README.md, entregable 10"
     },
     {
       "id": "deploy-prod-sin-confirm",
       "descripcion": "make deploy ENV=production sin CONFIRM=yes falla con un error claro",
       "cmd": "out=$({make} -C {proyecto} deploy ENV=production 2>&1) && exit 1; echo $out",
       "assert": "stdout~producción requiere CONFIRM=yes",
-      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md; TODO de shared-mk/deploy.mk"
+      "pista": "3-proyecto/README.md, entregable 7; TODO de shared-mk/deploy.mk"
     },
     {
       "id": "deploy-prod-confirm",
       "descripcion": "make deploy ENV=production CONFIRM=yes despliega los tres servicios",
       "cmd": "{make} -C {proyecto} deploy ENV=production CONFIRM=yes 2>&1 | grep -c 'Desplegando en production'",
       "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregable 4"
+      "pista": "3-proyecto/README.md, entregable 7"
     },
     {
       "id": "push-requiere-ci",
       "descripcion": "make push se niega a publicar si CI no es true",
       "cmd": "{make} -C {proyecto}/backend push CI=false 2>&1",
       "assert": "stdout~push solo permitido cuando CI=true",
-      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md; TODO de shared-mk/docker.mk"
-    },
-    {
-      "id": "push-con-ci",
-      "descripcion": "Con CI=true, make push publica la imagen con su IMAGE_NAME y VERSION",
-      "cmd": "{make} -C {proyecto}/backend -n push CI=true 2>&1",
-      "assert": "stdout~^docker push mi-plataforma-backend:1[.]0[.]0$",
-      "pista": "3-proyecto/README.md, entregable 3"
+      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md, paso 6; TODO de shared-mk/docker.mk"
     },
     {
       "id": "build-image-tag",
@@ -98,21 +77,56 @@
       "descripcion": "make hooks-install apunta core.hooksPath al directorio hooks/ del proyecto",
       "cmd": "t=$(mktemp -d); cp {proyecto}/Makefile $t; cp -r {proyecto}/hooks $t; git -C $t init -q; {make} -C $t hooks-install >/dev/null 2>&1; git -C $t config --get core.hooksPath; rm -rf -- $t",
       "assert": "stdout~^/.*/hooks/?$",
-      "pista": "2-practicas/lab-03-ci-local/README.md"
+      "pista": "2-practicas/lab-03-ci-local/README.md, paso 3"
     },
     {
       "id": "check-lint",
       "descripcion": "make check ejecuta el lint de los tres servicios",
-      "cmd": "{make} -C {proyecto} check 2>&1 | grep -c 'Lint OK'",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; {make} -C $t check UV=: PNPM=: 2>&1 | grep -c 'Lint OK'; rm -rf -- $t",
       "assert": "stdout~^3$",
-      "pista": "3-proyecto/README.md, entregable 10"
+      "pista": "3-proyecto/README.md, entregable 11"
     },
     {
       "id": "jobserver-compartido",
       "descripcion": "make -j3 all reparte el jobserver con los sub-makes",
-      "cmd": "f=$(mktemp); {make} -C {proyecto} -j3 all >$f 2>&1; n=$(grep -c 'Build 1' $f); grep -q jobserver $f; j=$?; rm -f $f; [[ $n == 3 && $j != 0 ]]",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; {make} -C $t -j3 all >$t/out.log 2>&1; n=$(grep -c 'Build 1' $t/out.log); grep -q jobserver $t/out.log; j=$?; rm -rf -- $t; [[ $n == 3 && $j != 0 ]]",
       "assert": "exit0",
-      "pista": "2-practicas/lab-05-optimizacion-paralela/README.md"
+      "pista": "2-practicas/lab-04-modulos-compartidos/README.md, paso 10; lab-06, paso 4"
+    },
+    {
+      "id": "deps-uv-stamp",
+      "descripcion": "En backend, uv sync --locked solo se ejecuta si pyproject.toml o uv.lock son más nuevos que el stamp",
+      "cmd": "d=$(mktemp -d); mkdir -p $d/.stamps; touch -t 200001010000 $d/.stamps/deps; viejo=$({make} -C {proyecto}/backend -n deps BUILD_DIR=$d 2>&1); touch $d/.stamps/deps; nuevo=$({make} -C {proyecto}/backend -n deps BUILD_DIR=$d 2>&1); rm -rf -- $d; grep -qE '^uv sync --locked' <<<$viejo && ! grep -q 'uv sync' <<<$nuevo",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, entregable 3; TODO de shared-mk/python.mk"
+    },
+    {
+      "id": "deps-pnpm-stamp",
+      "descripcion": "En frontend, pnpm install --frozen-lockfile solo se ejecuta si package.json o pnpm-lock.yaml son más nuevos que el stamp",
+      "cmd": "d=$(mktemp -d); mkdir -p $d/.stamps; touch -t 200001010000 $d/.stamps/deps; viejo=$({make} -C {proyecto}/frontend -n deps BUILD_DIR=$d 2>&1); touch $d/.stamps/deps; nuevo=$({make} -C {proyecto}/frontend -n deps BUILD_DIR=$d 2>&1); rm -rf -- $d; grep -qE '^pnpm install --frozen-lockfile' <<<$viejo && ! grep -q 'pnpm install' <<<$nuevo",
+      "assert": "exit0",
+      "pista": "3-proyecto/README.md, entregable 3; TODO de shared-mk/node.mk"
+    },
+    {
+      "id": "header-recompila",
+      "descripcion": "Tocar infra/include/check.h recompila exactamente los dos objetos que lo incluyen",
+      "cmd": "t=$(mktemp -d); cp -r {proyecto}/. $t; {make} -C $t/infra build >/dev/null 2>&1; touch $t/infra/include/check.h; {make} -C $t/infra build 2>&1 | grep -c -- '-MMD'; rm -rf -- $t",
+      "assert": "stdout~^2$",
+      "pista": "2-practicas/lab-01-build-c-completo/README.md, pasos 6 y 7; TODO de shared-mk/c.mk"
+    },
+    {
+      "id": "clean-con-guarda",
+      "descripcion": "make clean en un servicio se niega a borrar si BUILD_DIR está vacío",
+      "cmd": "{make} -C {proyecto}/infra clean BUILD_DIR=",
+      "assert": "stdout~BUILD_DIR vac",
+      "pista": "2-practicas/lab-01-build-c-completo/README.md, paso 9; TODO de shared-mk/build.mk"
+    },
+    {
+      "id": "docker-no-root",
+      "descripcion": "Los Dockerfiles de backend y frontend terminan con un USER que no es root",
+      "cmd": "for f in {proyecto}/backend/Dockerfile {proyecto}/frontend/Dockerfile; do grep -E '^USER ' $f | tail -1; done | grep -cvE '^USER +(root|0)( |:|$)'",
+      "assert": "stdout~^2$",
+      "pista": "2-practicas/lab-02-pipeline-python-docker/README.md, pasos 7 y 8"
     }
   ]
 }

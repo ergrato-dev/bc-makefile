@@ -96,9 +96,10 @@ fechas.
 
 **9.** Con `-j`, los prerrequisitos de `ci` que no dependen entre sí se lanzan a
 la vez; el orden de la lista solo se respeta en modo serie. La forma correcta es
-declarar la dependencia real (`build: test`, `test: lint`). Como alternativas,
-`.WAIT` entre prerrequisitos (Make 4.4+) o, en 4.3, `.NOTPARALLEL: ci`, que
-serializa solo ese target.
+declarar la dependencia real (`build: test`, `test: lint`). En Make 4.4+ también
+sirve `.WAIT` entre prerrequisitos (`ci: lint .WAIT test .WAIT build`).
+`.NOTPARALLEL: ci` no es portable: en 4.4+ serializa solo los prerrequisitos de
+`ci`, pero en 4.3 ignora la lista y serializa el Makefile entero.
 
 **10.** Los tres sub-makes escriben en la misma terminal a la vez, y cada línea
 sale cuando se produce. `-O` (`--output-sync`) hace que Make guarde la salida de
@@ -116,12 +117,12 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 
 | Lab | Criterio | Puntos |
 |---|---|:--:|
-| [01 — Build C completo](2-practicas/lab-01-build-c-completo/README.md) | `make all` sin trabajo la segunda vez; tocar un `.c` recompila solo su objeto; tocar `config.h` recompila los que lo incluyen | 10 |
-| [02 — Pipeline Python + Docker](2-practicas/lab-02-pipeline-python-docker/README.md) | `make ci` encadena lint, test y build-image; un error de estilo lo detiene en lint; `make push` sin `CI=true` se niega | 10 |
-| [03 — CI local](2-practicas/lab-03-ci-local/README.md) | `hooks-install` fija `core.hooksPath`; un `make check` roto aborta el commit; `hooks-uninstall` lo quita | 10 |
-| [04 — Módulos compartidos](2-practicas/lab-04-modulos-compartidos/README.md) | `service-a` y `service-b` construyen con los mismos módulos y cada uno conserva su `VERSION`; los módulos no imprimen nada al importarse | 10 |
-| [05 — Optimización paralela](2-practicas/lab-05-optimizacion-paralela/README.md) | Segunda ejecución sin trabajo; tocar un manifiesto reinstala solo ese stack; `make -j2 all` da el mismo resultado que `make all` | 10 |
-| [06 — Debug en producción](2-practicas/lab-06-debug-produccion/README.md) | Los cinco errores corregidos con `# FIX:`; `make -j2 ci` da el mismo resultado que `make ci` | 10 |
+| [01 — Build C completo](2-practicas/lab-01-build-c-completo/README.md) | Segunda pasada sin trabajo; tocar `config.h` recompila solo `main.o`; borrar un header no rompe el build (`-MP`); `make clean && make -j4 all` siempre funciona; `clean` con guarda | 10 |
+| [02 — Pipeline Python + Docker](2-practicas/lab-02-pipeline-python-docker/README.md) | `make ci` encadena lint, test, build-image y check-nonroot; `check-nonroot` falla sin `USER` y pasa con él; `make push` sin `CI=true` se niega | 10 |
+| [03 — CI local](2-practicas/lab-03-ci-local/README.md) | Sin `git init`, `hooks-install` se niega; con él fija `core.hooksPath`; un `make check` roto aborta el commit y `--no-verify` lo salta; `hooks-uninstall` lo quita | 10 |
+| [04 — Módulos compartidos](2-practicas/lab-04-modulos-compartidos/README.md) | Cada servicio conserva su `VERSION` con los mismos módulos; el Makefile raíz propaga `FAIL=service-a` con código 2; sin `for`; `-j2` sin avisos de jobserver | 10 |
+| [05 — Optimización paralela](2-practicas/lab-05-optimizacion-paralela/README.md) | Segunda ejecución sin trabajo; tocar un manifiesto o lockfile reinstala solo ese stack; `-O` agrupa la salida; la carrera del paso 7 se arregla declarando la dependencia | 10 |
+| [06 — Debug en producción](2-practicas/lab-06-debug-produccion/README.md) | Los cinco errores corregidos con `# FIX N:` y su tabla de diagnóstico; `make -j2 ci` en árbol limpio sale con 0; `make release` ya no pasa en verde | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué técnica de semanas anteriores aplicaste; 8 si se cumplen
@@ -140,20 +141,22 @@ necesita red ni Docker.
 |---|:--:|
 | `shellflags-estrictas` — el Makefile raíz corre las recetas con `bash -eu -o pipefail` | 3 |
 | `delete-on-error` — el Makefile raíz declara `.DELETE_ON_ERROR` | 2 |
-| `all-tres-servicios` — `make all` construye backend, frontend e infra | 4 |
-| `ci-servicio-orden` — `make ci` en un servicio ejecuta lint, test y build en ese orden | 4 |
-| `ci-raiz-tres-servicios` — `make ci` desde la raíz termina bien y construye los tres servicios | 4 |
-| `fallo-propaga` — si los tests del primer servicio fallan, `make ci` sale con error | 6 |
+| `ci-servicio-orden` — `make ci` en un servicio ejecuta lint, test y build en ese orden | 3 |
+| `fallo-propaga` — si los tests del primer servicio fallan, `make ci` sale con error | 5 |
 | `fallo-detiene-resto` — tras el fallo de backend, `make ci` no sigue con los demás | 3 |
-| `target-por-servicio` — `make infra/test` ejecuta solo los tests de infra | 4 |
-| `deploy-prod-sin-confirm` — `make deploy ENV=production` sin `CONFIRM=yes` falla con un error claro | 5 |
-| `deploy-prod-confirm` — con `CONFIRM=yes` despliega los tres servicios | 3 |
-| `push-requiere-ci` — `make push` se niega a publicar si `CI` no es `true` | 5 |
-| `push-con-ci` — con `CI=true`, `push` publica `IMAGE_NAME:VERSION` | 3 |
-| `build-image-tag` — `make build-image` etiqueta la imagen como `IMAGE_NAME:VERSION` | 3 |
-| `hooks-path` — `make hooks-install` apunta `core.hooksPath` a `hooks/` | 4 |
-| `check-lint` — `make check` ejecuta el lint de los tres servicios | 3 |
+| `target-por-servicio` — `make infra/test` ejecuta solo los tests de infra | 3 |
+| `deploy-prod-sin-confirm` — `make deploy ENV=production` sin `CONFIRM=yes` falla con un error claro | 4 |
+| `deploy-prod-confirm` — con `CONFIRM=yes` despliega los tres servicios | 2 |
+| `push-requiere-ci` — `make push` se niega a publicar si `CI` no es `true` | 4 |
+| `build-image-tag` — `make build-image` etiqueta la imagen como `IMAGE_NAME:VERSION` | 2 |
+| `hooks-path` — `make hooks-install` apunta `core.hooksPath` a `hooks/` | 3 |
+| `check-lint` — `make check` ejecuta el lint de los tres servicios | 2 |
 | `jobserver-compartido` — `make -j3 all` reparte el jobserver con los sub-makes | 4 |
+| `deps-uv-stamp` — `uv sync --locked` solo corre si `pyproject.toml` o `uv.lock` son más nuevos que el stamp | 4 |
+| `deps-pnpm-stamp` — `pnpm install --frozen-lockfile` solo corre si `package.json` o `pnpm-lock.yaml` son más nuevos que el stamp | 4 |
+| `header-recompila` — tocar `infra/include/check.h` recompila exactamente los dos objetos que lo incluyen | 5 |
+| `clean-con-guarda` — `make clean` se niega a borrar si `BUILD_DIR` está vacío | 4 |
+| `docker-no-root` — los Dockerfiles de backend y frontend terminan con un `USER` que no es root | 3 |
 | **Total** | **60** |
 
 ### Calidad — 40 puntos
@@ -162,11 +165,12 @@ Lo que el autograding no puede ver.
 
 | Criterio | Excelente | Suficiente | Puntos |
 |---|---|---|:--:|
-| **Servicios mínimos** | Cada `backend/`, `frontend/`, `infra/Makefile` solo define variables e incluye módulos; ninguna receta duplicada | Una receta duplicada | 10 |
-| **Módulos reutilizables** | Variables con `?=`, sin `$(info)` ni `$(shell)` al importarse, cada módulo documenta qué variables requiere | Falta la documentación | 8 |
+| **Servicios mínimos** | Cada `backend/`, `frontend/`, `infra/Makefile` solo define variables e incluye módulos; ninguna receta duplicada | Una receta duplicada | 8 |
+| **Módulos reutilizables** | Variables con `?=` (incluidas `UV`, `PNPM`, `CFLAGS`), sin `$(info)` ni `$(shell)` al importarse, cada módulo documenta qué variables requiere | Falta la documentación | 8 |
+| **Dependencias exactas** | Stamps que dependen de manifiesto y lockfile; directorios como order-only; `-MMD -MP`; `ci` seguro con `-j` | Algún directorio como prerrequisito normal | 6 |
 | **Recursión legible** | `SERVICE_TARGETS` generado con `$(foreach)`; una sola regla con `$(@D)` y `$(@F)` | Reglas por servicio escritas a mano | 6 |
-| **`.PHONY` completo** | Todos los targets que no producen archivo, incluidos los `servicio/meta`, están declarados | Falta uno | 6 |
-| **Orden y secciones** | Preámbulo, variables, recursión, metas agregadas, hooks, ayuda | Secciones mezcladas | 6 |
+| **`.PHONY` completo** | Todos los targets que no producen archivo, incluidos los `servicio/meta`, están declarados; los stamps no | Falta uno | 4 |
+| **Orden y secciones** | Preámbulo, variables, recursión, metas agregadas, hooks, ayuda | Secciones mezcladas | 4 |
 | **`help` útil** | `make` sin argumentos lista los targets en la raíz y en cada servicio | Falta en algún Makefile | 4 |
 | **Total** | | | **40** |
 
@@ -179,6 +183,8 @@ Lo que el autograding no puede ver.
 | `rm -rf` sobre una variable sin guarda de vacío | −10 pts |
 | `pip` o `npm` en cualquier receta o Dockerfile | −10 pts. Python siempre con uv; Node.js siempre con pnpm |
 | `push` sin guarda o con credenciales en el Makefile | −10 pts |
+| Un Dockerfile sin `USER` o con `USER root` | −10 pts. Si la app se compromete, el atacante es root en el contenedor |
+| `uv sync` o `pnpm install` en cada ejecución (target phony en lugar de stamp) | −5 pts |
 
 ---
 
@@ -187,8 +193,9 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] Ningún `TODO` en `3-proyecto/starter/` (Makefile raíz, servicios y `shared-mk/`)
-- [ ] `./scripts/verificar-semana.sh 14` con las 16 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 14` con las 18 comprobaciones en verde
 - [ ] `make ci FAIL=backend; echo $?` imprime un código distinto de 0
+- [ ] `make clean` deja el árbol sin `build/` en ningún servicio
 
 ---
 

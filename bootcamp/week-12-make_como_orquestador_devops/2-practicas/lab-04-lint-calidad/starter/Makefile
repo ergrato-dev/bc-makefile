@@ -1,4 +1,4 @@
-.PHONY: lint lint-python lint-shell lint-docs format-python check-tools help
+.PHONY: lint lint-all lint-python lint-shell lint-docs format-python check-tools help
 .DEFAULT_GOAL := help
 
 SRC_DIR    := src
@@ -56,6 +56,14 @@ lint: ## Ejecutar todos los linters
 	@echo "✓ Lint OK"
 
 # --------------------------------------------------------------------------
+# TODO 5b: Implementa lint-all: relanza `lint` con -k para que Make siga con
+#         los demás linters aunque uno falle (paso 11 del README).
+#           @$(MAKE) --no-print-directory -k lint
+# --------------------------------------------------------------------------
+lint-all: ## Ejecutar todos los linters aunque alguno falle
+	@echo "TODO: implementa lint-all"
+
+# --------------------------------------------------------------------------
 # TODO 6: Implementa format-python.
 #         Si autopep8 está disponible, ejecútalo sobre SRC_DIR.
 #         Si no, muestra instrucciones para instalarlo.
@@ -64,5 +72,5 @@ format-python: ## Formatear código Python automáticamente
 	# TODO: if autopep8 disponible → usar, else → instrucciones
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

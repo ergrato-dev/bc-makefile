@@ -2,7 +2,7 @@ SHELL       := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
 
-.PHONY: ci lint test build-image push deps clean help
+.PHONY: ci lint test build-image check-nonroot push deps clean help
 .DEFAULT_GOAL := help
 
 IMAGE_NAME := mi-servicio
@@ -34,6 +34,11 @@ build-image: ## Construir imagen Docker
 	@echo "==> Build Docker $(IMAGE_NAME):$(VERSION)"
 	docker build --tag $(IMAGE_NAME):$(VERSION) .
 
+check-nonroot: build-image ## Verificar que la imagen no corre como root
+	@user=$$(docker image inspect --format '{{.Config.User}}' $(IMAGE_NAME):$(VERSION)); \
+	case "$$user" in ""|root|0|0:*) echo "✗ $(IMAGE_NAME):$(VERSION) corre como root"; exit 1;; esac; \
+	echo "✓ $(IMAGE_NAME):$(VERSION) corre como $$user"
+
 # CI=true es una salvaguarda contra accidentes, no un control de acceso:
 # `make push CI=true` la salta. El control real es que solo el runner de CI
 # tenga credenciales del registry.
@@ -44,12 +49,12 @@ endif
 	@echo "==> Push $(IMAGE_NAME):$(VERSION)"
 	docker push $(IMAGE_NAME):$(VERSION)
 
-ci: lint test build-image ## Ejecutar pipeline completo: lint → test → build-image
+ci: lint test check-nonroot ## Ejecutar pipeline completo: lint → test → build-image → check-nonroot
 
 clean: ## Eliminar artefactos
 	$(if $(VENV),,$(error VENV vacía: rm -rf no se ejecuta))
 	rm -rf -- .stamps/ '$(VENV)' __pycache__ .pytest_cache
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

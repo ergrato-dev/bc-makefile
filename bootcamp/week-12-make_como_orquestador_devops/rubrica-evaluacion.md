@@ -90,8 +90,11 @@ nivel de Makefile, `make help` o `make clean` fallarían sin `.env`.
 
 **9.** No. Con `-j` Make lanza los prerrequisitos que no dependen entre sí en
 paralelo; el orden de la lista solo se respeta en modo serie. Para garantizarlo
-hay que declarar la dependencia real (`build: test`, `test: lint`), usar
-`.WAIT` entre prerrequisitos (Make 4.4+) o, en 4.3, `.NOTPARALLEL: ci`.
+hay que declarar la dependencia real (`build: test`, `test: lint`) o, en Make
+4.4+, poner `.WAIT` entre prerrequisitos (`ci: lint .WAIT test .WAIT build`).
+`.NOTPARALLEL: ci` no es equivalente entre versiones: en 4.4+ serializa solo
+los prerrequisitos de `ci`, pero en 4.3 ignora la lista y serializa el Makefile
+entero.
 
 **10.** Si el workflow repite los comandos, hay dos pipelines que divergen: un
 flag cambia en el Makefile y no en el YAML, y "en local pasa" deja de significar
@@ -111,10 +114,10 @@ Cada criterio de éxito se comprueba ejecutando el comando en tu máquina.
 |---|---|:--:|
 | [01 — `.env` y secretos](2-practicas/lab-01-env-secrets/README.md) | `make env-check` nombra la variable que falta y sale con error; `env-show` enmascara secretos y no ejecuta un valor hostil; sin `export` a secas | 10 |
 | [02 — Git hooks](2-practicas/lab-02-git-hooks/README.md) | `hooks-install` fija `core.hooksPath`; `hooks-uninstall` lo quita; un commit con `.env.prod` aborta y uno con `.env.example` pasa | 10 |
-| [03 — CI local](2-practicas/lab-03-ci-local/README.md) | `make ci` encadena lint, test, build y report; con un error de lint aborta sin ejecutar `test` | 10 |
-| [04 — Lint y calidad](2-practicas/lab-04-lint-calidad/README.md) | `make lint` ejecuta los tres análisis; una herramienta ausente avisa sin abortar; `check-tools` muestra la tabla | 10 |
+| [03 — CI local](2-practicas/lab-03-ci-local/README.md) | `make ci` encadena lint, test, build y report; con un error de lint aborta sin ejecutar `test`; el workflow tiene un único `run: make ci`, acciones pinneadas por SHA y `permissions: contents: read` | 10 |
+| [04 — Lint y calidad](2-practicas/lab-04-lint-calidad/README.md) | `make lint` ejecuta los tres análisis; una herramienta ausente avisa sin abortar; `make -k lint` y `lint-all` muestran todos los errores y salen con ≠ 0 | 10 |
 | [05 — Release](2-practicas/lab-05-release/README.md) | `bump-patch`, `bump-minor` y `bump-major` correctos; `release-patch` desde `0.1.0` crea `v0.1.1` | 10 |
-| [06 — Pipeline roto](2-practicas/lab-06-pipeline-roto/README.md) | Los cinco errores corregidos, cada uno con su síntoma documentado; `make ci` completo dos veces seguidas; `make` a secas muestra la ayuda | 10 |
+| [06 — Pipeline roto](2-practicas/lab-06-pipeline-roto/README.md) | Los cinco errores corregidos con `# FIX N:`; tabla síntoma/herramienta/causa; `--warn-undefined-variables` sin avisos; `make ci` completo dos veces seguidas; `make` a secas muestra la ayuda | 10 |
 
 Dentro de cada lab: 10 puntos si se cumplen todos los criterios y explicas con
 tus palabras qué protege cada target; 8 si se cumplen todos; 7 si falla uno;
@@ -132,21 +135,23 @@ toca la red ni la configuración git de tu repositorio.
 | Comprobación | Puntos |
 |---|:--:|
 | `version-rechaza-inyeccion` — una `VERSION` con código de shell hace fallar a Make antes de ejecutar nada | 5 |
-| `version-rechaza-formato` — una `VERSION` sin tres componentes numéricos se rechaza | 3 |
+| `version-rechaza-formato` — una `VERSION` sin tres componentes numéricos se rechaza | 2 |
 | `bump-patch` — `make bump-patch` convierte `1.2.9` en `1.2.10` | 4 |
-| `guard-falla` — `guard-VAR` falla con un mensaje que nombra la variable | 5 |
+| `guard-falla` — `guard-VAR` falla con un mensaje que nombra la variable | 4 |
 | `env-check-secret-key` — `make env-check` falla si `SECRET_KEY` está vacía | 4 |
 | `export-selectivo` — las recetas reciben `DB_URL` pero no variables que el Makefile no exporta | 5 |
 | `hooks-path` — `make hooks-install` apunta `core.hooksPath` a `scripts/hooks` con ruta absoluta | 5 |
-| `hooks-uninstall` — `make hooks-uninstall` deja `core.hooksPath` sin configurar | 3 |
+| `hooks-uninstall` — `make hooks-uninstall` deja `core.hooksPath` sin configurar | 2 |
 | `pre-commit-bloquea-env` — con los hooks instalados, un commit que incluye `.env` se rechaza | 5 |
-| `install-locked` — `make install` sincroniza con `uv sync --locked` | 3 |
+| `install-locked` — `make install` sincroniza con `uv sync --locked` | 2 |
 | `sentinel-incremental` — con el sentinel al día, `make install` no vuelve a ejecutar `uv sync` | 4 |
 | `lint-flake8` — `make lint` ejecuta flake8 con `uv run --no-sync` | 2 |
-| `test-cobertura` — `make test` ejecuta pytest con cobertura | 3 |
-| `build-artefacto` — `make build` crea `dist/mi-api-VERSION.tar.gz` con `src/` | 4 |
+| `test-cobertura` — `make test` ejecuta pytest con cobertura | 2 |
+| `build-artefacto` — `make build` crea `dist/mi-api-VERSION.tar.gz` con `src/` | 3 |
 | `ci-orden` — `make ci` encadena lint, test y build en ese orden | 3 |
 | `ci-valida-entorno-primero` — `make ci` se detiene en `env-check`, antes del lint, si falta `SECRET_KEY` | 2 |
+| `workflow-solo-make-ci` — el workflow de GitHub Actions tiene un único paso `run` y es `make ci` | 3 |
+| `workflow-acciones-pinneadas` — todas las acciones del workflow están pinneadas por SHA de 40 caracteres | 3 |
 | **Total** | **60** |
 
 ### Calidad — 40 puntos
@@ -156,10 +161,11 @@ Lo que el autograding no puede ver.
 | Criterio | Excelente | Suficiente | Puntos |
 |---|---|---|:--:|
 | **Secretos fuera del shell** | Ningún secreto aparece en una línea de receta; validaciones con `$(if)`; `.env.example` sin valores reales | Un secreto se valida en shell pero con `@` | 10 |
-| **`.env` tratado como Makefile** | Comentario que advierte de `$`, comillas y `#`; `.gitignore` con `.env*` y `!.env.example` | Falta la advertencia | 8 |
+| **`.env` tratado como Makefile** | Comentario que advierte de `$`, comillas y `#`; `.gitignore` con `.env*` y `!.env.example` | Falta la advertencia | 6 |
 | **Hooks como ayuda, no como control** | Los hooks llaman a targets de Make (`make lint`), no duplican lógica; README o comentario explica que `--no-verify` los salta | Lógica duplicada en el hook | 6 |
-| **`.PHONY` completo** | Todos los targets que no producen archivo están declarados; el sentinel no | Falta uno | 6 |
-| **Orden y secciones** | Preámbulo, variables, entorno, guardas, instalación, hooks, pipeline, release, limpieza | Secciones mezcladas | 6 |
+| **Workflow de mínimo privilegio** | `permissions: contents: read`, `persist-credentials: false`, `SECRET_KEY` desde `secrets` en `env:` del job | Falta `permissions` | 6 |
+| **`.PHONY` completo** | Todos los targets que no producen archivo están declarados; el sentinel no | Falta uno | 4 |
+| **Orden y secciones** | Preámbulo, variables, entorno, guardas, instalación, hooks, pipeline, release, limpieza | Secciones mezcladas | 4 |
 | **`help` útil** | `make` sin argumentos lista todos los targets con descripción | Falta alguno | 4 |
 | **Total** | | | **40** |
 
@@ -172,6 +178,7 @@ Lo que el autograding no puede ver.
 | `VERSION` pasada por `$(shell ...)` o usada sin validar | **−15 pts**. Un PR puede ejecutar código en la máquina de quien abre el proyecto |
 | `rm -rf` sobre una variable sin guarda de vacío | −10 pts |
 | `pip install` en cualquier receta o hook | −10 pts. Python siempre con uv |
+| El workflow repite comandos del pipeline (`flake8`, `pytest`...) además de `make ci` | −10 pts. Dos pipelines que divergen |
 
 ---
 
@@ -180,7 +187,8 @@ Lo que el autograding no puede ver.
 - [ ] Los 6 labs con sus criterios de éxito comprobados en tu máquina
 - [ ] Las 10 preguntas de Conocimiento respondidas por escrito
 - [ ] `3-proyecto/starter/Makefile` sin ningún `TODO`
-- [ ] `./scripts/verificar-semana.sh 12` con las 16 comprobaciones en verde
+- [ ] `./scripts/verificar-semana.sh 12` con las 18 comprobaciones en verde
+- [ ] `.github/workflows/ci.yml` con `permissions: contents: read` y un único `run: make ci`
 - [ ] `git status` sin `.env`, `.venv/` ni `dist/`
 
 ---

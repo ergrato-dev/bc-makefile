@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json ./
 COPY src/ ./src/
 EXPOSE 3000
-# La imagen oficial trae el usuario sin privilegios "node"
-USER node
+# TODO: el contenedor no puede correr como root. Declara un USER sin
+# privilegios antes del CMD (lab-02, pasos 7 y 8).
 
 CMD ["node", "src/index.js"]

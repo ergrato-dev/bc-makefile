@@ -38,5 +38,5 @@ hooks-status: ## Ver estado de los git hooks
 hooks-run-pre-commit: ## Ejecutar el hook pre-commit manualmente
 
 help: ## Mostrar ayuda
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'

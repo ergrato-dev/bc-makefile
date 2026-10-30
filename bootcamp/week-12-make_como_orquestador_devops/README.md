@@ -2,84 +2,65 @@
 
 ## Descripción
 
-Un Makefile bien diseñado puede reemplazar scripts de CI/CD, instalar git hooks, gestionar secretos de entorno y ejecutar un pipeline completo antes de que el código llegue al servidor. Esta semana conviertes Make en la columna vertebral del flujo DevOps local: un `make ci` que cualquier desarrollador puede ejecutar y que replica exactamente lo que corre en el servidor.
-
-Al terminar sabrás construir el pipeline local que los equipos de alto rendimiento usan para detectar problemas antes del `git push`.
+Un Makefile bien diseñado sustituye a los scripts sueltos de CI/CD: carga el `.env` sin filtrar secretos, instala los git hooks del equipo, versiona releases y ejecuta el pipeline completo con un solo comando. Esta semana conviertes Make en la columna vertebral del flujo DevOps local: un `make ci` que corre idéntico en tu laptop y en GitHub Actions, de modo que reproducir un fallo de CI sea ejecutar el mismo comando en tu máquina.
 
 ## Objetivos de aprendizaje
 
-Al terminar esta semana serás capaz de:
+Al terminar esta semana, podrás:
 
-- Cargar y validar archivos `.env` con Make sin exponer secretos
-- Instalar y gestionar git hooks desde targets Make
-- Construir un pipeline CI/CD local reproducible con Make
-- Implementar targets de calidad de código (lint, format, security scan)
-- Automatizar releases con versionado semántico desde Make
-- Depurar pipelines rotos usando las técnicas de Make
+- Cargar `.env` con `-include` sabiendo que se parsea como Makefile, y exportar solo las variables que las recetas necesitan
+- Validar variables requeridas con `guard-%` sin pegar el secreto en una línea de shell
+- Instalar git hooks versionados con `core.hooksPath` y explicar por qué `--no-verify` los convierte en ayuda, no en control
+- Construir un pipeline `make ci` con fallo rápido y llamarlo desde un workflow de GitHub Actions mínimo, con acciones pinneadas por SHA y `permissions: contents: read`
+- Componer targets de calidad (`lint-python`, `lint-shell`, `lint-docs`) y ver todos los fallos con `make -k`
+- Leer y validar `VERSION` sin shell y automatizar `bump`, `tag` y `CHANGELOG.md`
+- Depurar un pipeline roto con `-n`, `--warn-undefined-variables` y `--debug=v`
 
 ## Prerrequisitos
 
-- Semanas 01–11 del bootcamp
-- GNU Make ≥ 4.x
-- git instalado y configurado
-- bash (los hooks usan bash)
-- Python 3.14 (labs 03 y 04)
-- Opcional: shellcheck, hadolint (lab 04)
+- Semanas 01–11 completadas (en especial la 03, modo estricto, y la 11, sentinels con uv)
+- GNU Make ≥ 4.3 (`make --version`; en macOS `gmake`)
+- git y bash
+- uv 0.12.x (labs 03 y proyecto). Python siempre con uv, nunca pip
+- Opcional: shellcheck (lab 04)
 
-## Tabla de contenidos
+## Contenido
 
-| Sección | Contenido | Tiempo |
-|---------|-----------|--------|
-| [1-teoria](./1-teoria/01-contexto.md) | Make como orquestador DevOps | 30 min |
-| [lab-01-env-secrets](./2-practicas/lab-01-env-secrets/README.md) | Cargar `.env` y validar secretos | 50 min |
-| [lab-02-git-hooks](./2-practicas/lab-02-git-hooks/README.md) | Instalar y gestionar git hooks | 50 min |
-| [lab-03-ci-local](./2-practicas/lab-03-ci-local/README.md) | Pipeline CI/CD local completo | 50 min |
-| [lab-04-lint-calidad](./2-practicas/lab-04-lint-calidad/README.md) | Targets de calidad y análisis estático | 50 min |
-| [lab-05-release](./2-practicas/lab-05-release/README.md) | Automatizar releases con versionado semántico | 50 min |
-| [lab-06-pipeline-roto](./2-practicas/lab-06-pipeline-roto/README.md) | Depurar un pipeline con errores intencionales | 50 min |
-| [3-proyecto](./3-proyecto/README.md) | Pipeline local completo | 2h 30min |
-| **Total** | | **8h** |
+| # | Tipo | Tema | Tiempo |
+|---|------|------|--------|
+| — | Teoría | [01-contexto.md](1-teoria/01-contexto.md) | 45 min |
+| — | Conocimiento | [10 preguntas](rubrica-evaluacion.md#-conocimiento-30) | 15 min |
+| 1 | Lab | [lab-01-env-secrets](2-practicas/lab-01-env-secrets/) | 60 min |
+| 2 | Lab | [lab-02-git-hooks](2-practicas/lab-02-git-hooks/) | 60 min |
+| 3 | Lab | [lab-03-ci-local](2-practicas/lab-03-ci-local/) | 60 min |
+| 4 | Lab | [lab-04-lint-calidad](2-practicas/lab-04-lint-calidad/) | 60 min |
+| 5 | Lab | [lab-05-release](2-practicas/lab-05-release/) | 60 min |
+| 6 | Lab | [lab-06-pipeline-roto](2-practicas/lab-06-pipeline-roto/) | 60 min |
+| — | Proyecto | [Pipeline local completo](3-proyecto/) | 3 h |
+
+**Total: 10 horas**
 
 ## Distribución del tiempo
 
 ```
-30 min  ████░░░░░░░░░░░░░░░░  Teoría
-300 min ████████████████████  Labs (6 × 50 min)
-150 min ████████████░░░░░░░░  Proyecto
+[45 min] Leer 1-teoria/01-contexto.md
+[15 min] Responder las 10 preguntas de Conocimiento
+[60 min] lab-01 — .env, export selectivo y guard-%
+[60 min] lab-02 — git hooks con core.hooksPath y su bypass
+[60 min] lab-03 — make ci local y el mismo make ci en GitHub Actions
+[60 min] lab-04 — targets de calidad compuestos y make -k
+[60 min] lab-05 — VERSION validada, bump, tag y changelog
+[60 min] lab-06 — depurar un pipeline con cinco errores
+[3 h]    Proyecto: pipeline local completo con workflow de CI
 ```
 
 ## Verificación de completitud
 
-El proyecto se comprueba desde la raíz del repositorio (sin red):
+Desde la raíz del repositorio (sin red y sin tocar la configuración git del
+repo: los hooks se prueban en un repositorio temporal):
 
 ```bash
 ./scripts/verificar-semana.sh 12
-```
-
-Además, estos comandos de los labs deben funcionar sin errores:
-
-```bash
-# Lab 01 — env-secrets
-cd 2-practicas/lab-01-env-secrets/solucion && make env-check
-
-# Lab 02 — git-hooks
-cd 2-practicas/lab-02-git-hooks/solucion && make hooks-status
-
-# Lab 03 — ci-local
-cd 2-practicas/lab-03-ci-local/solucion && make ci
-
-# Lab 04 — lint-calidad
-cd 2-practicas/lab-04-lint-calidad/solucion && make lint
-
-# Lab 05 — release
-cd 2-practicas/lab-05-release/solucion && make version
-
-# Lab 06 — pipeline-roto (la solución corregida)
-cd 2-practicas/lab-06-pipeline-roto/solucion && make ci
-
-# Proyecto
-cd 3-proyecto/solucion && make ci
-cd 3-proyecto/solucion && make env-check
 ```
 
 ## 🔗 Navegación

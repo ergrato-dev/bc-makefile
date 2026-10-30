@@ -2,8 +2,8 @@
 
 | Recurso | Descripción |
 |---------|-------------|
-| [GNU Make Manual — Implicit Rules](https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html) | Referencia oficial de pattern rules y reglas implícitas |
-| [Makefile Best Practices — clarkgrubb.com](https://clarkgrubb.com/makefile-style-guide) | Guía de estilo con convenciones usadas en proyectos open source reales |
-| [Recursive Make Considered Harmful](https://accu.org/journals/overload/14/71/miller_2180/) | Artículo clásico de Peter Miller sobre los problemas del make recursivo y alternativas |
-| [Your Makefiles are Wrong — Victoria Drake](https://victoria.dev/blog/your-makefiles-are-wrong/) | Errores comunes en Makefiles de proyectos reales y cómo corregirlos |
-| [Docker Official — Dockerfile Best Practices](https://docs.docker.com/build/building/best-practices/) | Referencia oficial para Dockerfiles que se integran con pipelines Make |
+| [Makefile Style Guide — clarkgrubb.com](https://clarkgrubb.com/makefile-style-guide) | Convenciones de estilo para Makefiles de equipo: modo estricto, nombres, targets phony |
+| [Your Makefiles are wrong — Jacob Davis-Hansson](https://tech.davis-hansson.com/p/make/) | Preámbulo estricto, `.ONESHELL`, sentinels y por qué conviene cambiar los valores por defecto de Make |
+| [Dockerfile best practices — Docker Docs](https://docs.docker.com/build/building/best-practices/) | Guía oficial: `USER` sin privilegios, capas y caché, imágenes mínimas |
+| [`uv sync` — uv Docs](https://docs.astral.sh/uv/concepts/projects/sync/) | Cómo sincroniza uv el entorno con `uv.lock` y qué significa `--locked` |
+| [`pnpm install` — pnpm Docs](https://pnpm.io/cli/install) | Opciones de instalación, incluido `--frozen-lockfile` |

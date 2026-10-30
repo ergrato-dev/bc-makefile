@@ -1,9 +1,11 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo 'Tests OK'"
+    "lint": "node --check src/index.js",
+    "test": "node --check src/index.js && echo 'Tests OK'"
   },
   "dependencies": {}
 }
