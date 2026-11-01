@@ -138,7 +138,7 @@ help: ## Muestra la ayuda
 - **Coste:** `make -n help` tarda 2 segundos sin ejecutar nada. Con `=` en lugar de `:=` el coste se paga en cada referencia.
 - **Seguridad:** el segundo comando crea el archivo `pwned` aunque pediste `-n`. Un valor de la línea de comandos, de `.env` o de un nombre de archivo llega sin comillas al shell.
 
-![Asignaciones con := y eval actúan al leer; file e info, al expandir la receta; solo el shell respeta -n](../0-assets/04-fases-de-expansion.svg)
+![Asignaciones con := y eval actúan al leer; file e info, al expandir la receta; solo el shell respeta -n](../0-assets/02-fases-de-expansion.svg)
 
 Reglas: `:=` siempre con `$(shell)`; nada de `$(shell)` con variables que vengan de fuera; si solo lo necesita una receta, ponlo en la receta, donde `-n` sí lo protege.
 

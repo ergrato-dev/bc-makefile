@@ -1,0 +1,58 @@
+<svg viewBox="0 0 800 450" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Con .SECONDEXPANSION la línea de prerrequisitos se expande dos veces: al leer el Makefile y otra vez por cada target</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="450" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">Una línea, dos expansiones</text>
+
+    <!-- fase 1 -->
+    <text x="40" y="74" font-weight="bold" fill="#58a6ff">Fase 1 · lectura del Makefile</text>
+
+    <rect x="40" y="88" width="292" height="44" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="54" y="115" class="m" font-size="13" fill="#f0f6fc">$(BUILD)/%.txt: Makefile | $$(@D)/</text>
+    <line x1="332" y1="110" x2="468" y2="110" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="400" y="102" font-size="12" fill="#8b949e" text-anchor="middle"><tspan class="m">$(BUILD)</tspan> se expande</text>
+    <text x="400" y="128" font-size="12" fill="#8b949e" text-anchor="middle"><tspan class="m">$$</tspan> queda <tspan class="m">$</tspan></text>
+    <rect x="470" y="88" width="290" height="44" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="484" y="115" class="m" font-size="13" fill="#f0f6fc">build/%.txt: Makefile | <tspan fill="#e3b341">$(@D)/</tspan></text>
+    <text x="615" y="152" font-size="12" fill="#e3b341" text-anchor="middle"><tspan class="m">$(@D)</tspan> aún no tiene valor: no hay target</text>
+
+    <!-- fase 2 -->
+    <line x1="40" y1="174" x2="760" y2="174" stroke="#30363d" stroke-dasharray="6 6"/>
+    <text x="40" y="202" font-weight="bold" fill="#58a6ff">Fase 2 · otra vez, por cada target <tspan font-weight="normal" fill="#8b949e">(con <tspan class="m">.SECONDEXPANSION:</tspan>)</tspan></text>
+
+    <text x="40" y="232" font-size="13" fill="#8b949e">target</text>
+    <text x="300" y="232" font-size="13" fill="#8b949e">order-only resultante</text>
+
+    <rect x="40" y="244" width="200" height="44" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="140" y="271" class="m" fill="#f0f6fc" text-anchor="middle">build/a.txt</text>
+    <line x1="240" y1="266" x2="298" y2="266" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="300" y="244" width="200" height="44" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="400" y="271" class="m" fill="#f0f6fc" text-anchor="middle">| build/</text>
+
+    <rect x="40" y="304" width="200" height="44" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="140" y="331" class="m" fill="#f0f6fc" text-anchor="middle">build/informes/b.txt</text>
+    <line x1="240" y1="326" x2="298" y2="326" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="300" y="304" width="200" height="44" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="400" y="331" class="m" fill="#f0f6fc" text-anchor="middle">| build/informes/</text>
+
+    <!-- regla de directorios -->
+    <line x1="500" y1="266" x2="578" y2="288" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="500" y1="326" x2="578" y2="304" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="580" y="262" width="180" height="64" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="596" y="288" class="m" fill="#f0f6fc">%/:</text>
+    <text x="620" y="311" class="m" fill="#f0f6fc">mkdir -p $@</text>
+    <text x="670" y="346" font-size="12" fill="#3fb950" text-anchor="middle">crea cada directorio</text>
+
+    <!-- contraste -->
+    <rect x="40" y="374" width="720" height="52" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+    <text x="400" y="396" font-size="13" fill="#f0f6fc" text-anchor="middle">Sin <tspan class="m">.SECONDEXPANSION:</tspan> no hay fase 2: el prerrequisito es el texto</text>
+    <text x="400" y="415" font-size="13" fill="#f0f6fc" text-anchor="middle">literal <tspan class="m" fill="#f85149">$(@D)/</tspan> y <tspan class="m">build/</tspan> nunca se crea</text>
+  </g>
+</svg>

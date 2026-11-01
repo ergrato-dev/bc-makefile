@@ -63,8 +63,6 @@ make -k test FAIL=api                 # web/test se ejecuta igualmente
 
 Compáralo con `for d in $(MODULES); do $(MAKE) -C $$d test; done`: sin `-e`, el código de salida es el del último módulo; con `-e`, se para en el primero, pero sigue siendo una sola receta que `-j` no puede repartir ni `-k` continuar. Las dependencias entre módulos (`web/build: api/build`) solo se pueden expresar si cada módulo es un target.
 
-![Bucle for frente a targets phony](../0-assets/03-for-vs-targets-phony.svg)
-
 ## Qué llega a un sub-make
 
 | Llega | No llega |
@@ -88,6 +86,6 @@ include $(addsuffix /module.mk,$(MODULES))
 
 Cada `module.mk` usa rutas relativas a la raíz (`lib/greet.c`) y nombres de variable propios (`LIB_OBJS`). A cambio, `-j`, `-n` y las dependencias de headers funcionan entre directorios sin ningún sub-make. Para un monorepo de paquetes independientes, la recursión bien hecha basta; cuando hay muchas dependencias cruzadas, compensa el grafo único.
 
-![Grafos recursivo y no recursivo](../0-assets/04-recursivo-vs-no-recursivo.svg)
+![Grafos recursivo y no recursivo](../0-assets/03-recursivo-vs-no-recursivo.svg)
 
 Listo. Ve al [lab-04](../2-practicas/lab-04-recursion/README.md) para la recursión, al [lab-05](../2-practicas/lab-05-jobserver/README.md) para el jobserver y al [lab-06](../2-practicas/lab-06-no-recursivo/README.md) para el grafo único.

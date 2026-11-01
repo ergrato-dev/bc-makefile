@@ -4,8 +4,6 @@
 
 El problema de los pipelines CI/CD es la brecha entre local y remoto: el código pasa en local, falla en CI, y nadie entiende por qué. Make cierra esa brecha. Un `make ci` que corre idéntico en el laptop del desarrollador y en el runner de GitHub Actions elimina el "en mi máquina funciona". Esta semana no aprendes nuevas funciones de Make — aplicas las que ya conoces para construir infraestructura que protege la calidad del código antes de que llegue al servidor.
 
-![Etapas de make ci: la primera que falla aborta el pipeline](../0-assets/03-pipeline-etapas.svg)
-
 ## Patrón: cargar `.env` sin filtrar secretos
 
 ```makefile

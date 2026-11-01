@@ -103,7 +103,7 @@ clean:
 
 `$(wildcard)` descubre, `$(patsubst)` transforma, la regla de patrón compila. Añadir un `.c` a `src/` basta: el Makefile no cambia.
 
-![wildcard lista los .c de src/, patsubst los convierte en .o de build/ y la regla de patrón compila y enlaza](../0-assets/02-flujo-wildcard-patsubst.svg)
+![wildcard lista los .c de src/, patsubst los convierte en .o de build/ y la regla de patrón compila y enlaza](../0-assets/01-flujo-wildcard-patsubst.svg)
 
 ## Cuándo se evalúa
 

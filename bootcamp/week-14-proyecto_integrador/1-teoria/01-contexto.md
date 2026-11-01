@@ -66,12 +66,12 @@ Cada servicio es un nodo del grafo. Si `backend/ci` falla, `make ci` sale con er
 
 `ci: lint test build` da orden y fallo rápido solo en serie. Con `make -j` los tres arrancan a la vez. Es seguro únicamente si ninguno lee lo que otro escribe. Si `build` necesita los tests en verde, decláralo: `build: test`.
 
+![Serie, -j sin dependencia y -j con build: test en el mismo eje](../0-assets/02-ci-serie-vs-paralelo.svg)
+
 > [!NOTE]
 > **Make 4.4+.** `ci: lint .WAIT test .WAIT build` fuerza el orden también con
 > `-j`. En 4.3 no existe `.WAIT`: declara la dependencia real (`test: lint`,
 > `build: test`).
-
-![Del commit con hook a make ci en el runner](../0-assets/02-flujo-pipeline-completo.svg)
 
 ## Ejemplo mínimo funcional
 

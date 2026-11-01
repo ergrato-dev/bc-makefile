@@ -10,7 +10,7 @@ Dibuja un diagrama SVG para una semana con la paleta y las reglas del repositori
 
 **Ejemplo:**
 ```
-/gen-svg week-04-variables_automaticas 01-mapa-variables-automaticas.svg "de qué parte de la regla sale $@, $<, $^ y $?"
+/gen-svg week-04-variables_automaticas 01-flujo-compilacion-c.svg "de .c a .o a app: qué regla produce cada archivo"
 ```
 
 ---
