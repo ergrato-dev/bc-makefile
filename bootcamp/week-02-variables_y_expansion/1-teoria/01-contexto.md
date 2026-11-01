@@ -14,8 +14,6 @@ Un Makefile con strings repetidos es un Makefile frágil. Si cambias el nombre d
 | `+=` | Append | Hereda el tipo original | Usa para acumular listas de flags o archivos |
 | `!=` | Shell | El comando corre al asignar; el resultado se guarda como recursiva | Equivale a `:= $(shell ...)`; detalles en [02-origen-y-precedencia.md](02-origen-y-precedencia.md) |
 
-![Cuándo expande su valor cada operador y qué flavor crea](../0-assets/01-tipos-de-variable.svg)
-
 ## Ejemplo funcional — pega y ejecuta
 
 ```makefile
@@ -70,7 +68,7 @@ START_TIME := $(shell date +%T)
 
 Con `=` y `$(shell ...)`, Make re-ejecuta el comando de shell cada vez que expande la variable. Usa `:=` para capturar valores de shell exactamente una vez.
 
-![Con = la variable guarda texto y se expande al usarla; con := guarda el resultado](../0-assets/02-expansion-recursiva-vs-inmediata.svg)
+![Con = la variable guarda texto y se expande al usarla; con := guarda el resultado](../0-assets/01-expansion-recursiva-vs-inmediata.svg)
 
 ## Sobreescribir desde CLI
 

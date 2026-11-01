@@ -66,6 +66,8 @@ prerrequisitos **otra vez** justo antes de procesar cada target, y entonces
 `$$(@D)` ya vale el directorio de ese target concreto. El `$$` sobrevive
 a la primera lectura como `$` y se resuelve en la segunda.
 
+![La línea se expande al leer el Makefile y otra vez por cada target](../0-assets/02-segunda-expansion.svg)
+
 Así una sola regla crea `build/` para `a.txt` y `build/informes/` para
 `b.txt`, sin listar directorios a mano y sin `mkdir -p` en cada receta.
 

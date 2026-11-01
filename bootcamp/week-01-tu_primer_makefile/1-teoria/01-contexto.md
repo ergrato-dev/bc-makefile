@@ -15,8 +15,6 @@ target: dependencia1 dependencia2
 - **dependencias**: qué debe existir (o ejecutarse) antes de la receta
 - **receta**: comandos de shell — **obligatoriamente con TAB, nunca espacios**
 
-![Partes de una regla y qué hace Make con sus dependencias](../0-assets/01-anatomia-regla.svg)
-
 ```makefile
 # Ejemplo funcional — copia y pega esto en un Makefile y ejecuta `make`
 .PHONY: all saludar limpiar
@@ -31,7 +29,7 @@ limpiar: saludar
 	@echo "Dependencia ejecutada primero, luego esto"
 ```
 
-![Cadena run, link, compile y prepare ejecutada desde las hojas](../0-assets/02-cadena-dependencias.svg)
+![Cadena run, link, compile y prepare ejecutada desde las hojas](../0-assets/01-cadena-dependencias.svg)
 
 ## Referencia rápida
 
@@ -45,11 +43,11 @@ limpiar: saludar
 | Goal por defecto | `.DEFAULT_GOAL := nombre` | Target que se ejecuta con `make` sin args |
 | Variable de shell | `$(shell cmd)` | Captura output de un comando |
 
-![Cómo decide Make si ejecuta la receta de un target](../0-assets/03-phony-vs-archivo.svg)
+![Cómo decide Make si ejecuta la receta de un target](../0-assets/02-phony-vs-archivo.svg)
 
 Para un target que es archivo, Make compara fechas de modificación, nunca contenido:
 
-![Dos ejecuciones comparando el mtime del target y su dependencia](../0-assets/04-logica-timestamps.svg)
+![Dos ejecuciones comparando el mtime del target y su dependencia](../0-assets/03-logica-timestamps.svg)
 
 ## El error #1: espacios en lugar de TABs
 

@@ -85,8 +85,6 @@ $(LIB_OBJS): build/lib/%.o: %.c
 
 La static pattern rule fija **la lista de targets** a los que aplica. No es una plantilla que Make consulta para cualquier nombre: son reglas explícitas, una por target, escritas con la sintaxis del patrón. Por eso, si falta `greet.c`, el error dice exactamente qué falta y quién lo necesita, y `make build/lib/main.o` falla aunque exista `main.c`.
 
-![La regla genérica aplica a cualquier .o; la static, solo a los targets de su lista](../0-assets/03-patron-vs-static.svg)
-
 ## Una trampa frecuente
 
 ```makefile

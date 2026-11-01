@@ -8,8 +8,6 @@ Un Makefile es un programa que ejecuta comandos de shell con tus permisos, en tu
 
 Make **lee** el Makefile completo (parse-time) y después **ejecuta** recetas (run-time). Lo que corre al leer, corre siempre: con `make help`, con `make -n`, con cualquier target.
 
-![Qué ejecuta make -n en cada fase](../0-assets/02-parse-time-vs-run-time.svg)
-
 | Corre al parsear | Corre con `make -n` | No corre con `make -n` |
 |---|---|---|
 | `X := $(shell ...)` | `$(shell ...)` dentro de una receta | El shell de la receta (`$$(cmd)`, `cmd`) |

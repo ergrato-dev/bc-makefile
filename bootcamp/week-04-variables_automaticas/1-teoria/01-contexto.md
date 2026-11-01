@@ -18,8 +18,6 @@ Sin variables automáticas, cada regla de compilación repite el nombre del targ
 
 También existen `$(<D)` / `$(<F)` para las mismas partes de `$<`.
 
-![De qué parte de la regla sale cada variable automática](../0-assets/01-mapa-variables-automaticas.svg)
-
 ## Ejemplo funcional — pega y ejecuta
 
 Crea antes dos fuentes mínimas:
@@ -63,14 +61,12 @@ help: ## muestra esta ayuda
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 ```
 
-![Tres .c compilados a .o por una regla de patrón y enlazados en app](../0-assets/02-flujo-compilacion-c.svg)
+![Tres .c compilados a .o por una regla de patrón y enlazados en app](../0-assets/01-flujo-compilacion-c.svg)
 
 Las tres primeras líneas son el preámbulo estricto y `clean` lleva la guarda de `rm -rf`, ambos de la semana 03. La regla `$(BUILD)/%.o: %.c` aplica a `main.c` y a `utils.c` con el mismo código. Make resuelve para cada uno:
 
 - `build/main.o`: `$<` = `main.c`, `$@` = `build/main.o`, `$(@D)` = `build`
 - `build/utils.o`: `$<` = `utils.c`, `$@` = `build/utils.o`, `$(@D)` = `build`
-
-![La regla %.o: %.c aplicada a tres targets y el stem de cada uno](../0-assets/03-stem-pattern-rule.svg)
 
 ## Una trampa frecuente
 

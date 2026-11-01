@@ -46,8 +46,6 @@ MAKEFLAGS += -r
 make hola        # make: *** No rule to make target 'hola'.  Stop.
 ```
 
-![Sin -r, make hola usa una regla de serie; con -r, falla con No rule to make target](../0-assets/04-reglas-de-serie.svg)
-
 ## `-r` y `-R`
 
 | Opción | Efecto |
