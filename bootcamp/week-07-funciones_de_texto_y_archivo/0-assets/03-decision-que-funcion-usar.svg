@@ -1,0 +1,94 @@
+<svg viewBox="0 0 980 760" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Árbol de decisión: qué función de texto usar según lo que necesitas</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="980" height="760" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc">
+    <rect x="20" y="30" width="250" height="40" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="145" y="55" text-anchor="middle">¿Qué necesito hacer?</text>
+    <line x1="145" y1="70" x2="145" y2="103" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="20" y="105" width="250" height="60" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="145" y="129" text-anchor="middle">¿Necesito encontrar</text>
+    <text x="145" y="151" text-anchor="middle">archivos en disco?</text>
+    <line x1="145" y1="165" x2="145" y2="263" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="155" y="220" fill="#8b949e" font-size="13" text-anchor="start">No, tengo una lista</text>
+    <rect x="20" y="265" width="250" height="60" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="145" y="289" text-anchor="middle">¿Quiero cambiar la</text>
+    <text x="145" y="311" text-anchor="middle">forma de las palabras?</text>
+    <line x1="145" y1="325" x2="145" y2="433" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="155" y="385" fill="#8b949e" font-size="13" text-anchor="start">No</text>
+    <rect x="20" y="435" width="250" height="60" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="145" y="459" text-anchor="middle">¿Quiero seleccionar</text>
+    <text x="145" y="481" text-anchor="middle">un subconjunto?</text>
+    <line x1="145" y1="495" x2="145" y2="610" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="155" y="558" fill="#8b949e" font-size="13" text-anchor="start">No</text>
+    <rect x="20" y="612" width="250" height="60" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="145" y="636" text-anchor="middle">¿Quiero extraer</text>
+    <text x="145" y="658" text-anchor="middle">parte de una ruta?</text>
+    <line x1="270" y1="135" x2="328" y2="135" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="299" y="127" fill="#8b949e" font-size="13" text-anchor="middle">Sí</text>
+    <rect x="330" y="90" width="320" height="90" rx="8" fill="none" stroke="#f78166" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="340" y="99" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="119" fill="#8b949e" font-size="13">la única que consulta el disco</text>
+    <text x="352" y="141" class="m" font-size="13">$(wildcard pattern)</text>
+    <text x="352" y="161" class="m" font-size="13" fill="#79c0ff">$(wildcard src/*.c)</text>
+    <line x1="270" y1="295" x2="328" y2="295" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="299" y="287" fill="#8b949e" font-size="13" text-anchor="middle">Sí</text>
+    <rect x="330" y="210" width="630" height="170" rx="8" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="340" y="220" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="240" fill="#8b949e" font-size="13">con comodín %</text>
+    <text x="352" y="262" class="m" font-size="13">$(patsubst from,to,text)</text>
+    <text x="352" y="282" class="m" font-size="13" fill="#79c0ff">$(patsubst %.c,%.o,$(SRCS))</text>
+    <rect x="650" y="220" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="662" y="240" fill="#8b949e" font-size="13">literal; nunca para rutas</text>
+    <text x="662" y="262" class="m" font-size="13">$(subst from,to,text)</text>
+    <text x="662" y="282" class="m" font-size="13" fill="#79c0ff">$(subst -,_,$(NAMES))</text>
+    <rect x="340" y="300" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="320" fill="#8b949e" font-size="13">agregar prefijo</text>
+    <text x="352" y="342" class="m" font-size="13">$(addprefix pre,names)</text>
+    <text x="352" y="362" class="m" font-size="13" fill="#79c0ff">$(addprefix -I,$(DIRS))</text>
+    <rect x="650" y="300" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="662" y="320" fill="#8b949e" font-size="13">agregar sufijo</text>
+    <text x="662" y="342" class="m" font-size="13">$(addsuffix suf,names)</text>
+    <text x="662" y="362" class="m" font-size="13" fill="#79c0ff">$(addsuffix /,$(DIRS))</text>
+    <line x1="270" y1="465" x2="328" y2="465" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="299" y="457" fill="#8b949e" font-size="13" text-anchor="middle">Sí</text>
+    <rect x="330" y="420" width="630" height="92" rx="8" fill="none" stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="340" y="430" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="450" fill="#8b949e" font-size="13">conservar coincidencias</text>
+    <text x="352" y="472" class="m" font-size="13">$(filter pattern,text)</text>
+    <text x="352" y="492" class="m" font-size="13" fill="#79c0ff">$(filter %.c,$(FILES))</text>
+    <rect x="650" y="430" width="300" height="72" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="662" y="450" fill="#8b949e" font-size="13">eliminar coincidencias</text>
+    <text x="662" y="472" class="m" font-size="13">$(filter-out pattern,text)</text>
+    <text x="662" y="492" class="m" font-size="13" fill="#79c0ff">$(filter-out %.h,$(FILES))</text>
+    <line x1="270" y1="642" x2="328" y2="642" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="299" y="634" fill="#8b949e" font-size="13" text-anchor="middle">Sí</text>
+    <rect x="330" y="540" width="630" height="204" rx="8" fill="none" stroke="#79c0ff" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="340" y="550" width="300" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="570" fill="#8b949e" font-size="13">directorio</text>
+    <text x="352" y="593" class="m" font-size="13">$(dir src/main.c)</text>
+    <text x="628" y="593" class="m" font-size="13" fill="#3fb950" text-anchor="end">src/</text>
+    <rect x="650" y="550" width="300" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="662" y="570" fill="#8b949e" font-size="13">nombre de archivo</text>
+    <text x="662" y="593" class="m" font-size="13">$(notdir src/main.c)</text>
+    <text x="938" y="593" class="m" font-size="13" fill="#3fb950" text-anchor="end">main.c</text>
+    <rect x="340" y="614" width="300" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="634" fill="#8b949e" font-size="13">sin extensión</text>
+    <text x="352" y="657" class="m" font-size="13">$(basename src/main.c)</text>
+    <text x="628" y="657" class="m" font-size="13" fill="#3fb950" text-anchor="end">src/main</text>
+    <rect x="650" y="614" width="300" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="662" y="634" fill="#8b949e" font-size="13">solo extensión</text>
+    <text x="662" y="657" class="m" font-size="13">$(suffix src/main.c)</text>
+    <text x="938" y="657" class="m" font-size="13" fill="#3fb950" text-anchor="end">.c</text>
+    <rect x="340" y="678" width="300" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="352" y="698" fill="#8b949e" font-size="13">ordenar / contar</text>
+    <text x="352" y="721" class="m" font-size="13">$(sort list)  $(words list)</text>
+  </g>
+</svg>

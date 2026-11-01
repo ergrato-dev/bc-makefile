@@ -1,0 +1,84 @@
+<svg viewBox="0 0 940 570" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>wildcard lee el disco, patsubst transforma la lista y la regla de patrón compila cada objeto</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="940" height="570" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Disco (cilindro) -->
+    <path d="M20,64 A90,14 0 0 1 200,64 V186 A90,14 0 0 1 20,186 Z" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <path d="M20,64 A90,14 0 0 0 200,64" fill="none" stroke="#3fb950" stroke-width="2"/>
+    <text x="110" y="100" fill="#8b949e" font-size="13">Disco</text>
+    <g class="m">
+      <text x="110" y="126">src/main.c</text>
+      <text x="110" y="148">src/utils.c</text>
+      <text x="110" y="170">src/calc.c</text>
+    </g>
+
+    <line x1="200" y1="126" x2="358" y2="126" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="279" y="98" class="m" fill="#79c0ff">$(wildcard</text>
+    <text x="279" y="116" class="m" fill="#79c0ff">src/*.c)</text>
+
+    <!-- Variables Make -->
+    <rect x="340" y="30" width="580" height="180" rx="8" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="356" y="52" fill="#8b949e" font-size="13" text-anchor="start">Variables Make: se calculan al leer el Makefile</text>
+
+    <rect x="360" y="66" width="200" height="124" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <g class="m">
+      <text x="460" y="92" fill="#58a6ff">SRCS =</text>
+      <text x="460" y="116">src/main.c</text>
+      <text x="460" y="138">src/utils.c</text>
+      <text x="460" y="160">src/calc.c</text>
+    </g>
+
+    <line x1="560" y1="128" x2="718" y2="128" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <g class="m" fill="#79c0ff" font-size="13">
+      <text x="639" y="78">$(patsubst</text>
+      <text x="639" y="95">src/%.c,</text>
+      <text x="639" y="112">build/%.o,...)</text>
+    </g>
+
+    <rect x="720" y="66" width="180" height="124" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <g class="m">
+      <text x="810" y="92" fill="#58a6ff">OBJS =</text>
+      <text x="810" y="116">build/main.o</text>
+      <text x="810" y="138">build/utils.o</text>
+      <text x="810" y="160">build/calc.o</text>
+    </g>
+
+    <!-- Compilación -->
+    <rect x="20" y="240" width="900" height="310" rx="8" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="36" y="262" fill="#8b949e" font-size="13" text-anchor="start">Compilación</text>
+
+    <path d="M810,190 V310 H612" fill="none" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="330" y="280" width="280" height="60" rx="6" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+    <text x="470" y="304" fill="#8b949e" font-size="13">Regla de patrón</text>
+    <text x="470" y="326" class="m">build/%.o: src/%.c</text>
+
+    <line x1="470" y1="340" x2="252" y2="398" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="470" y1="340" x2="470" y2="398" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="470" y1="340" x2="688" y2="398" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <g class="m">
+      <rect x="170" y="400" width="160" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="250" y="425">build/main.o</text>
+      <rect x="390" y="400" width="160" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="470" y="425">build/utils.o</text>
+      <rect x="610" y="400" width="160" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="690" y="425">build/calc.o</text>
+    </g>
+
+    <line x1="250" y1="440" x2="398" y2="478" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="470" y1="440" x2="470" y2="478" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="690" y1="440" x2="542" y2="478" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="350" y="480" width="240" height="46" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="470" y="508">Enlazado: <tspan class="m">build/programa</tspan></text>
+  </g>
+</svg>

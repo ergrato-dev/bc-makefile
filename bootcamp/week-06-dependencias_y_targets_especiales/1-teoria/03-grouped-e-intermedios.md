@@ -27,6 +27,8 @@ receta". En serie suele funcionar por casualidad: tras generar `api.c`,
 la receta dos veces en paralelo. Con `&:` (*grouped target*) Make sabe que
 una ejecución actualiza todos.
 
+![Con make -j, la regla con : lanza el generador dos veces y la regla con &: una sola](../0-assets/02-generador-con-j.svg)
+
 | Forma | Ejecuciones con `-j` | Notas |
 |---|:-:|---|
 | `a b : dep` explícita | Una por target | Bug clásico con generadores |
@@ -64,6 +66,8 @@ La salida termina con `rm saludo.c`. Make necesitó `saludo.c` para llegar a
 reglas de patrón. Eso lo convierte en **intermedio**, y los intermedios se
 borran al final. Además, un intermedio ausente no obliga a rehacer nada:
 el siguiente `make` responde `Nothing to be done`.
+
+![Árbol de decisión: Make conserva o borra un archivo según cómo aparece y qué marca tiene](../0-assets/03-decision-intermedios.svg)
 
 | Target especial | Efecto |
 |---|---|

@@ -4,6 +4,8 @@
 
 Las funciones de la semana anterior transforman listas de archivos. Estas cuatro hacen algo diferente: te permiten *programar* Make. Con `$(foreach)` eliminas loops manuales. Con `$(call)` defines funciones reutilizables. Con `$(eval)` generas reglas en tiempo de carga. Con `$(shell)` consultas el sistema operativo. Combinadas, producen un Makefile que se adapta solo a la estructura del proyecto.
 
+![shell aporta datos, foreach y call generan texto y eval lo convierte en reglas](../0-assets/01-mapa-funciones-avanzadas.svg)
+
 ## Referencia rápida
 
 | Función | Sintaxis | Qué hace | Resultado típico |
@@ -12,6 +14,8 @@ Las funciones de la semana anterior transforman listas de archivos. Estas cuatro
 | `$(call name,arg1,...)` | `$(call mi_fn,valor)` | Invoca función definida con `define`; `$1` es arg1 | Expansión de la plantilla |
 | `$(eval text)` | `$(eval VAR := foo)` | Parsea `text` como sintaxis Makefile real | Efecto: nueva regla o variable |
 | `$(shell cmd)` | `$(shell date +%Y)` | Ejecuta en shell, captura stdout | `2026` |
+
+![Qué función usar para generar listas, reutilizar plantillas, crear reglas u obtener datos del sistema](../0-assets/03-decision-cuando-usar.svg)
 
 ## El truco del `$$` en `$(eval)`
 
@@ -27,6 +31,8 @@ $(eval $(call COMPILE_RULE,main))
 ```
 
 Cadena de expansión: `$(call)` convierte `$1→main` y `$$<→$<`. Luego `$(eval)` parsea `$<` y `$@` como variables automáticas normales.
+
+![foreach llama a call por cada servicio, call expande la plantilla y eval registra la regla](../0-assets/02-flujo-eval-generacion.svg)
 
 ## Ejemplo mínimo funcional
 
