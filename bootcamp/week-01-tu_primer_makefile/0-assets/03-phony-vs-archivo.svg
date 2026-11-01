@@ -1,0 +1,62 @@
+<svg viewBox="0 0 800 580" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Cómo decide Make si ejecuta la receta: .PHONY, existencia del archivo y fechas</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="580" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc">.PHONY frente a target de archivo</text>
+
+    <!-- inicio -->
+    <rect x="290" y="60" width="220" height="44" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="400" y="87" class="m" font-size="15" fill="#f0f6fc">make &lt;target&gt;</text>
+
+    <!-- decisiones -->
+    <g fill="#161b22" stroke="#58a6ff" stroke-width="2">
+      <polygon points="250,175 400,130 550,175 400,220"/>
+      <polygon points="250,300 400,255 550,300 400,345"/>
+      <polygon points="250,425 400,380 550,425 400,470"/>
+    </g>
+    <g fill="#f0f6fc">
+      <text x="400" y="171">¿Está declarado</text>
+      <text x="400" y="190">en <tspan class="m">.PHONY</tspan>?</text>
+      <text x="400" y="296">¿Existe un archivo</text>
+      <text x="400" y="315">con ese nombre?</text>
+      <text x="400" y="421">¿El archivo es más</text>
+      <text x="400" y="440">nuevo que sus deps?</text>
+    </g>
+
+    <!-- ejecuta -->
+    <rect x="610" y="270" width="170" height="60" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="695" y="297" fill="#f0f6fc">Ejecuta la receta</text>
+    <text x="695" y="317" font-size="13" fill="#e3b341">se rehace</text>
+
+    <!-- al día -->
+    <rect x="230" y="500" width="340" height="60" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="400" y="526" class="m" fill="#3fb950">'target' is up to date.</text>
+    <text x="400" y="547" font-size="13" fill="#8b949e">no ejecuta nada</text>
+
+    <!-- flechas -->
+    <g stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <line x1="400" y1="104" x2="400" y2="128"/>
+      <line x1="400" y1="220" x2="400" y2="253"/>
+      <line x1="400" y1="345" x2="400" y2="378"/>
+      <line x1="400" y1="470" x2="400" y2="498"/>
+      <path d="M550,175 H695 V268"/>
+      <line x1="550" y1="300" x2="608" y2="300"/>
+      <path d="M550,425 H695 V332"/>
+    </g>
+    <g font-size="13" fill="#8b949e">
+      <text x="590" y="167">sí</text>
+      <text x="390" y="242" text-anchor="end">no</text>
+      <text x="578" y="292">no</text>
+      <text x="390" y="367" text-anchor="end">sí</text>
+      <text x="590" y="417">no</text>
+      <text x="390" y="490" text-anchor="end">sí</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,63 @@
+<svg viewBox="0 0 800 420" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Una regla de patrón compila tres .c de src/ a .o en build/ y una regla de enlace los une en app</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="420" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">Flujo de compilación C con variables automáticas</text>
+
+    <!-- grupos -->
+    <rect x="20" y="70" width="170" height="270" rx="8" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="36" y="94" class="m" fill="#8b949e">src/</text>
+    <rect x="340" y="70" width="440" height="270" rx="8" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="356" y="94" class="m" fill="#8b949e">build/</text>
+
+    <!-- fuentes y objetos -->
+    <g fill="#161b22" stroke-width="2">
+      <rect x="40" y="110" width="130" height="44" rx="6" stroke="#58a6ff"/>
+      <rect x="40" y="190" width="130" height="44" rx="6" stroke="#58a6ff"/>
+      <rect x="40" y="270" width="130" height="44" rx="6" stroke="#58a6ff"/>
+      <rect x="360" y="110" width="130" height="44" rx="6" stroke="#79c0ff"/>
+      <rect x="360" y="190" width="130" height="44" rx="6" stroke="#79c0ff"/>
+      <rect x="360" y="270" width="130" height="44" rx="6" stroke="#79c0ff"/>
+      <rect x="630" y="190" width="130" height="44" rx="6" stroke="#f78166"/>
+    </g>
+    <g class="m" fill="#f0f6fc" text-anchor="middle">
+      <text x="105" y="137">main.c</text>
+      <text x="105" y="217">greet.c</text>
+      <text x="105" y="297">calc.c</text>
+      <text x="425" y="137">main.o</text>
+      <text x="425" y="217">greet.o</text>
+      <text x="425" y="297">calc.o</text>
+      <text x="695" y="217" font-weight="bold">app</text>
+    </g>
+
+    <!-- compilación -->
+    <g stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)">
+      <line x1="170" y1="132" x2="358" y2="132"/>
+      <line x1="170" y1="212" x2="358" y2="212"/>
+      <line x1="170" y1="292" x2="358" y2="292"/>
+      <line x1="490" y1="132" x2="628" y2="204"/>
+      <line x1="490" y1="212" x2="628" y2="212"/>
+      <line x1="490" y1="292" x2="628" y2="220"/>
+    </g>
+    <g class="m" font-size="12" fill="#8b949e" text-anchor="middle">
+      <text x="265" y="124">gcc -c $&lt; -o $@</text>
+      <text x="265" y="204">gcc -c $&lt; -o $@</text>
+      <text x="265" y="284">gcc -c $&lt; -o $@</text>
+    </g>
+    <g class="m" font-size="12" text-anchor="middle">
+      <text x="695" y="180" fill="#f78166">app: $(OBJS)</text>
+      <text x="695" y="254" fill="#8b949e">gcc $^ -o $@</text>
+    </g>
+
+    <!-- nota -->
+    <text x="400" y="372" font-size="13" fill="#8b949e" text-anchor="middle">Una sola regla de patrón <tspan class="m" fill="#f0f6fc">$(BUILD)/%.o: $(SRC)/%.c</tspan>, aplicada tres veces</text>
+    <text x="400" y="394" font-size="13" fill="#8b949e" text-anchor="middle"><tspan class="m" fill="#f0f6fc">$(@D)</tspan> vale <tspan class="m" fill="#f0f6fc">build</tspan> en las tres: <tspan class="m" fill="#f0f6fc">mkdir -p $(@D)</tspan> crea el directorio si falta</text>
+  </g>
+</svg>

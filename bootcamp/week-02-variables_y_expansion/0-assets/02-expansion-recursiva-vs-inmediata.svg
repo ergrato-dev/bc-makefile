@@ -1,0 +1,54 @@
+<svg viewBox="0 0 800 440" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Con = Make guarda el texto y lo expande al usarlo; con := guarda el resultado al asignar</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="440" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">= guarda el texto; := guarda el resultado</text>
+
+    <text x="40" y="74" font-size="13" fill="#8b949e">línea del Makefile</text>
+    <text x="420" y="74" font-size="13" fill="#8b949e">lo que guarda Make</text>
+
+    <!-- fase 1 -->
+    <text x="40" y="100" font-weight="bold" fill="#58a6ff">Fase 1 · lectura del Makefile</text>
+
+    <rect x="40" y="112" width="270" height="44" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="139" class="m" fill="#f0f6fc">MSG = Hola $(NOMBRE)</text>
+    <line x1="310" y1="134" x2="418" y2="134" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="364" y="126" font-size="12" fill="#e3b341" text-anchor="middle">no expande</text>
+    <rect x="420" y="112" width="340" height="44" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="436" y="139" class="m" fill="#f0f6fc">MSG = "Hola $(NOMBRE)"</text>
+
+    <rect x="40" y="168" width="270" height="44" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="195" class="m" fill="#f0f6fc">NOMBRE := Mundo</text>
+    <line x1="310" y1="190" x2="418" y2="190" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="364" y="182" font-size="12" fill="#3fb950" text-anchor="middle">expande ya</text>
+    <rect x="420" y="168" width="340" height="44" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="436" y="195" class="m" fill="#f0f6fc">NOMBRE = "Mundo"</text>
+
+    <!-- fase 2 -->
+    <line x1="40" y1="236" x2="760" y2="236" stroke="#30363d" stroke-dasharray="6 6"/>
+    <text x="40" y="264" font-weight="bold" fill="#58a6ff">Fase 2 · ejecución de la receta</text>
+
+    <rect x="40" y="276" width="270" height="44" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="56" y="303" class="m" fill="#f0f6fc">@echo $(MSG)</text>
+    <line x1="310" y1="298" x2="418" y2="298" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="364" y="290" font-size="12" fill="#8b949e" text-anchor="middle">expande MSG</text>
+    <rect x="420" y="276" width="150" height="44" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="495" y="303" class="m" font-size="13" fill="#f0f6fc" text-anchor="middle">Hola $(NOMBRE)</text>
+    <line x1="570" y1="298" x2="608" y2="298" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="610" y="276" width="150" height="44" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="685" y="303" class="m" fill="#3fb950" text-anchor="middle">Hola Mundo</text>
+    <text x="590" y="340" font-size="12" fill="#8b949e" text-anchor="middle">lee NOMBRE ahora</text>
+
+    <!-- contraste -->
+    <rect x="40" y="364" width="720" height="52" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+    <text x="400" y="386" font-size="13" fill="#f0f6fc" text-anchor="middle">Con <tspan class="m">MSG := Hola $(NOMBRE)</tspan>, <tspan class="m">NOMBRE</tspan> aún no existe al leer esa línea:</text>
+    <text x="400" y="405" font-size="13" fill="#f0f6fc" text-anchor="middle"><tspan class="m">MSG</tspan> queda <tspan class="m" fill="#f85149">"Hola "</tspan> para siempre</text>
+  </g>
+</svg>

@@ -25,7 +25,11 @@ Make ejecuta cada línea de receta como `$(SHELL) $(.SHELLFLAGS) "línea"`.
 
 `pipefail` destapa dos casos que no son errores: `grep` sale con 1 si no encuentra nada, y `head` cierra la tubería y el productor muere con SIGPIPE (141). Tolera solo lo que debes, con `{ grep x f || test $$? -eq 1; }`, y usa `awk 'NR <= 3'` en vez de `head -n 3`. No apagues `pipefail`.
 
+![Tubería con un awk que falla, con y sin pipefail](../0-assets/02-pipefail.svg)
+
 `-u` afecta a variables de **shell**. Para variables de shell opcionales: `$${VAR:-valor}`.
+
+![Qué hace Make con un fallo según -, .DELETE_ON_ERROR y -k](../0-assets/03-cuando-una-receta-falla.svg)
 
 ## Guardas de rm -rf
 
@@ -43,6 +47,8 @@ clean:
 - Comillas simples: una ruta con espacios es un solo argumento.
 - `--`: una ruta que empiece por `-` no se lee como opción.
 - Nada de `@` ni `-` delante del `rm`: quieres verlo en el log y saber si falló.
+
+![Las dos guardas que Make evalúa antes del rm -rf](../0-assets/04-guardas-rm.svg)
 
 Nunca escribas `$(error ...)` en un comentario indentado con TAB dentro de una receta: para Make es una línea de receta, la expande y la guarda salta siempre. Las pistas, en columna 0.
 
