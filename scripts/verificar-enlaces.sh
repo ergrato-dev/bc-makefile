@@ -3,7 +3,8 @@
 #   1. Nombres de carpeta week-NN-slug y lab-NN-slug bien formados.
 #   2. Enlaces relativos en markdown que resuelven a una ruta real.
 #   3. Seccion "Navegacion" en el README de cada semana publicada.
-#   4. Cada diagrama de 0-assets/ contiene un bloque mermaid.
+#   4. Diagramas de 0-assets/: solo SVG (ningun .md) y cada SVG enlazado
+#      desde algun .md.
 #   5. checks.json valido como JSON.
 #   6. Todo .sh con shebang `env bash`, `set -euo pipefail` y bit de ejecucion.
 #   7. Archivos de teoria de semanas publicadas con 600 palabras o menos.
@@ -87,13 +88,17 @@ while IFS= read -r rm; do
   fi
 done < <(find bootcamp -mindepth 2 -maxdepth 2 -iname "README.md")
 
-echo "== 4. Diagramas mermaid en 0-assets/ =="
+echo "== 4. Diagramas SVG en 0-assets/ =="
 while IFS= read -r d; do
-  if ! grep -q '^```mermaid' "$d"; then
-    echo "DIAGRAMA SIN BLOQUE MERMAID: $d"
+  echo "DIAGRAMA EN MARKDOWN (debe ser .svg, ver CLAUDE.md): $d"
+  fail=1
+done < <(find bootcamp -path "*/0-assets/*" -name "*.md" 2>/dev/null)
+while IFS= read -r svg; do
+  if ! grep -rqF "$(basename "$svg")" --include="*.md" bootcamp README.md README_EN.md; then
+    echo "SVG HUERFANO (no enlazado desde ningun .md): $svg"
     fail=1
   fi
-done < <(find bootcamp -path "*/0-assets/*" -name "*.md" 2>/dev/null)
+done < <(find bootcamp assets -iname "*.svg" 2>/dev/null)
 
 echo "== 5. checks.json valido =="
 if command -v jq >/dev/null 2>&1; then

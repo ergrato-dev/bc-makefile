@@ -64,7 +64,7 @@ bootcamp/week-NN-topic_name/
 ├── README.md                  # Description, objectives and navigation
 ├── rubrica-evaluacion.md      # Knowledge 30% / Performance 40% / Product 30%
 ├── checks.json                # Automated checks (autograding)
-├── 0-assets/                  # Mermaid diagrams
+├── 0-assets/                  # SVG diagrams
 ├── 1-teoria/                  # Minimal context (≤ 45 min)
 ├── 2-practicas/               # 6 progressive labs (~60 min each)
 ├── 3-proyecto/                # Weekly integrative project (3 h)

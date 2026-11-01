@@ -40,8 +40,8 @@ week-NN-nombre_del_tema/
 ├── README.md                  # Descripción, objetivos, tabla de contenidos, navegación
 ├── rubrica-evaluacion.md      # Conocimiento 30 / Desempeño 40 / Producto 30
 ├── checks.json                # Autograding (ver docs/autograding.md)
-├── 0-assets/                  # Diagramas Mermaid en archivos .md (renderizan en GitHub y VS Code)
-│   └── NN-nombre.md
+├── 0-assets/                  # Diagramas SVG, enlazados desde 1-teoria
+│   └── NN-nombre.svg
 ├── 1-teoria/                  # Contexto mínimo, NO tutoriales largos
 │   └── 01-contexto.md         # 1–3 archivos, ≤ 600 palabras de prosa c/u
 ├── 2-practicas/               # Labs hands-on
@@ -192,11 +192,30 @@ make -B
 ## Contenido esperado por sección
 
 ### 0-assets/
-Diagramas en formato **Mermaid** dentro de archivos `.md`. Renderizan nativamente en GitHub y en VS Code con la extensión "Markdown Preview Mermaid Support". Un archivo por diagrama, nombrado `NN-nombre.md`.
+Diagramas en **SVG escrito a mano**, un archivo por diagrama, nombrado `NN-nombre-descriptivo.svg` en orden de lectura. Mínimo 3 por semana. **Nada de Mermaid ni arte ASCII**: mismo estándar que el resto de bootcamps (bc-curl, bc-fastapi). Para crear uno: `/gen-svg`.
 
-Mínimo 3 diagramas por semana. Cada archivo tiene: título H1, bloque ` ```mermaid ``` `, y 2-3 líneas de explicación del concepto ilustrado.
+- **Todo SVG se enlaza desde el archivo de `1-teoria/` donde aparece el concepto**: `![Descripción del diagrama](../0-assets/NN-nombre.svg)`. El texto alternativo describe lo que muestra, no repite el título. `verificar-enlaces.sh` falla con SVG huérfanos o con `.md` dentro de `0-assets/`.
+- `viewBox` obligatorio, sin `width`/`height` fijos en la raíz.
+- `role="img"` y `<title>` descriptivo como primer hijo.
+- `<rect>` de fondo `#0d1117` que cubra el `viewBox` (si no, se rompe en el tema claro de GitHub).
+- Sin degradados, sin `foreignObject`, sin fuentes externas. Texto ≥ 12 px.
+- Prosa: `font-family="Inter, system-ui, -apple-system, sans-serif"`. Código Make: `ui-monospace, SFMono-Regular, Menlo, monospace`.
 
-Tipos Mermaid preferidos: `graph TD/LR`, `flowchart TD`, `sequenceDiagram`.
+Paleta (GitHub dark + acento del header `assets/bootcamp-header.svg`):
+
+| Rol | Hex |
+|-----|-----|
+| Lienzo | `#0d1117` |
+| Superficie (cajas) | `#161b22` |
+| Borde | `#30363d` |
+| Texto principal | `#f0f6fc` |
+| Texto secundario | `#8b949e` |
+| Acento Make (elemento principal, target) | `#f78166` |
+| Azul (prerrequisitos, flujo) | `#58a6ff` / `#79c0ff` |
+| Verde (éxito, al día) | `#3fb950` |
+| Amarillo (aviso, rehacer) | `#e3b341` |
+| Rojo (error, peligro) | `#f85149` |
+| Morado (secundario, metadatos) | `#d2a8ff` |
 
 ### 4-recursos/ebooks-free/
 Tabla con libros/documentos gratuitos descargables o legibles online:
