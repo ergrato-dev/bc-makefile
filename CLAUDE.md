@@ -194,7 +194,7 @@ make -B
 ### 0-assets/
 Diagramas en **SVG escrito a mano**, un archivo por diagrama, nombrado `NN-nombre-descriptivo.svg` en orden de lectura. Mínimo 3 por semana. **Nada de Mermaid ni arte ASCII**: mismo estándar que el resto de bootcamps (bc-curl, bc-fastapi). Para crear uno: `/gen-svg`.
 
-- **Todo SVG se enlaza desde el archivo de `1-teoria/` donde aparece el concepto**: `![Descripción del diagrama](../0-assets/NN-nombre.svg)`. El texto alternativo describe lo que muestra, no repite el título. `verificar-enlaces.sh` falla con SVG huérfanos o con `.md` dentro de `0-assets/`.
+- **Todo SVG se enlaza desde el archivo de `1-teoria/` donde aparece el concepto**, con una imagen Markdown que apunta a `../0-assets/NN-nombre.svg`. El texto alternativo describe lo que muestra, no repite el título. `verificar-enlaces.sh` falla con SVG huérfanos o con `.md` dentro de `0-assets/`.
 - `viewBox` obligatorio, sin `width`/`height` fijos en la raíz.
 - `role="img"` y `<title>` descriptivo como primer hijo.
 - `<rect>` de fondo `#0d1117` que cubra el `viewBox` (si no, se rompe en el tema claro de GitHub).
