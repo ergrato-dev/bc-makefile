@@ -44,6 +44,8 @@ UV ?= uv
 
 Ahora `uv sync` solo corre cuando `pyproject.toml` o `uv.lock` son más nuevos que el stamp. El directorio va como order-only: su fecha cambia con cada archivo que se escribe dentro y no debe forzar reinstalaciones. `UV ?= uv` permite ejecutar el pipeline sin red con `make UV=:`.
 
+![Cuándo Make ejecuta una receta y cuándo no](../0-assets/03-decision-que-rebuild.svg)
+
 ## Recursión: el fallo tiene que llegar arriba
 
 ```makefile
@@ -58,6 +60,8 @@ $(addsuffix /ci,$(SERVICES)):
 
 Cada servicio es un nodo del grafo. Si `backend/ci` falla, `make ci` sale con error; con `-j3` los tres corren a la vez y comparten el jobserver porque la receta usa `$(MAKE)`. Un bucle `for s in ...; do $(MAKE) -C $$s; done` esconde todo eso dentro de un único comando de shell.
 
+![Makefile raíz, servicios y módulos .mk incluidos](../0-assets/01-arquitectura-build-system.svg)
+
 ## `ci` con `-j`: el orden no es una dependencia
 
 `ci: lint test build` da orden y fallo rápido solo en serie. Con `make -j` los tres arrancan a la vez. Es seguro únicamente si ninguno lee lo que otro escribe. Si `build` necesita los tests en verde, decláralo: `build: test`.
@@ -66,6 +70,8 @@ Cada servicio es un nodo del grafo. Si `backend/ci` falla, `make ci` sale con er
 > **Make 4.4+.** `ci: lint .WAIT test .WAIT build` fuerza el orden también con
 > `-j`. En 4.3 no existe `.WAIT`: declara la dependencia real (`test: lint`,
 > `build: test`).
+
+![Del commit con hook a make ci en el runner](../0-assets/02-flujo-pipeline-completo.svg)
 
 ## Ejemplo mínimo funcional
 

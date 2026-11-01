@@ -1,0 +1,67 @@
+<svg viewBox="0 0 1000 510" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>El Makefile raíz delega en cada servicio con $(MAKE) -C; cada servicio incluye su módulo de lenguaje y los módulos comunes</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="510" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Raíz -->
+    <rect x="330" y="30" width="340" height="66" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2.5"/>
+    <text x="500" y="57" font-weight="bold" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">Makefile raíz</text>
+    <text x="500" y="80" font-size="13" fill="#8b949e">modo estricto · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">SERVICE_TARGETS</tspan></text>
+
+    <!-- Servicios -->
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <rect x="30" y="200" width="290" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="175" y="223">backend/Makefile</text>
+      <text x="175" y="244" font-size="12" fill="#8b949e" font-family="Inter, system-ui, -apple-system, sans-serif">solo variables + include</text>
+      <rect x="355" y="200" width="290" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="500" y="233">frontend/Makefile</text>
+      <rect x="680" y="200" width="290" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="825" y="233">infra/Makefile</text>
+    </g>
+
+    <!-- Módulos de lenguaje -->
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <rect x="30" y="300" width="220" height="80" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="140" y="331">python.mk</text>
+      <text x="140" y="355" font-size="12" fill="#8b949e">stamp: uv sync --locked</text>
+      <rect x="355" y="300" width="220" height="80" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="465" y="324">node.mk</text>
+      <text x="465" y="346" font-size="12" fill="#8b949e">stamp: pnpm install</text>
+      <text x="465" y="364" font-size="12" fill="#8b949e">--frozen-lockfile</text>
+      <rect x="680" y="300" width="220" height="80" rx="6" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+      <text x="790" y="331">c.mk</text>
+      <text x="790" y="355" font-size="12" fill="#8b949e">-MMD -MP · obj/ order-only</text>
+    </g>
+
+    <!-- Módulos comunes -->
+    <rect x="30" y="430" width="940" height="60" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="500" y="455" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">build.mk · test.mk · ci.mk · deploy.mk</text>
+    <text x="500" y="476" font-size="12" fill="#8b949e"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">docker.mk</tspan> solo en backend y frontend</text>
+
+    <!-- Flechas -->
+    <g fill="none" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M380,96 V140 H175 V200"/>
+      <line x1="500" y1="96" x2="500" y2="200"/>
+      <path d="M620,96 V140 H825 V200"/>
+      <line x1="140" y1="256" x2="140" y2="300"/>
+      <line x1="465" y1="256" x2="465" y2="300"/>
+      <line x1="790" y1="256" x2="790" y2="300"/>
+      <line x1="285" y1="256" x2="285" y2="430"/>
+      <line x1="610" y1="256" x2="610" y2="430"/>
+      <line x1="935" y1="256" x2="935" y2="430"/>
+    </g>
+
+    <!-- Etiquetas -->
+    <g font-size="12" fill="#8b949e" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <text x="185" y="166">backend/ci</text>
+      <text x="185" y="183">$(MAKE) -C backend ci</text>
+      <text x="510" y="166">frontend/ci</text>
+      <text x="835" y="166">infra/ci</text>
+    </g>
+  </g>
+</svg>

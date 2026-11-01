@@ -4,6 +4,8 @@
 
 El problema de los pipelines CI/CD es la brecha entre local y remoto: el código pasa en local, falla en CI, y nadie entiende por qué. Make cierra esa brecha. Un `make ci` que corre idéntico en el laptop del desarrollador y en el runner de GitHub Actions elimina el "en mi máquina funciona". Esta semana no aprendes nuevas funciones de Make — aplicas las que ya conoces para construir infraestructura que protege la calidad del código antes de que llegue al servidor.
 
+![Etapas de make ci: la primera que falla aborta el pipeline](../0-assets/03-pipeline-etapas.svg)
+
 ## Patrón: cargar `.env` sin filtrar secretos
 
 ```makefile
@@ -29,6 +31,8 @@ deploy: guard-API_KEY guard-DB_URL ## Desplegar (requiere API_KEY y DB_URL)
 	./deploy.sh
 ```
 
+![Variables desde .env o el runner, validadas con guard-% y exportadas por nombre](../0-assets/02-flujo-env-secrets.svg)
+
 ## Patrón: instalar git hooks desde Make
 
 ```makefile
@@ -46,6 +50,8 @@ hooks-uninstall: ## Desinstalar git hooks
 
 El workflow no conoce flake8 ni pytest: prepara el runner y llama a `make ci`.
 Si falla en CI, `make ci` lo reproduce en tu máquina.
+
+![Hooks saltables y make ci idéntico en local y en GitHub Actions](../0-assets/01-make-como-orquestador.svg)
 
 ```yaml
 permissions:

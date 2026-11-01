@@ -1,0 +1,87 @@
+<svg viewBox="0 0 1040 490" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Lo que entra por la línea de comandos, el entorno, .env o una URL pasa por Make y por bash antes de llegar a procesos, logs y disco</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f85149"/>
+    </marker>
+    <marker id="arrow-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e3b341"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="490" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Encabezados -->
+    <g font-size="13" fill="#8b949e">
+      <text x="150" y="34">Entradas: las controla otra persona</text>
+      <text x="560" y="34">Dos intérpretes</text>
+      <text x="900" y="34">Salidas: dónde queda a la vista</text>
+    </g>
+
+    <!-- Entradas -->
+    <rect x="30" y="60" width="240" height="64" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="150" y="86">Línea de comandos</text>
+    <text x="150" y="108" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">VERSION=$TAG BRANCH=$RAMA</text>
+
+    <rect x="30" y="150" width="240" height="64" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="150" y="176">Entorno del CI</text>
+    <text x="150" y="198" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">TOKEN, GITHUB_REF_NAME</text>
+
+    <rect x="30" y="240" width="240" height="64" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="150" y="266" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">.env</text>
+    <text x="150" y="288" font-size="12" fill="#8b949e">cargado con <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">include</tspan></text>
+
+    <rect x="30" y="390" width="240" height="64" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="150" y="416">URL remota</text>
+    <text x="150" y="438" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">curl | sh</text>
+
+    <!-- Intérpretes -->
+    <rect x="470" y="60" width="180" height="244" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2.5"/>
+    <text x="560" y="176" font-weight="bold">Make</text>
+    <text x="560" y="198" font-size="13" fill="#8b949e">expande <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$(...)</tspan></text>
+
+    <rect x="470" y="360" width="180" height="94" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="560" y="401" font-weight="bold">bash</text>
+    <text x="560" y="423" font-size="13" fill="#8b949e">interpreta <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">' ; ` $( )</tspan></text>
+
+    <!-- Salidas -->
+    <rect x="790" y="150" width="220" height="64" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="900" y="176">Subprocesos</text>
+    <text x="900" y="198" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">pnpm, docker, linters</text>
+
+    <rect x="790" y="250" width="220" height="56" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="900" y="273" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ps / argv</text>
+    <text x="900" y="294" font-size="12" fill="#8b949e">otros usuarios lo ven</text>
+
+    <rect x="790" y="330" width="220" height="56" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="900" y="363"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">make -n</tspan> y log del CI</text>
+
+    <rect x="790" y="410" width="220" height="56" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="900" y="433">Disco</text>
+    <text x="900" y="454" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">umask, rm -rf</text>
+
+    <!-- Flechas -->
+    <g fill="none" stroke-width="2">
+      <line x1="270" y1="92" x2="470" y2="92" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="270" y1="182" x2="470" y2="182" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="270" y1="272" x2="470" y2="272" stroke="#f85149" marker-end="url(#arrow-r)"/>
+      <line x1="270" y1="422" x2="470" y2="422" stroke="#f85149" marker-end="url(#arrow-r)"/>
+      <line x1="560" y1="304" x2="560" y2="360" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="650" y1="182" x2="790" y2="182" stroke="#e3b341" marker-end="url(#arrow-y)"/>
+      <line x1="650" y1="380" x2="790" y2="278" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="650" y1="407" x2="790" y2="358" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="650" y1="434" x2="790" y2="438" stroke="#8b949e" marker-end="url(#arrow)"/>
+    </g>
+
+    <!-- Etiquetas de flecha -->
+    <g font-size="12">
+      <text x="370" y="264" fill="#f85149">se parsea como Makefile</text>
+      <text x="370" y="414" fill="#f85149">código sin revisar</text>
+      <text x="550" y="337" text-anchor="end" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">bash -c 'línea expandida'</text>
+      <text x="720" y="174" fill="#e3b341"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">export</tspan> a secas</text>
+    </g>
+  </g>
+</svg>
