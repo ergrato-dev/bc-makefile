@@ -1,0 +1,68 @@
+<svg viewBox="0 0 800 580" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Guardas de un clean seguro: Make comprueba que BUILD_DIR no está vacía y está dentro del proyecto antes del rm -rf</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="580" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc">Guardas de un clean seguro</text>
+
+    <!-- inicio -->
+    <rect x="130" y="60" width="300" height="48" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="280" y="89" class="m" fill="#f0f6fc">make clean · make -n clean</text>
+
+    <rect x="60" y="134" width="440" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="280" y="157" fill="#f0f6fc">Make expande todas las líneas de la receta</text>
+    <text x="280" y="178" fill="#f0f6fc">antes de ejecutar ninguna</text>
+
+    <!-- nota -->
+    <rect x="540" y="96" width="230" height="80" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="655" y="122" font-size="13" fill="#d2a8ff">Las guardas son funciones</text>
+    <text x="655" y="141" font-size="13" fill="#d2a8ff">de Make: también paran</text>
+    <text x="655" y="160" font-size="13" fill="#d2a8ff">una previsualización <tspan class="m">-n</tspan></text>
+
+    <!-- decisiones -->
+    <g fill="#161b22" stroke="#58a6ff" stroke-width="2">
+      <polygon points="80,270 280,220 480,270 280,320"/>
+      <polygon points="50,410 280,356 510,410 280,464"/>
+    </g>
+    <text x="280" y="264" class="m" font-size="13" fill="#f0f6fc">$(if $(BUILD_DIR),,...)</text>
+    <text x="280" y="285" fill="#f0f6fc">¿<tspan class="m">BUILD_DIR</tspan> vacía?</text>
+    <text x="280" y="404" class="m" font-size="13" fill="#f0f6fc">$(filter $(CURDIR)/%,$(abspath ...))</text>
+    <text x="280" y="425" fill="#f0f6fc">¿dentro del proyecto?</text>
+
+    <!-- errores -->
+    <rect x="520" y="240" width="260" height="60" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="650" y="265" class="m" font-size="13" fill="#f85149">$(error) BUILD_DIR vacía:</text>
+    <text x="650" y="285" class="m" font-size="13" fill="#f0f6fc">rm -rf no se ejecuta. Stop.</text>
+
+    <rect x="530" y="380" width="260" height="60" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="660" y="405" class="m" font-size="13" fill="#f85149">$(error) ... está fuera</text>
+    <text x="660" y="425" class="m" font-size="13" fill="#f0f6fc">del proyecto. Stop.</text>
+
+    <!-- rm -->
+    <rect x="110" y="490" width="340" height="60" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="280" y="515" class="m" fill="#3fb950">rm -rf -- '$(BUILD_DIR)'</text>
+    <text x="280" y="537" font-size="13" fill="#8b949e">con <tspan class="m">-n</tspan>: solo se imprime</text>
+
+    <!-- flechas -->
+    <g stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <line x1="280" y1="108" x2="280" y2="132"/>
+      <line x1="280" y1="190" x2="280" y2="218"/>
+      <line x1="480" y1="270" x2="518" y2="270"/>
+      <line x1="280" y1="320" x2="280" y2="354"/>
+      <line x1="510" y1="410" x2="528" y2="410"/>
+      <line x1="280" y1="464" x2="280" y2="488"/>
+    </g>
+    <g font-size="13" fill="#8b949e">
+      <text x="499" y="262">sí</text>
+      <text x="270" y="344" text-anchor="end">no</text>
+      <text x="519" y="400">no</text>
+      <text x="270" y="482" text-anchor="end">sí</text>
+    </g>
+  </g>
+</svg>

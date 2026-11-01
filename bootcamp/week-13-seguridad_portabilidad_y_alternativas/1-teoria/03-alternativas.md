@@ -17,6 +17,8 @@ Tarde o temprano alguien en tu equipo propone "migrar a just" o "pasarnos a Baze
 
 ## Tabla de decisión
 
+![Árbol de decisión: Make o alternativa](../0-assets/03-decision-alternativas.svg)
+
 | Si tu situación es… | Usa | Por qué |
 |---|---|---|
 | Fachada de tareas (`test`, `lint`, `release`) sobre uv, pnpm o docker, en Linux/macOS | **Make** | Ya está instalado; `make help` es la convención que todos conocen |

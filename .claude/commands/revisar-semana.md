@@ -30,6 +30,7 @@ Lee `CLAUDE.md` y luego revisa todos los archivos de `bootcamp/<semana>/`. Repor
 - [ ] Hay 6 labs en `2-practicas/`
 - [ ] Cada lab tiene `README.md`, `starter/Makefile` y `solucion/Makefile`
 - [ ] El proyecto tiene `README.md`, `starter/` y `solucion/`
+- [ ] `0-assets/` tiene ≥ 3 `.svg` (ningún `.md`), cada uno con `viewBox`, `role="img"`, `<title>`, fondo `#0d1117` y la paleta de `CLAUDE.md`, y enlazado desde `1-teoria/`
 
 **Calidad de Makefiles**
 - [ ] Todos los Makefiles usan TABs (no espacios) en las recetas

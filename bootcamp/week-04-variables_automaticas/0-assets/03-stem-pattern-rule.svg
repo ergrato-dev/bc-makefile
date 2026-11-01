@@ -1,0 +1,51 @@
+<svg viewBox="0 0 800 420" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>La regla de patrón %.o: %.c aplicada a tres targets: el stem $* es lo que coincide con %</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="420" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">El stem <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$*</tspan> en reglas de patrón</text>
+
+    <!-- regla -->
+    <text x="40" y="152" font-size="13" fill="#8b949e">regla de patrón</text>
+    <rect x="40" y="162" width="240" height="90" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="60" y="198" class="m" font-size="18" fill="#f0f6fc"><tspan fill="#f78166">%</tspan>.o: <tspan fill="#f78166">%</tspan>.c</text>
+    <text x="80" y="228" class="m" fill="#f0f6fc">gcc -c $&lt; -o $@</text>
+
+    <!-- resultados -->
+    <g fill="#161b22" stroke-width="2">
+      <rect x="470" y="64" width="290" height="88" rx="6" stroke="#58a6ff"/>
+      <rect x="470" y="168" width="290" height="88" rx="6" stroke="#58a6ff"/>
+      <rect x="470" y="272" width="290" height="88" rx="6" stroke="#58a6ff"/>
+    </g>
+    <g class="m" fill="#f0f6fc">
+      <text x="490" y="92">$* = <tspan fill="#f78166">main</tspan></text>
+      <text x="490" y="115">$@ = <tspan fill="#f78166">main</tspan>.o</text>
+      <text x="490" y="138">$&lt; = <tspan fill="#f78166">main</tspan>.c</text>
+      <text x="490" y="196">$* = <tspan fill="#f78166">utils</tspan></text>
+      <text x="490" y="219">$@ = <tspan fill="#f78166">utils</tspan>.o</text>
+      <text x="490" y="242">$&lt; = <tspan fill="#f78166">utils</tspan>.c</text>
+      <text x="490" y="300">$* = <tspan fill="#f78166">calc</tspan></text>
+      <text x="490" y="323">$@ = <tspan fill="#f78166">calc</tspan>.o</text>
+      <text x="490" y="346">$&lt; = <tspan fill="#f78166">calc</tspan>.c</text>
+    </g>
+
+    <g stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)">
+      <line x1="280" y1="190" x2="468" y2="108"/>
+      <line x1="280" y1="207" x2="468" y2="212"/>
+      <line x1="280" y1="224" x2="468" y2="316"/>
+    </g>
+    <g font-size="12" fill="#8b949e" text-anchor="middle">
+      <text x="350" y="138">target <tspan class="m" fill="#f0f6fc">main.o</tspan></text>
+      <text x="374" y="198">target <tspan class="m" fill="#f0f6fc">utils.o</tspan></text>
+      <text x="334" y="282">target <tspan class="m" fill="#f0f6fc">calc.o</tspan></text>
+    </g>
+
+    <text x="400" y="398" font-size="13" fill="#8b949e" text-anchor="middle">Lo que coincide con <tspan class="m" fill="#f78166">%</tspan> es el stem: <tspan class="m" fill="#f0f6fc">$*</tspan> lo expone para derivar otras rutas, como <tspan class="m" fill="#f0f6fc">$(BUILD)/$*.d</tspan></text>
+  </g>
+</svg>

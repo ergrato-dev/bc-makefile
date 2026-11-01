@@ -1,0 +1,70 @@
+<svg viewBox="0 0 800 380" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Make recursivo: un grafo por directorio; no recursivo: todos los module.mk en un solo grafo</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-err" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f85149"/>
+    </marker>
+  </defs>
+  <rect width="800" height="380" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <g fill="none" stroke="#30363d" stroke-width="1.5">
+      <rect x="15" y="20" width="380" height="340" rx="10"/>
+      <rect x="405" y="20" width="380" height="340" rx="10"/>
+    </g>
+    <text x="205" y="44" fill="#8b949e" text-anchor="middle" font-size="13">Recursivo: un grafo por directorio</text>
+    <text x="595" y="44" fill="#8b949e" text-anchor="middle" font-size="13">No recursivo: un solo grafo</text>
+
+    <!-- recursivo -->
+    <rect x="115" y="66" width="180" height="44" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="205" y="93" fill="#f0f6fc" text-anchor="middle">Makefile raíz</text>
+
+    <line x1="165" y1="110" x2="112" y2="188" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="245" y1="110" x2="298" y2="188" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#79c0ff">
+      <text x="128" y="150" text-anchor="end">$(MAKE) -C lib</text>
+      <text x="282" y="150">$(MAKE) -C app</text>
+    </g>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <rect x="30" y="190" width="170" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="115" y="213" fill="#f0f6fc" text-anchor="middle">lib/Makefile</text>
+      <text x="115" y="234" fill="#8b949e" text-anchor="middle" font-size="12">libgreet.a: greet.o</text>
+      <rect x="215" y="190" width="170" height="56" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="300" y="213" fill="#f0f6fc" text-anchor="middle">app/Makefile</text>
+      <text x="300" y="234" fill="#8b949e" text-anchor="middle" font-size="12">hola: main.o</text>
+    </g>
+
+    <path d="M300,246 V278 H115 V250" fill="none" stroke="#f85149" stroke-width="2"
+          stroke-dasharray="5 4" marker-end="url(#arrow-err)"/>
+    <text x="205" y="304" fill="#f85149" text-anchor="middle" font-size="12"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace">../lib/libgreet.a</text>
+    <text x="205" y="324" fill="#f85149" text-anchor="middle" font-size="12">app no sabe reconstruirla</text>
+
+    <!-- no recursivo -->
+    <rect x="445" y="60" width="300" height="56" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="595" y="83" fill="#f0f6fc" text-anchor="middle">Makefile raíz</text>
+    <text x="595" y="104" fill="#8b949e" text-anchor="middle" font-size="12"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace">include lib/module.mk app/module.mk</text>
+
+    <line x1="550" y1="116" x2="512" y2="188" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="640" y1="116" x2="678" y2="188" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <rect x="425" y="190" width="170" height="44" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="510" y="217" fill="#f0f6fc" text-anchor="middle" font-size="13">libgreet.a: greet.o</text>
+      <rect x="615" y="190" width="150" height="44" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="690" y="217" fill="#f0f6fc" text-anchor="middle">main.o</text>
+      <rect x="535" y="270" width="120" height="44" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+      <text x="595" y="297" fill="#f0f6fc" text-anchor="middle">hola</text>
+    </g>
+    <line x1="530" y1="234" x2="568" y2="268" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="670" y1="234" x2="622" y2="268" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="595" y="340" fill="#3fb950" text-anchor="middle" font-size="12">-j, -n e incrementales sin sub-makes</text>
+  </g>
+</svg>

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 800 340" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>De qué parte de la regla app: main.o utils.o math.o sale el valor de $@, $&lt;, $^ y $?</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="340" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">Variables automáticas: de dónde sale cada valor</text>
+
+    <!-- regla -->
+    <text x="40" y="66" font-size="13" fill="#8b949e">regla en el Makefile</text>
+    <rect x="40" y="76" width="320" height="76" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="106" class="m" font-size="15"><tspan fill="#f78166">app</tspan><tspan fill="#f0f6fc">: </tspan><tspan fill="#58a6ff">main.o</tspan><tspan fill="#d2a8ff"> utils.o math.o</tspan></text>
+    <text x="92" y="134" class="m" font-size="15" fill="#f0f6fc">gcc <tspan fill="#d2a8ff">$^</tspan> -o <tspan fill="#f78166">$@</tspan></text>
+
+    <line x1="360" y1="114" x2="418" y2="114" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="389" y="106" font-size="12" fill="#8b949e" text-anchor="middle">expande</text>
+
+    <!-- receta expandida -->
+    <text x="420" y="66" font-size="13" fill="#8b949e">lo que recibe la shell</text>
+    <rect x="420" y="76" width="340" height="76" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="436" y="120" class="m" font-size="15" fill="#f0f6fc">gcc <tspan fill="#d2a8ff">main.o utils.o math.o</tspan> -o <tspan fill="#f78166">app</tspan></text>
+
+    <!-- variables -->
+    <g fill="#161b22" stroke-width="2">
+      <rect x="25" y="190" width="180" height="120" rx="6" stroke="#f78166"/>
+      <rect x="215" y="190" width="180" height="120" rx="6" stroke="#58a6ff"/>
+      <rect x="405" y="190" width="180" height="120" rx="6" stroke="#d2a8ff"/>
+      <rect x="595" y="190" width="180" height="120" rx="6" stroke="#e3b341"/>
+    </g>
+    <g class="m" font-size="24" font-weight="bold" text-anchor="middle">
+      <text x="115" y="226" fill="#f78166">$@</text>
+      <text x="305" y="226" fill="#58a6ff">$&lt;</text>
+      <text x="495" y="226" fill="#d2a8ff">$^</text>
+      <text x="685" y="226" fill="#e3b341">$?</text>
+    </g>
+    <g class="m" font-size="13" fill="#f0f6fc" text-anchor="middle">
+      <text x="115" y="256">app</text>
+      <text x="305" y="256">main.o</text>
+      <text x="495" y="256">main.o utils.o math.o</text>
+    </g>
+    <g font-size="13" fill="#8b949e" text-anchor="middle">
+      <text x="115" y="284">nombre del target</text>
+      <text x="305" y="284">primer prerrequisito</text>
+      <text x="495" y="284">todos, sin duplicados</text>
+      <text x="685" y="256" fill="#f0f6fc">solo los prerrequisitos</text>
+      <text x="685" y="276" fill="#f0f6fc">más nuevos que <tspan class="m">app</tspan></text>
+      <text x="685" y="298">build incremental</text>
+    </g>
+  </g>
+</svg>

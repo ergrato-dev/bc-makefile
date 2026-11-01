@@ -99,6 +99,8 @@ resuelve: `FORCE` hace que su receta se ejecute siempre, pero solo reescribe
 el archivo si el contenido es distinto. Si su fecha no cambia, nadie se
 recompila; si cambia, se recompilan todos los objetos.
 
+![Grafo de build/main.o con prerrequisitos normales, order-only y un header generado](../0-assets/01-grafo-de-dependencias.svg)
+
 Para el propio Makefile, Make 4.3 trae `.EXTRA_PREREQS`: prerrequisitos que
 cuentan para decidir si rehacer, pero no aparecen en `$^` ni en `$<`.
 

@@ -1,0 +1,75 @@
+<svg viewBox="0 0 800 610" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Qué hace Make cuando una receta falla según el prefijo -, .DELETE_ON_ERROR y make -k</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="610" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc">Qué hace Make cuando una receta falla</text>
+
+    <!-- fallo -->
+    <rect x="210" y="60" width="380" height="44" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="400" y="87" fill="#f0f6fc">Una línea de receta sale con código ≠ 0</text>
+
+    <!-- decisiones -->
+    <g fill="#161b22" stroke="#58a6ff" stroke-width="2">
+      <polygon points="240,170 400,125 560,170 400,215"/>
+      <polygon points="250,295 400,255 550,295 400,335"/>
+      <polygon points="280,430 400,392 520,430 400,468"/>
+    </g>
+    <text x="400" y="166" fill="#f0f6fc">¿Prefijo <tspan class="m">-</tspan> en la línea</text>
+    <text x="400" y="185" fill="#f0f6fc">o <tspan class="m">make -i</tspan>?</text>
+    <text x="400" y="300" class="m" fill="#f0f6fc">¿.DELETE_ON_ERROR?</text>
+    <text x="400" y="435" class="m" fill="#f0f6fc">¿make -k?</text>
+
+    <!-- ignorado -->
+    <rect x="590" y="126" width="190" height="88" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="685" y="150" class="m" font-size="13" fill="#e3b341">Error (ignored)</text>
+    <text x="685" y="171" font-size="13" fill="#f0f6fc">sigue como si nada;</text>
+    <text x="685" y="189" font-size="13" fill="#f0f6fc">el target a medias</text>
+    <text x="685" y="207" font-size="13" font-weight="bold" fill="#e3b341">sobrevive</text>
+
+    <!-- borra -->
+    <rect x="40" y="270" width="170" height="50" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="125" y="300" fill="#f0f6fc">Borra el target</text>
+
+    <!-- queda -->
+    <rect x="590" y="260" width="190" height="70" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="685" y="282" font-size="13" fill="#f0f6fc">El target a medias queda</text>
+    <text x="685" y="300" font-size="13" fill="#f0f6fc">con fecha nueva:</text>
+    <text x="685" y="319" font-size="13" fill="#f85149">pasa por "al día"</text>
+
+    <!-- final -->
+    <rect x="50" y="520" width="340" height="62" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="220" y="545" font-size="13" fill="#f0f6fc">Construye los targets que no dependen</text>
+    <text x="220" y="565" font-size="13" fill="#f0f6fc">del fallo y termina con código 2</text>
+
+    <rect x="450" y="520" width="300" height="62" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="600" y="556" fill="#f0f6fc">Para y termina con código 2</text>
+
+    <!-- flechas -->
+    <g stroke="#8b949e" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <line x1="400" y1="104" x2="400" y2="123"/>
+      <line x1="560" y1="170" x2="588" y2="170"/>
+      <line x1="400" y1="215" x2="400" y2="253"/>
+      <line x1="250" y1="295" x2="212" y2="295"/>
+      <line x1="550" y1="295" x2="588" y2="295"/>
+      <path d="M125,320 V430 H278"/>
+      <path d="M685,330 V430 H522"/>
+      <line x1="380" y1="462" x2="225" y2="518"/>
+      <line x1="420" y1="462" x2="595" y2="518"/>
+    </g>
+    <g font-size="13" fill="#8b949e">
+      <text x="574" y="162">sí</text>
+      <text x="390" y="240" text-anchor="end">no</text>
+      <text x="231" y="287">sí</text>
+      <text x="569" y="287">no</text>
+      <text x="290" y="486" text-anchor="end">sí</text>
+      <text x="510" y="486" text-anchor="start">no</text>
+    </g>
+  </g>
+</svg>

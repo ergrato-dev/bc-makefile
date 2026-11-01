@@ -40,7 +40,7 @@ Al terminar esta semana, podrás:
 
 **Total: 10 horas**
 
-Material de apoyo: [diagramas](0-assets/01-superficie-de-ataque.md), [recursos](4-recursos/webgrafia/README.md) y [glosario](5-glosario/README.md).
+Material de apoyo: [diagramas](0-assets/01-superficie-de-ataque.svg), [recursos](4-recursos/webgrafia/README.md) y [glosario](5-glosario/README.md).
 
 ## Distribución del tiempo
 

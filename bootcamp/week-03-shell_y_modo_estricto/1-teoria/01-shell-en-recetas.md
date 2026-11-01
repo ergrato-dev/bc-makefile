@@ -19,6 +19,8 @@ right:
 
 `make wrong` imprime el directorio del Makefile; `make right`, `/tmp`. Usa `&&` y no `;`: si el `cd` falla, el resto no debe ejecutarse en el directorio equivocado.
 
+![Tres líneas de receta, tres shells: el cd no sobrevive](../0-assets/01-cada-linea-un-shell.svg)
+
 Para escribir un bloque largo en un solo shell, termina cada línea con `\`. Make las une en una sola línea lógica, así que cada comando necesita su `;`:
 
 ```makefile

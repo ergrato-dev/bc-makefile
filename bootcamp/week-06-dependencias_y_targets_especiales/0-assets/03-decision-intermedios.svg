@@ -1,0 +1,63 @@
+<svg viewBox="0 0 1040 470" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Decisión: cuándo Make trata un archivo como intermedio y lo borra al terminar</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="1040" height="470" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Inicio -->
+    <rect x="420" y="20" width="200" height="40" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="520" y="45">Make construye <tspan class="m">X</tspan></text>
+    <line x1="520" y1="60" x2="520" y2="88" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- ¿Mencionado? -->
+    <rect x="260" y="90" width="520" height="60" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="520" y="115">¿<tspan class="m">X</tspan> aparece como target o prerrequisito</text>
+    <text x="520" y="137">en el Makefile?</text>
+
+    <line x1="300" y1="150" x2="132" y2="238" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="200" y="186" fill="#8b949e" font-size="13">Sí</text>
+    <line x1="740" y1="150" x2="903" y2="238" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="848" y="182" fill="#8b949e" font-size="13" text-anchor="start">Sí, pero en</text>
+    <text x="852" y="199" fill="#8b949e" font-size="13" text-anchor="start" class="m">.INTERMEDIATE</text>
+    <line x1="520" y1="150" x2="520" y2="238" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="530" y="186" fill="#8b949e" font-size="13" text-anchor="start">No: lo dedujo encadenando</text>
+    <text x="530" y="203" fill="#8b949e" font-size="13" text-anchor="start">reglas de patrón</text>
+
+    <!-- Resultados de primer nivel -->
+    <rect x="20" y="240" width="220" height="50" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="130" y="270">No es intermedio: se queda</text>
+
+    <rect x="430" y="240" width="180" height="50" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+    <text x="520" y="270">¿Está marcado?</text>
+
+    <rect x="790" y="240" width="230" height="50" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="905" y="261">Intermedio:</text>
+    <text x="905" y="281"><tspan class="m">rm X</tspan> al terminar</text>
+
+    <line x1="430" y1="265" x2="242" y2="265" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="336" y="255" fill="#8b949e" font-size="13" class="m">.NOTINTERMEDIATE: X</text>
+    <text x="336" y="284" fill="#8b949e" font-size="13">(Make 4.4+)</text>
+    <line x1="610" y1="265" x2="788" y2="265" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="699" y="255" fill="#8b949e" font-size="13">Nada</text>
+
+    <!-- Marcas que conservan -->
+    <line x1="490" y1="290" x2="377" y2="378" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="420" y="335" fill="#8b949e" font-size="13" text-anchor="end" class="m">.SECONDARY: X</text>
+    <line x1="550" y1="290" x2="663" y2="378" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="620" y="335" fill="#8b949e" font-size="13" text-anchor="start"><tspan class="m">.PRECIOUS: X</tspan> o patrón</text>
+
+    <rect x="250" y="380" width="250" height="60" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="375" y="405">Se queda. Si falta,</text>
+    <text x="375" y="427">no fuerza rebuild</text>
+
+    <rect x="540" y="380" width="250" height="60" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="665" y="405">Se queda. Tampoco se borra</text>
+    <text x="665" y="427">si la receta falla</text>
+  </g>
+</svg>

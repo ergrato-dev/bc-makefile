@@ -1,0 +1,71 @@
+<svg viewBox="0 0 980 500" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Grafo completo de build/main.o: fuente, headers del .d, stamp de flags, directorio order-only y header generado</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d2a8ff"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="980" height="500" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc">
+    <!-- Prerrequisitos -->
+    <g class="m" text-anchor="middle">
+      <rect x="330" y="30" width="230" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="445" y="55">src/main.c</text>
+      <rect x="330" y="100" width="230" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="445" y="125">include/calc.h</text>
+      <rect x="330" y="170" width="230" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="445" y="195">build/gen/version.h</text>
+      <rect x="330" y="240" width="230" height="40" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="445" y="265">build/compile-flags.txt</text>
+      <rect x="330" y="310" width="230" height="40" rx="6" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <text x="445" y="335">build/</text>
+      <rect x="330" y="390" width="230" height="40" rx="6" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <text x="445" y="415">build/gen/version.c</text>
+    </g>
+
+    <!-- Objeto -->
+    <rect x="810" y="156" width="150" height="68" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="885" y="195" class="m" text-anchor="middle">build/main.o</text>
+
+    <!-- Aristas normales -->
+    <line x1="560" y1="50" x2="808" y2="166" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <line x1="560" y1="120" x2="808" y2="176" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <text x="575" y="112" fill="#8b949e" font-size="13" class="m">-MMD (.d)</text>
+    <line x1="560" y1="184" x2="808" y2="186" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <text x="575" y="176" fill="#8b949e" font-size="13" class="m">-MMD (.d)</text>
+    <line x1="560" y1="260" x2="808" y2="206" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <text x="575" y="282" fill="#8b949e" font-size="13">stamp de flags</text>
+
+    <!-- Aristas order-only -->
+    <line x1="560" y1="198" x2="808" y2="196" stroke="#8b949e" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+    <text x="575" y="216" fill="#8b949e" font-size="12">order-only (primer build)</text>
+    <path d="M560,330 H885 V226" fill="none" stroke="#8b949e" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+    <text x="700" y="322" fill="#8b949e" font-size="13" text-anchor="middle">order-only</text>
+
+    <!-- Generador -->
+    <rect x="20" y="272" width="210" height="56" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="125" y="295" class="m" text-anchor="middle">tools/gen-version.sh</text>
+    <text x="125" y="317" class="m" text-anchor="middle">+ VERSION</text>
+    <line x1="230" y1="290" x2="328" y2="198" stroke="#d2a8ff" stroke-width="2" marker-end="url(#arrow-purple)"/>
+    <line x1="230" y1="312" x2="328" y2="404" stroke="#d2a8ff" stroke-width="2" marker-end="url(#arrow-purple)"/>
+    <text x="125" y="352" fill="#8b949e" font-size="13" text-anchor="middle"><tspan class="m">&amp;:</tspan> una ejecución</text>
+    <text x="125" y="370" fill="#8b949e" font-size="13" text-anchor="middle">genera los dos</text>
+
+    <!-- Leyenda -->
+    <line x1="20" y1="470" x2="60" y2="470" stroke="#58a6ff" stroke-width="2"/>
+    <text x="70" y="475" fill="#8b949e" font-size="13">normal: si es más nuevo, recompila</text>
+    <line x1="400" y1="470" x2="440" y2="470" stroke="#8b949e" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="450" y="475" fill="#8b949e" font-size="13">order-only: solo tiene que existir</text>
+  </g>
+</svg>

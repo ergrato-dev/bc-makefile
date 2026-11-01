@@ -17,6 +17,8 @@ Las funciones de texto casi nunca fallan con un error. Devuelven una cadena vac�
 
 Para extensiones y prefijos de ruta, `patsubst`. `subst` queda para caracteres sueltos (`-` → `_`).
 
+![Árbol de decisión para elegir entre wildcard, patsubst, subst, filter y las funciones de ruta](../0-assets/03-decision-que-funcion-usar.svg)
+
 ## 2. Los espacios tras las comas cuentan
 
 En `subst` y `patsubst` el espacio que sigue a la coma forma parte del argumento. `$(subst .c, .d,src/main.c)` devuelve `src/main .d`: **dos** palabras. Regla práctica: nunca escribas espacios después de las comas de una función.

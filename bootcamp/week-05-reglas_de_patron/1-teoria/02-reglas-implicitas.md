@@ -46,6 +46,8 @@ MAKEFLAGS += -r
 make hola        # make: *** No rule to make target 'hola'.  Stop.
 ```
 
+![Sin -r, make hola usa una regla de serie; con -r, falla con No rule to make target](../0-assets/04-reglas-de-serie.svg)
+
 ## `-r` y `-R`
 
 | Opción | Efecto |
@@ -67,6 +69,8 @@ Para cada target que necesita, Make decide así (manual de GNU Make, *How Patter
 3. **Reglas de patrón candidatas:** las que casan con el nombre **y** cuyos prerrequisitos existen o se pueden construir. Las tuyas tienen precedencia sobre las de serie.
 4. **Entre varias candidatas gana la de stem más corto** (la más específica). Con `test_%.o: test_%.c` y `%.o: %.c`, para `test_math.o` gana la primera (stem `math` frente a `test_math`), esté escrita antes o después. Con stems iguales, gana la primera del Makefile.
 5. **Ninguna:** `No rule to make target`.
+
+![Flujo de decisión: receta explícita, candidatas de patrón y stem más corto](../0-assets/02-flujo-resolucion-stem.svg)
 
 Redefinir un patrón con los mismos target y prerrequisito (`%.o: %.c`) **reemplaza** al anterior, incluido el de serie: por eso tu `%.o: %.c` anula al de Make.
 

@@ -4,6 +4,10 @@
 
 Cada ecosistema tiene su propio gestor de tareas: `pytest` para Python, `pnpm run` para Node.js, `docker build` para contenedores. El problema es que cada uno tiene su propia sintaxis, opciones y convenciones. Make resuelve esto siendo la capa de abstracción encima de todos ellos: cualquier desarrollador que clona el repo ejecuta `make test` y funciona, sin importar si el proyecto usa uv, pnpm o Dockerfile.
 
+![Make delante de uv, Docker, pnpm y compose](../0-assets/01-make-como-interfaz-universal.svg)
+
+![Cuándo elegir Make, herramienta nativa o script](../0-assets/03-decision-make-vs-scripts.svg)
+
 ## Patrón: archivo testigo (sentinel file)
 
 El truco más importante de esta semana. Make decide si ejecutar una receta comparando fechas. Cuando un comando no produce un archivo de salida concreto (como `uv sync`), creamos un archivo vacío solo para que Make pueda trackear cuándo se ejecutó por última vez:
@@ -19,6 +23,8 @@ install: $(VENV)/.installed
 ```
 
 Resultado: `make install` solo reinstala cuando `pyproject.toml` o `uv.lock` cambian. Idéntico para `node_modules/`.
+
+![Decisión de make install según el sentinel file](../0-assets/02-flujo-sentinel-file.svg)
 
 Python se gestiona siempre con **uv**, nunca con pip: `pyproject.toml` declara las dependencias, `uv.lock` las fija y se commitea, `uv sync --locked` instala exactamente eso (y falla si el lock no coincide con `pyproject.toml`).
 

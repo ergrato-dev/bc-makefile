@@ -1,0 +1,51 @@
+<svg viewBox="0 0 800 400" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Make lanza un shell nuevo por cada línea de receta: el cd de una línea no llega a la siguiente</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="400" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">Cada línea de receta, un shell nuevo</text>
+
+    <text x="40" y="72" font-size="13" fill="#8b949e">línea de receta que lanza make</text>
+    <text x="470" y="72" font-size="13" fill="#8b949e">proceso de shell</text>
+
+    <!-- receta de 2 líneas -->
+    <text x="40" y="100" font-size="12" fill="#d2a8ff">receta de dos líneas</text>
+    <rect x="40" y="108" width="360" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="141" class="m" fill="#f0f6fc">cd build</text>
+    <rect x="470" y="108" width="290" height="56" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="486" y="131" fill="#f0f6fc">bash #1 · cwd <tspan class="m">build/</tspan></text>
+    <text x="486" y="153" font-size="13" fill="#e3b341">exit 0: el cd muere con este shell</text>
+
+    <rect x="40" y="180" width="360" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="213" class="m" fill="#f0f6fc">tar -czf r.tar.gz *.txt</text>
+    <rect x="470" y="180" width="290" height="56" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="486" y="203" fill="#f0f6fc">bash #2 · cwd del Makefile</text>
+    <text x="486" y="225" font-size="13" fill="#f85149">exit 2: aquí no hay *.txt</text>
+
+    <!-- receta de 1 línea -->
+    <line x1="40" y1="264" x2="760" y2="264" stroke="#30363d" stroke-dasharray="6 6"/>
+    <text x="40" y="292" font-size="12" fill="#d2a8ff">receta de una línea</text>
+    <rect x="40" y="300" width="360" height="56" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="56" y="333" class="m" fill="#f0f6fc">cd build &amp;&amp; tar -czf r.tar.gz *.txt</text>
+    <rect x="470" y="300" width="290" height="56" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="486" y="323" fill="#f0f6fc">bash #3 · cwd <tspan class="m">build/</tspan></text>
+    <text x="486" y="345" font-size="13" fill="#3fb950">exit 0: mismo shell, mismo directorio</text>
+
+    <g stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)">
+      <line x1="400" y1="136" x2="468" y2="136"/>
+      <line x1="400" y1="208" x2="468" y2="208"/>
+      <line x1="400" y1="328" x2="468" y2="328"/>
+    </g>
+    <g class="m" font-size="12" fill="#8b949e" text-anchor="middle">
+      <text x="434" y="128">bash -c</text>
+      <text x="434" y="200">bash -c</text>
+      <text x="434" y="320">bash -c</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,72 @@
+<svg viewBox="0 0 800 410" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Un bucle for esconde los sub-makes en una receta; los targets phony los devuelven al grafo</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+  <rect width="800" height="410" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <rect x="260" y="20" width="280" height="56" rx="28" fill="#161b22" stroke="#8b949e" stroke-width="2"/>
+    <text x="400" y="44" fill="#f0f6fc" text-anchor="middle">¿Cómo lanza el raíz</text>
+    <text x="400" y="63" fill="#f0f6fc" text-anchor="middle">los sub-makes?</text>
+
+    <path d="M400,76 V96 H200 V118 M400,96 H600 V118" fill="none" stroke="#8b949e" stroke-width="2"/>
+    <line x1="200" y1="110" x2="200" y2="118" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="600" y1="110" x2="600" y2="118" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- cabeceras -->
+    <rect x="30" y="120" width="340" height="56" rx="6" fill="#161b22" stroke="#f85149" stroke-width="2"/>
+    <text x="200" y="143" fill="#f0f6fc" text-anchor="middle" font-size="13"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace">for d in ...; do $(MAKE) ...</text>
+    <text x="200" y="164" fill="#8b949e" text-anchor="middle" font-size="12">una sola receta</text>
+    <rect x="430" y="120" width="340" height="56" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="600" y="143" fill="#f0f6fc" text-anchor="middle" font-size="13"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace">core/build util/build ...</text>
+    <text x="600" y="164" fill="#8b949e" text-anchor="middle" font-size="12">targets phony: un nodo por subdirectorio</text>
+
+    <!-- espinas -->
+    <path d="M45,176 V358" fill="none" stroke="#8b949e" stroke-width="2"/>
+    <path d="M445,176 V358" fill="none" stroke="#8b949e" stroke-width="2"/>
+    <g stroke="#8b949e" stroke-width="2">
+      <line x1="45" y1="218" x2="58" y2="218" marker-end="url(#arrow)"/>
+      <line x1="45" y1="288" x2="58" y2="288" marker-end="url(#arrow)"/>
+      <line x1="45" y1="358" x2="58" y2="358" marker-end="url(#arrow)"/>
+      <line x1="445" y1="218" x2="458" y2="218" marker-end="url(#arrow)"/>
+      <line x1="445" y1="288" x2="458" y2="288" marker-end="url(#arrow)"/>
+      <line x1="445" y1="358" x2="458" y2="358" marker-end="url(#arrow)"/>
+    </g>
+
+    <!-- consecuencias del bucle -->
+    <g fill="#161b22" stroke="#f85149" stroke-width="1.5">
+      <rect x="60" y="190" width="310" height="56" rx="6"/>
+      <rect x="60" y="260" width="310" height="56" rx="6"/>
+      <rect x="60" y="330" width="310" height="56" rx="6"/>
+    </g>
+    <g fill="#f0f6fc">
+      <text x="76" y="213">Sin -e: el exit es el del último</text>
+      <text x="76" y="233" fill="#8b949e" font-size="13">fallos tragados</text>
+      <text x="76" y="283">-j no reparte nada</text>
+      <text x="76" y="303" fill="#8b949e" font-size="13">-k no puede seguir</text>
+      <text x="76" y="353">Sin forma de decir</text>
+      <text x="76" y="373" fill="#8b949e" font-size="13">app depende de core</text>
+    </g>
+
+    <!-- consecuencias de los targets -->
+    <g fill="#161b22" stroke="#3fb950" stroke-width="1.5">
+      <rect x="460" y="190" width="310" height="56" rx="6"/>
+      <rect x="460" y="260" width="310" height="56" rx="6"/>
+      <rect x="460" y="330" width="310" height="56" rx="6"/>
+    </g>
+    <g fill="#f0f6fc">
+      <text x="476" y="213">Un fallo detiene el build</text>
+      <text x="476" y="233" fill="#8b949e" font-size="13">el exit llega al raíz</text>
+      <text x="476" y="283">-j en paralelo, -k sigue</text>
+      <text x="476" y="303" fill="#8b949e" font-size="13">con los independientes</text>
+      <text x="476" y="353" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">app/build: core/build</text>
+      <text x="476" y="373" fill="#8b949e" font-size="13">es una línea más</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,76 @@
+<svg viewBox="0 0 800 630" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Con make -j4, el raíz y sus sub-makes comparten una bolsa de 4 fichas del jobserver</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+    </marker>
+  </defs>
+  <rect width="800" height="630" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <!-- participantes -->
+    <rect x="15" y="20" width="170" height="50" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2"/>
+    <text x="100" y="41" fill="#f0f6fc" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace">make -j4</text>
+    <text x="100" y="60" fill="#8b949e" text-anchor="middle" font-size="12">raíz</text>
+
+    <rect x="205" y="20" width="170" height="50" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="290" y="41" fill="#f0f6fc" text-anchor="middle">jobserver</text>
+    <text x="290" y="60" fill="#8b949e" text-anchor="middle" font-size="12">bolsa de 4 fichas</text>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <rect x="405" y="20" width="170" height="50" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="490" y="50" fill="#f0f6fc" text-anchor="middle">$(MAKE) -C core</text>
+      <rect x="605" y="20" width="170" height="50" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+      <text x="690" y="50" fill="#f0f6fc" text-anchor="middle">$(MAKE) -C util</text>
+    </g>
+
+    <!-- líneas de vida -->
+    <g stroke="#30363d" stroke-width="2" stroke-dasharray="4 4">
+      <line x1="100" y1="70" x2="100" y2="520"/>
+      <line x1="290" y1="70" x2="290" y2="520"/>
+      <line x1="490" y1="70" x2="490" y2="520"/>
+      <line x1="690" y1="70" x2="690" y2="520"/>
+    </g>
+
+    <!-- mensajes -->
+    <line x1="100" y1="120" x2="288" y2="120" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="100" y1="165" x2="488" y2="165" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="100" y1="210" x2="688" y2="210" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="490" y1="255" x2="292" y2="255" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="690" y1="300" x2="292" y2="300" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="290" y1="345" x2="488" y2="345" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-ok)"/>
+    <line x1="290" y1="390" x2="688" y2="390" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-ok)"/>
+    <line x1="490" y1="500" x2="292" y2="500" stroke="#8b949e" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <g font-size="13" text-anchor="middle" fill="#f0f6fc"
+       paint-order="stroke" stroke="#0d1117" stroke-width="4">
+      <text x="195" y="111">crea la bolsa de fichas</text>
+      <text x="295" y="156">lanza sub-make (--jobserver-auth en MAKEFLAGS)</text>
+      <text x="395" y="201">lanza sub-make (--jobserver-auth en MAKEFLAGS)</text>
+      <text x="390" y="246">pide ficha para su 2.ª receta</text>
+      <text x="490" y="291">pide ficha para su 2.ª receta</text>
+      <text x="390" y="336" fill="#3fb950">ficha</text>
+      <text x="490" y="381" fill="#3fb950">ficha</text>
+      <text x="390" y="491">devuelve la ficha al terminar</text>
+    </g>
+
+    <rect x="150" y="414" width="280" height="56" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="1.5"/>
+    <text x="290" y="437" fill="#f0f6fc" text-anchor="middle" font-size="13">Con las 4 fichas en uso,</text>
+    <text x="290" y="457" fill="#f0f6fc" text-anchor="middle" font-size="13">quien pida otra espera</text>
+
+    <!-- qué rompe el reparto -->
+    <rect x="20" y="545" width="760" height="64" rx="6" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+    <text x="36" y="570" fill="#f0f6fc" font-size="13">Solo las líneas con
+      <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$(MAKE)</tspan> o con prefijo
+      <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">+</tspan> reciben acceso a la bolsa.</text>
+    <text x="36" y="592" fill="#8b949e" font-size="13">Un
+      <tspan fill="#f85149" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">make</tspan> literal o un
+      <tspan fill="#f85149" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">-j4</tspan> en la receta: el hijo cae a -j1 o crea su propia bolsa.</text>
+  </g>
+</svg>

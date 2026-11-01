@@ -26,6 +26,8 @@ normal**. Con `ENV := dev`, exportar `ENV=prod` no sirve de nada. Con
 `ENV ?= dev` sí, porque la variable ya está definida cuando `?=` mira.
 `make -e` invierte esas dos filas; no lo uses como solución, usa `?=`.
 
+![Escalera de precedencia de override a ?= con su origin](../0-assets/03-precedencia-variables.svg)
+
 ## Ejemplo funcional — pega y ejecuta
 
 ```makefile

@@ -1,0 +1,57 @@
+<svg viewBox="0 0 800 420" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Make compara la fecha de modificación del target con la de su dependencia</title>
+  <defs>
+    <style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}</style>
+  </defs>
+  <rect width="800" height="420" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#f0f6fc" text-anchor="middle">Make compara fechas de modificación (mtime)</text>
+
+    <!-- fila 1 -->
+    <text x="40" y="78" fill="#f0f6fc" font-weight="bold">1. Primera ejecución</text>
+    <text x="230" y="78" class="m" font-size="13" fill="#f78166">$ make reporte.txt</text>
+    <line x1="60" y1="150" x2="520" y2="150" stroke="#30363d" stroke-width="2"/>
+    <g font-size="12" fill="#8b949e" text-anchor="middle">
+      <line x1="80" y1="144" x2="80" y2="156" stroke="#30363d" stroke-width="2"/>
+      <text x="80" y="172">09:30</text>
+      <line x1="500" y1="144" x2="500" y2="156" stroke="#30363d" stroke-width="2"/>
+      <text x="500" y="172">10:15</text>
+    </g>
+    <circle cx="220" cy="150" r="7" fill="#58a6ff"/>
+    <text x="220" y="190" class="m" font-size="13" fill="#58a6ff" text-anchor="middle">datos.csv 09:45</text>
+    <circle cx="360" cy="150" r="7" fill="#f78166"/>
+    <text x="360" y="130" class="m" font-size="13" fill="#f78166" text-anchor="middle">reporte.txt 10:00</text>
+
+    <rect x="560" y="100" width="210" height="96" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="665" y="124" class="m" fill="#f0f6fc" text-anchor="middle">09:45 &lt; 10:00</text>
+    <text x="665" y="146" fill="#3fb950" text-anchor="middle">target al día</text>
+    <text x="665" y="168" class="m" font-size="12" fill="#8b949e" text-anchor="middle">'reporte.txt' is</text>
+    <text x="665" y="184" class="m" font-size="12" fill="#8b949e" text-anchor="middle">up to date.</text>
+
+    <!-- separador -->
+    <line x1="40" y1="222" x2="760" y2="222" stroke="#30363d" stroke-dasharray="6 6"/>
+    <text x="400" y="244" fill="#d2a8ff" text-anchor="middle">El desarrollador modifica <tspan class="m">datos.csv</tspan></text>
+
+    <!-- fila 2 -->
+    <text x="40" y="282" fill="#f0f6fc" font-weight="bold">2. Segunda ejecución</text>
+    <text x="230" y="282" class="m" font-size="13" fill="#f78166">$ make reporte.txt</text>
+    <line x1="60" y1="354" x2="520" y2="354" stroke="#30363d" stroke-width="2"/>
+    <g font-size="12" fill="#8b949e" text-anchor="middle">
+      <line x1="80" y1="348" x2="80" y2="360" stroke="#30363d" stroke-width="2"/>
+      <text x="80" y="376">09:30</text>
+      <line x1="500" y1="348" x2="500" y2="360" stroke="#30363d" stroke-width="2"/>
+      <text x="500" y="376">10:15</text>
+    </g>
+    <circle cx="360" cy="354" r="7" fill="#f78166"/>
+    <text x="360" y="334" class="m" font-size="13" fill="#f78166" text-anchor="middle">reporte.txt 10:00</text>
+    <circle cx="407" cy="354" r="7" fill="#58a6ff"/>
+    <text x="407" y="394" class="m" font-size="13" fill="#58a6ff" text-anchor="middle">datos.csv 10:05</text>
+
+    <rect x="560" y="304" width="210" height="96" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="665" y="328" class="m" fill="#f0f6fc" text-anchor="middle">10:05 &gt; 10:00</text>
+    <text x="665" y="350" fill="#e3b341" text-anchor="middle">dependencia más nueva</text>
+    <text x="665" y="372" font-size="13" fill="#8b949e" text-anchor="middle">ejecuta la receta y</text>
+    <text x="665" y="389" font-size="13" fill="#8b949e" text-anchor="middle">regenera reporte.txt</text>
+  </g>
+</svg>

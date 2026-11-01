@@ -4,6 +4,8 @@
 
 Sin reglas de patrón, cada `.o` necesita su propia regla. Cinco módulos C = cinco reglas casi idénticas. Con `%.o: %.c`, una sola regla compila todos. Agregas un módulo nuevo: no tocas el Makefile. El `%` captura el stem (la parte variable del nombre) y Make instancia la regla una vez por cada target que necesite construirse.
 
+![Una regla %.o: %.c instanciada para main.o, calc.o y greet.o, cada una con su stem](../0-assets/01-patron-basico.svg)
+
 ## Referencia rápida
 
 | Sintaxis | Nombre | Cuándo usarla |
@@ -82,6 +84,8 @@ $(LIB_OBJS): build/lib/%.o: %.c
 ```
 
 La static pattern rule fija **la lista de targets** a los que aplica. No es una plantilla que Make consulta para cualquier nombre: son reglas explícitas, una por target, escritas con la sintaxis del patrón. Por eso, si falta `greet.c`, el error dice exactamente qué falta y quién lo necesita, y `make build/lib/main.o` falla aunque exista `main.c`.
+
+![La regla genérica aplica a cualquier .o; la static, solo a los targets de su lista](../0-assets/03-patron-vs-static.svg)
 
 ## Una trampa frecuente
 

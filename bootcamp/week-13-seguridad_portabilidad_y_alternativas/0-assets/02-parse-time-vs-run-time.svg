@@ -1,0 +1,66 @@
+<svg viewBox="0 0 920 590" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Con make -n, la fase de lectura se ejecuta entera; en la de recetas Make expande cada línea, la imprime y aun así ejecuta las que llevan + o $(MAKE)</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e3b341"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+    </marker>
+  </defs>
+  <rect width="920" height="590" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Fases (fondo) -->
+    <rect x="20" y="120" width="880" height="165" rx="4" fill="#58a6ff" fill-opacity="0.05" stroke="#30363d" stroke-width="1.5"/>
+    <rect x="20" y="300" width="880" height="255" rx="4" fill="#d2a8ff" fill-opacity="0.05" stroke="#30363d" stroke-width="1.5"/>
+
+    <!-- Líneas de vida -->
+    <g stroke="#30363d" stroke-width="2" stroke-dasharray="4 4">
+      <line x1="130" y1="60" x2="130" y2="570"/>
+      <line x1="450" y1="60" x2="450" y2="570"/>
+      <line x1="790" y1="60" x2="790" y2="570"/>
+    </g>
+
+    <!-- Pestañas de fase -->
+    <g font-size="13" font-weight="bold" text-anchor="start">
+      <rect x="20" y="120" width="300" height="24" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+      <text x="30" y="137" fill="#79c0ff">Fase 1 · leer el Makefile (parse-time)</text>
+      <rect x="20" y="300" width="300" height="24" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+      <text x="30" y="317" fill="#d2a8ff">Fase 2 · recetas de deploy (run-time)</text>
+    </g>
+
+    <!-- Participantes -->
+    <rect x="60" y="20" width="140" height="40" rx="6" fill="#161b22" stroke="#8b949e" stroke-width="2"/>
+    <text x="130" y="45">Usuario</text>
+    <rect x="380" y="20" width="140" height="40" rx="6" fill="#161b22" stroke="#f78166" stroke-width="2.5"/>
+    <text x="450" y="45">Make</text>
+    <rect x="720" y="20" width="140" height="40" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2"/>
+    <text x="790" y="45">bash</text>
+
+    <!-- Mensajes -->
+    <g fill="none" stroke-width="2">
+      <line x1="130" y1="100" x2="450" y2="100" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="450" y1="180" x2="790" y2="180" stroke="#e3b341" marker-end="url(#arrow-y)"/>
+      <path d="M450,215 H500 V255 H452" stroke="#e3b341" marker-end="url(#arrow-y)"/>
+      <path d="M450,360 H500 V400 H452" stroke="#e3b341" marker-end="url(#arrow-y)"/>
+      <line x1="450" y1="455" x2="130" y2="455" stroke="#3fb950" stroke-dasharray="6 4" marker-end="url(#arrow-g)"/>
+      <line x1="450" y1="525" x2="790" y2="525" stroke="#e3b341" marker-end="url(#arrow-y)"/>
+    </g>
+
+    <!-- Etiquetas -->
+    <g font-size="13">
+      <text x="290" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">make -n deploy</text>
+      <text x="620" y="172" fill="#e3b341"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">X := $(shell ...)</tspan> se ejecuta</text>
+      <text x="512" y="240" text-anchor="start" fill="#e3b341"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">include .env</tspan>: todo su contenido</text>
+      <text x="512" y="376" text-anchor="start" fill="#e3b341">expande la receta:</text>
+      <text x="512" y="394" text-anchor="start" fill="#e3b341">corre cada <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$(shell)</tspan> que tenga</text>
+      <text x="290" y="447" fill="#3fb950">imprime la línea (no la ejecuta)</text>
+      <text x="620" y="499" fill="#e3b341">pero SÍ ejecuta las líneas</text>
+      <text x="620" y="517" fill="#e3b341">con <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">+</tspan> o <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$(MAKE)</tspan></text>
+    </g>
+  </g>
+</svg>

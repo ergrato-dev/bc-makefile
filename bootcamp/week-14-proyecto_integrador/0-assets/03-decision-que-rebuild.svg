@@ -1,0 +1,72 @@
+<svg viewBox="0 0 950 530" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Make ejecuta la receta si el target es .PHONY, si el archivo no existe o si algún prerrequisito normal es más nuevo; si no, está al día</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrow-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d2a8ff"/>
+    </marker>
+  </defs>
+  <rect width="950" height="530" fill="#0d1117"/>
+
+  <g font-family="Inter, system-ui, -apple-system, sans-serif" font-size="14" fill="#f0f6fc" text-anchor="middle">
+    <!-- Inicio -->
+    <rect x="390" y="30" width="180" height="44" rx="22" fill="#161b22" stroke="#f78166" stroke-width="2.5"/>
+    <text x="480" y="57" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">make target</text>
+
+    <!-- Preguntas -->
+    <g fill="#161b22" stroke="#58a6ff" stroke-width="2">
+      <rect x="350" y="110" width="260" height="60" rx="14"/>
+      <rect x="350" y="220" width="260" height="60" rx="14"/>
+      <rect x="350" y="330" width="260" height="70" rx="14"/>
+    </g>
+    <text x="480" y="145">¿Está en <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">.PHONY</tspan>?</text>
+    <text x="480" y="255">¿Existe el archivo?</text>
+    <text x="480" y="360">¿Algún prerrequisito normal</text>
+    <text x="480" y="380">es más nuevo?</text>
+
+    <!-- Resultados -->
+    <rect x="720" y="220" width="200" height="60" rx="6" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+    <text x="820" y="255">Ejecutar receta</text>
+    <rect x="370" y="450" width="220" height="50" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+    <text x="480" y="480">Al día: no hace nada</text>
+
+    <!-- Entradas que modifican la comparación -->
+    <rect x="20" y="220" width="190" height="60" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="115" y="245" font-size="13">Prerrequisito order-only</text>
+    <text x="115" y="266" font-size="13" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">build/obj/</text>
+    <rect x="20" y="335" width="190" height="60" rx="6" fill="#161b22" stroke="#d2a8ff" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="115" y="360" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">build/obj/main.d</text>
+    <text x="115" y="381" font-size="12" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">-MMD -MP</text>
+
+    <!-- Flechas -->
+    <g fill="none" stroke-width="2">
+      <line x1="480" y1="74" x2="480" y2="110" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <path d="M610,140 H820 V220" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="480" y1="170" x2="480" y2="220" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="610" y1="250" x2="720" y2="250" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="480" y1="280" x2="480" y2="330" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <path d="M610,365 H820 V280" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="480" y1="400" x2="480" y2="450" stroke="#8b949e" marker-end="url(#arrow)"/>
+      <line x1="210" y1="250" x2="350" y2="250" stroke="#d2a8ff" stroke-dasharray="6 4" marker-end="url(#arrow-p)"/>
+      <line x1="210" y1="365" x2="350" y2="365" stroke="#d2a8ff" stroke-dasharray="6 4" marker-end="url(#arrow-p)"/>
+    </g>
+
+    <!-- Etiquetas -->
+    <g font-size="12" fill="#8b949e">
+      <text x="640" y="132">Sí</text>
+      <text x="498" y="200">No</text>
+      <text x="665" y="242">No</text>
+      <text x="498" y="310">Sí</text>
+      <text x="640" y="357">Sí</text>
+      <text x="498" y="430">No</text>
+      <g fill="#d2a8ff">
+        <text x="280" y="228">solo tiene</text>
+        <text x="280" y="242">que existir</text>
+        <text x="280" y="343">añade los</text>
+        <text x="280" y="357">headers</text>
+      </g>
+    </g>
+  </g>
+</svg>
