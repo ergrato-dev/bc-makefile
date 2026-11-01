@@ -38,14 +38,14 @@ Genera **todos** los archivos listados abajo para la semana `$ARGUMENTS`. No omi
 - **Se escribe antes que labs y proyecto.** Contrato en `docs/autograding.md`: 6–18 comprobaciones sobre el proyecto con los marcadores `{make}` y `{proyecto}`, cada una con `pista`
 - Debe fallar contra el starter (`./scripts/verificar-semana.sh NN`) y pasar contra la solución (`ENTREGA=solucion ./scripts/verificar-semana.sh NN`)
 
-### 3. `bootcamp/<carpeta>/0-assets/` — Diagramas SVG (mínimo 3 archivos)
+### 3. `bootcamp/<carpeta>/0-assets/` — Diagramas SVG (los que pida el contenido)
 
 Un `.svg` escrito a mano por diagrama, con la paleta y las reglas de `CLAUDE.md` § 0-assets (procedimiento en `/gen-svg`). Nada de Mermaid ni arte ASCII. Cada SVG se enlaza desde el archivo de `1-teoria/` donde aparece el concepto.
 
-Diagramas mínimos por semana (adapta el contenido al tema):
-- `01-concepto-principal.svg` — diagrama del concepto central de la semana
-- `02-flujo-ejecucion.svg` — cómo Make procesa/ejecuta el concepto
-- `03-decision-o-comparacion.svg` — diagrama de decisión o comparación de variantes
+Sin cupo fijo. Recorre la teoría y dibuja un diagrama donde el texto se queda corto; ninguno donde no. Candidatos habituales, solo si el tema los pide:
+- el grafo o el flujo del concepto central
+- cómo Make lo procesa o ejecuta (fases, orden, paralelismo)
+- una decisión o comparación entre variantes
 
 ### 4. `bootcamp/<carpeta>/1-teoria/` (1–3 archivos, 45 min en total)
 - Máximo 600 palabras de prosa por archivo

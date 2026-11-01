@@ -30,7 +30,7 @@ Lee `CLAUDE.md` y luego revisa todos los archivos de `bootcamp/<semana>/`. Repor
 - [ ] Hay 6 labs en `2-practicas/`
 - [ ] Cada lab tiene `README.md`, `starter/Makefile` y `solucion/Makefile`
 - [ ] El proyecto tiene `README.md`, `starter/` y `solucion/`
-- [ ] `0-assets/` tiene ≥ 3 `.svg` (ningún `.md`), cada uno con `viewBox`, `role="img"`, `<title>`, fondo `#0d1117` y la paleta de `CLAUDE.md`, y enlazado desde `1-teoria/`
+- [ ] `0-assets/` tiene los diagramas que pide el contenido: ninguno que sea una lista o tabla dibujada, ningún concepto de grafo/flujo/secuencia sin diagrama. Solo `.svg` (ningún `.md`), cada uno con `viewBox`, `role="img"`, `<title>`, fondo `#0d1117` y la paleta de `CLAUDE.md`, y enlazado desde `1-teoria/`
 
 **Calidad de Makefiles**
 - [ ] Todos los Makefiles usan TABs (no espacios) en las recetas

@@ -192,7 +192,7 @@ make -B
 ## Contenido esperado por sección
 
 ### 0-assets/
-Diagramas en **SVG escrito a mano**, un archivo por diagrama, nombrado `NN-nombre-descriptivo.svg` en orden de lectura. Mínimo 3 por semana. **Nada de Mermaid ni arte ASCII**: mismo estándar que el resto de bootcamps (bc-curl, bc-fastapi). Para crear uno: `/gen-svg`.
+Diagramas en **SVG escrito a mano**, un archivo por diagrama, nombrado `NN-nombre-descriptivo.svg` en orden de lectura. **Sin cupo por semana: los que pida el contenido, ni uno más ni uno menos.** Un diagrama entra cuando muestra algo que el texto no puede (un grafo, una secuencia, un flujo con ramas, dos cosas en la misma escala); sobra si es una lista o una tabla con cajas alrededor o repite el bloque de código de al lado. **Nada de Mermaid ni arte ASCII**: mismo estándar que el resto de bootcamps (bc-curl, bc-fastapi). Para crear uno: `/gen-svg`.
 
 - **Todo SVG se enlaza desde el archivo de `1-teoria/` donde aparece el concepto**, con una imagen Markdown que apunta a `../0-assets/NN-nombre.svg`. El texto alternativo describe lo que muestra, no repite el título. `verificar-enlaces.sh` falla con SVG huérfanos o con `.md` dentro de `0-assets/`.
 - `viewBox` obligatorio, sin `width`/`height` fijos en la raíz.
