@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   close-pr:
+    # Los PR del dueño del repo no se cierran: solo los de terceros.
+    if: github.event.pull_request.author_association != 'OWNER'
     runs-on: ubuntu-24.04
     steps:
       - name: Cerrar PR automaticamente
