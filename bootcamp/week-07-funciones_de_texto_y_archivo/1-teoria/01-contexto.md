@@ -6,8 +6,6 @@ Un Makefile con fuentes hardcodeadas es deuda técnica desde el primer día: cad
 
 Todas trabajan sobre **listas de palabras separadas por espacios**. Make no conoce "archivos" ni "rutas": solo texto. Por eso un nombre con espacios rompe cualquier Makefile, y por eso un espacio de más en un argumento produce bugs silenciosos (lo verás en [02-trampas-y-utilidades.md](02-trampas-y-utilidades.md)).
 
-![Funciones agrupadas en descubrimiento, transformación, filtrado, rutas y utilidades](../0-assets/01-mapa-funciones.svg)
-
 ## Referencia rápida
 
 | Función | Qué hace | Ejemplo → Resultado |
