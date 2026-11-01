@@ -22,6 +22,8 @@ variables de target ni la salida de ninguna receta. Un `$(error)` a nivel de
 archivo detiene cualquier `make`, incluido `make help`; dentro de una receta,
 solo el target que lo contiene.
 
+![Fase de lectura y fase de ejecución](../0-assets/04-fases-lectura-ejecucion.svg)
+
 ## Condicionales
 
 ```makefile
@@ -48,6 +50,8 @@ show:
 
 Pruébalo con `make show ENV=staging`, `CI=1 make show` y `make show ENV=prod`.
 
+![Ramas de ifeq e ifdef en la lectura](../0-assets/01-condicionales-make.svg)
+
 Cuidado con los comentarios en la línea de una asignación:
 `ENV := production # entorno` guarda `production ` con espacio final, y el
 `ifeq` deja de ser verdadero.
@@ -71,6 +75,8 @@ show:
 Con `echo 1.4.0 > VERSION`, `make show` genera `version.mk` y muestra la
 versión. Las rutas de `include` son relativas al directorio donde corre Make;
 por eso a los módulos se entra con `-C`.
+
+![Módulos cargados con include y -include](../0-assets/02-include-modular.svg)
 
 > [!WARNING]
 > `include .env` parsea el archivo **como Makefile**: comillas, `$` y `#` no
@@ -96,6 +102,8 @@ solo las variables de la línea de comandos (vía `MAKEFLAGS`), las del entorno
 y las exportadas por nombre (`export VAR`). Lo que el padre define en su
 Makefile hay que pasarlo explícitamente, como `ENV=$(ENV)`. Paralelismo y
 recursión a fondo: Semana 10.
+
+![Raíz que lanza un sub-make por módulo](../0-assets/03-recursion-submakes.svg)
 
 ## Depuración y portabilidad
 

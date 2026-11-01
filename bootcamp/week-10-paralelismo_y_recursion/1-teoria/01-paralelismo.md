@@ -52,6 +52,8 @@ page.txt: config.txt
 	@grep titulo $< > $@
 ```
 
+![La misma carrera en serie, con -j2 y arreglada](../0-assets/02-carrera-dependencia-faltante.svg)
+
 Las carreras típicas son tres: una receta que lee un archivo que no declara, dos recetas que escriben el mismo temporal (usa `$@.tmp`, nunca `tmp.txt`), y `rebuild: clean all`, que con `-j` ejecuta los dos a la vez.
 
 ## Destapar carreras a propósito
